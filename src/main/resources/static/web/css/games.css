@@ -1,0 +1,146 @@
+/*----------------------------------STYLE RESET-----------------------------------*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+/*----------------------------------HEADER-----------------------------------*/
+
+.container-fluid {
+    min-width: 320px;
+    min-height: 1080px;
+    max-width: 1920px;
+    max-height: 1080px;
+    background-image: url("images/spacebattle.jpg");
+    overflow: auto;
+}
+.main-logo {
+    height: 150px;
+}
+
+/*----------------------------------SECTION/GENERAL-----------------------------------*/
+h1 {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+h3 {
+    font-size: 15px;
+}
+#app {
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 30px 40px;
+    background-color:rgba(255,255,255,0.6);
+}
+b {
+    font-weight: bold;
+}
+
+/*----------------------------------GAMES LIST-----------------------------------*/
+.gameList {
+    margin-top: 20px;
+}
+li>ol {
+	list-style-type: decimal;
+}
+
+/*----------------------------------GRID DISPLAY-----------------------------------*/
+img.ship-img{
+    height: 35px;
+    width: 35px;
+}
+
+#battleshipGrid>thead>tr>th, #battleshipGrid>tbody>tr>td {
+    border: 1px solid black;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+}
+#salvoGrid>thead>tr>th, #salvoGrid>tbody>tr>td {
+    border: 1px solid black;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+}
+
+@media screen and (max-width: 500px) {
+  .main-logo {
+      height: 100px;
+  }
+  #battleshipGrid>thead>tr>th, #battleshipGrid>tbody>tr>td, th, td {
+      height: 25px;
+      width: 25px;
+  }
+  img.ship-img{
+      height: 25px;
+      width: 25px;
+  }
+  .player-email {
+      display: block;
+  }
+}
+/*----------------------------------SHIPS-----------------------------------*/
+.bg-ship {
+    background-color: black;
+}
+.bg-salvo {
+    background-color: red;
+}
+
+/*----------------------------------LOGIN-SIGN-UP-FORM-----------------------------------*/
+.card {
+    background-color: rgba(245, 245, 245, 0.4);
+}
+#logged-in-name {
+    font-size: 20px;
+}
+
+/*----------------------------------DARK-LIGHT-SIDE-EFFECTS-----------------------------------*/
+.text-DARK {
+    text-shadow: 0 0 3px #FF0000;
+}
+
+.text-LIGHT {
+    text-shadow: 0 0 3px #00FF00;
+}
