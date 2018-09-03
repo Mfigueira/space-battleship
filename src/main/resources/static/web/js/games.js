@@ -3,6 +3,7 @@ var app = new Vue({
   el: "#app",
   data: {
     games: [],
+    current_player: [],
     playersLeaderBoard: [],
     lightLeaders:[],
     darkLeaders:[]
@@ -16,10 +17,11 @@ $(document).ready(function() {
 
 function getData(){
     $.get("/api/games").done(function(result) {
-            app.games = result.games;
-            dateTransform(app.games);
-            getLeaderBoard(result.games);
-            registerForm(result.current_player);
+        app.games = result.games;
+        app.current_player = result.current_player;
+        dateTransform(app.games);
+        getLeaderBoard(result.games);
+        registerForm(result.current_player);
     });
 }
 
@@ -99,14 +101,27 @@ function registerForm(player) {
         $("#login-form").show();
         $("#logout-form").hide();
     } else {
-        if (player.side === "DARK") { $("#logged-in-name").html("Welcome, Sith! "+player.email).removeClass("text-LIGHT").addClass("text-DARK"); }
-        else if (player.side === "LIGHT") { $("#logged-in-name").html("Welcome, Jedi! "+player.email).removeClass("text-DARK").addClass("text-LIGHT"); }
+        if (player.side === "DARK") { $("#logged-in-name").html("Welcome Sith! "+player.email).removeClass("text-LIGHT").addClass("text-DARK"); }
+        else if (player.side === "LIGHT") { $("#logged-in-name").html("Welcome Jedi! "+player.email).removeClass("text-DARK").addClass("text-LIGHT"); }
         else { $("#logged-in-name").html("Welcome, "+player.email); }
         $("#profile-title").html("My Profile");
         $("#login-form").hide();
         $("#logout-form").show();
     }
 }
+
+$("input[type=radio]").change(function() {
+    if ( $("input[type=radio]:checked").val() === "DARK" ) {
+        $("#light-side-description").removeClass("display-block").addClass("display-none");
+        $("#dark-side-description").removeClass("display-none").addClass("display-block");
+    } else if ( $("input[type=radio]:checked").val() === "LIGHT" ) {
+        $("#dark-side-description").removeClass("display-block").addClass("display-none");
+        $("#light-side-description").removeClass("display-none").addClass("display-block");
+    }
+})
+
+
+
 
 //---------------------------------------DATE FORMAT---------------------------------------
 function dateTransform(array){
@@ -163,3 +178,39 @@ function getLeaderBoard(gameList) {
 
     return;
 }
+
+
+$("#leaderBoardDiv").on("click", "#toggle-leaders-btn", function() {
+    if( $("#lightLeaders").hasClass("display-block") ) {
+        $("#lightLeaders").removeClass("display-block").addClass("display-none")
+        $("#darkLeaders").removeClass("display-none").addClass("display-block")
+        $("#toggle-leaders-btn").removeClass("btn-success").addClass("btn-danger").html("<img class='side-logo' src='css/images/empire.png'>")
+    } else if ( $("#darkLeaders").hasClass("display-block") ) {
+        $("#darkLeaders").removeClass("display-block").addClass("display-none")
+        $("#lightLeaders").removeClass("display-none").addClass("display-block")
+        $("#toggle-leaders-btn").removeClass("btn-danger").addClass("btn-success").html("<img class='side-logo' src='css/images/rebellion.jpg'>")
+    }
+})
+
+//--------------------------------CREATE AND JOIN GAMES----------------------------------
+
+$("#app").on("click", "#new-game-btn", function() {
+    $.post("/api/games").done(function(response) {
+        $("#fail-creation-game-alert").html("");
+        location.assign("/web/game.html?gp="+response.gpid);
+    }).fail(function() {
+        $("#fail-creation-game-alert").html("Something went wrong. Please try again later");
+    })
+});
+
+
+$("#app").on("click", ".join-game-btn", function() {
+    var gameId = $(this).data("game");
+    $.post("/api/game/"+gameId+"/players").done(function(response) {
+        $(".fail-joining-game-alert").html("");
+        location.assign("/web/game.html?gp="+response.gpid);
+    }).fail(function() {
+        $(".fail-joining-game-alert").html("");
+        $(".fail-joining-game-alert").filter("[data-game="+gameId+"]").html("Game is full");
+    })
+});
