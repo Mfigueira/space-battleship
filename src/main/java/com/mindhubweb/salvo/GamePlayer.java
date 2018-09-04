@@ -85,7 +85,7 @@ public class GamePlayer {
         ships.add(ship);
     }
     public void addShips(Set<Ship> ships) {
-        ships.stream().forEach(this::addShip);
+        ships.forEach(this::addShip);
     }
 
     public Set<Salvo> getSalvoes() { return salvoes; }
@@ -97,7 +97,7 @@ public class GamePlayer {
         salvoes.add(salvo);
     }
     public void addSalvoes(Set<Salvo> salvoes) {
-        salvoes.stream().forEach(this::addSalvo);
+        salvoes.forEach(this::addSalvo);
     }
 
     public Score getScore () {
