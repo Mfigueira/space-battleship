@@ -1,3 +1,4 @@
+//-------------------------------------------------------VUE FRAMEWORK---------------------------------------------------------
 var app = new Vue({
   el: "#app",
   data: {
@@ -12,10 +13,12 @@ var app = new Vue({
   }
 });
 
+//-------------------------------------------------------WHEN DOM READY, CALL LOAD DATA---------------------------------------------------------
 $(function() {
     loadData();
 });
 
+//-------------------------------------------------------MAIN FUNCTION WHEN PAGE LOADS - AJAX GET DATA---------------------------------------------------------
 function loadData() {
     var gamePlayerId = getQueryVariable("gp");
     $.get("/api/game_view/"+gamePlayerId).done(function(gameDTO) {
@@ -26,13 +29,18 @@ function loadData() {
         if (gameDTO.ships.length === 0) {
             placeNewShips();
         } else {
+            var grid = $('#grid').data('gridstack');
+            if ( typeof grid != 'undefined' ) {
+                grid.removeAll();
+                grid.destroy(false);
+            }
             app.gameViewerShips = gameDTO.ships;
-            //placeShipsFromBackEnd();
+            placeShipsFromBackEnd();
         }
     });
 }
 
-
+//-------------------------------------------------------SHOW PLAYERS NAMES---------------------------------------------------------
 function showPlayersByGamePlayerId(id, obj) {
     obj.gamePlayers.map(function (gamePlayer) {
         if (id == gamePlayer.id) {
@@ -58,6 +66,7 @@ function showPlayersByGamePlayerId(id, obj) {
     });
 }
 
+//-------------------------------------------------------LOGOUT FUNCTION---------------------------------------------------------
 $("#logout").click(function() {
     $.post("/api/logout").done(function() {
         window.location.replace("/web/games.html")
@@ -144,7 +153,7 @@ function displaySalvoes(gamePlayerId, gameDTO) {
 }
 
 
-//--------------------------------PLACING SHIPS----------------------------------
+//----------------------------------------------------------------AJAX POST NEW SHIPS-----------------------------------------------------------------
 function postShips(shipTypeAndCells) {
     var gamePlayerId = getQueryVariable("gp");
     $.post({
@@ -158,10 +167,11 @@ function postShips(shipTypeAndCells) {
       console.log( "Ships added: " + response );
     })
     .fail(function () {
-      console.log("Failed to add ships: ");
+      console.log("Failed to add ships... ");
     })
 }
 
+//-------------------------------------------------------ON CLICK BATTLE - POST NEW SHIPS---------------------------------------------------------
 $("#placed-ships-btn").click(function(){
     var shipTypeAndCells = [];
 
@@ -189,13 +199,12 @@ $("#placed-ships-btn").click(function(){
                 shipLoc.cells = cellsArray;
             }
         }
-        console.log(shipLoc);
         shipTypeAndCells.push(shipLoc);
     }
-    console.log(shipTypeAndCells);
     postShips(shipTypeAndCells);
 })
 
+//-------------------------------------------------------ROTATE SHIPS EVENT---------------------------------------------------------
 function setListener(grid) {
     $(".grid-stack-item").dblclick(function() {
         var h = parseInt($(this).attr("data-gs-height"));
@@ -203,12 +212,17 @@ function setListener(grid) {
         // var posX = parseInt($(this).attr("data-gs-x"));
         // var posY = parseInt($(this).attr("data-gs-y"));
 
-        for (var i=0, e=0; i<10; i++, e++) {
-            if ( grid.isAreaEmpty(i, e, h, w) && grid.isAreaEmpty(i, e, w, h) ) {
-                grid.move($(this), i, e);
-                grid.resize($(this), h, w);
-                break;
+        // Check available space to rotate Ship...
+        for (var j=0; j<10; j++) {
+            var found = false;
+            for (var i=0; i<10; i++) {
+                if ( grid.isAreaEmpty(i, j, h, w) && i+h<=10 && j+w<=10 ) {
+                    grid.update($(this), i, j, h, w);
+                    found = true;
+                    break;
+                }
             }
+            if (found===true){break;}
         }
 
         if ( $(this).children().attr("id") === "dark-cruiser-img-v" ){
@@ -255,8 +269,10 @@ function setListener(grid) {
     })
 }
 
-
+//-------------------------------------------------------PLACE NEW SHIPS WITH GRIDSTACK FRAMEWORK---------------------------------------------------------
 function placeNewShips() {
+    $("#place-ships-card").show();
+
     var options = {
         //grilla de 10 x 10
         width: 10,
@@ -309,64 +325,135 @@ function placeNewShips() {
     setListener(grid);
 }
 
+
+//-------------------------------------------------------LOAD SHIPS FROM BACKEND WITH GRIDSTACK FRAMEWORK---------------------------------------------------------
 function placeShipsFromBackEnd() {
+    $("#place-ships-card").hide();
+
     var options = {
-        //grilla de 10 x 10
         width: 10,
         height: 10,
-        //separacion entre elementos (les llaman widgets)
         verticalMargin: 0,
-        //altura de las celdas
         cellHeight: 35,
         cellWidth: 35,
-        //desabilitando el resize de los widgets
         disableResize: true,
-        //widgets flotantes
         float: true,
-        //removeTimeout: 100,
-        //permite que el widget ocupe mas de una columna
         disableOneColumnMode: true,
-        //false permite mover, true impide
         staticGrid: true,
-        //activa animaciones (cuando se suelta el elemento se ve más suave la caida)
         animate: true
     }
-    //se inicializa el grid con las opciones
     $('.grid-stack').gridstack(options);
     var grid = $('#grid').data('gridstack');
 
     app.gameViewerShips.map(function(ship) {
+        var searchChar = ship.locations[0].slice(0, 1);
+        var secondChar = ship.locations[1].slice(0, 1);
+        if ( searchChar === secondChar ) {
+            ship.position = "Horizontal";
+        } else {
+            ship.position = "Vertical";
+        }
+        for (var i=0; i < ship.locations.length; i++) {
+            ship.locations[i] = ship.locations[i].replace(/A/g, '0');
+            ship.locations[i] = ship.locations[i].replace(/B/g, '1');
+            ship.locations[i] = ship.locations[i].replace(/C/g, '2');
+            ship.locations[i] = ship.locations[i].replace(/D/g, '3');
+            ship.locations[i] = ship.locations[i].replace(/E/g, '4');
+            ship.locations[i] = ship.locations[i].replace(/F/g, '5');
+            ship.locations[i] = ship.locations[i].replace(/G/g, '6');
+            ship.locations[i] = ship.locations[i].replace(/H/g, '7');
+            ship.locations[i] = ship.locations[i].replace(/I/g, '8');
+            ship.locations[i] = ship.locations[i].replace(/J/g, '9');
+        }
 
-        ship.
+        var yInGrid = parseInt(ship.locations[0].slice(0, 1));
+        var xInGrid = parseInt(ship.locations[0].slice(1, 3)) - 1;
 
+        if (app.gameViewerSide === "DARK") {
+            if (ship.type === "cruiser") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="dark-cruiser-img-h" class="grid-stack-item-content" src="css/images/icons/dark-cruiser-h.png" alt="cruiser"></div>'),
+                    xInGrid, yInGrid, 5, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="dark-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/dark-cruiser-v.png" alt="cruiser"></div>'),
+                    xInGrid, yInGrid, 1, 5, false);
+                }
+            } else if (ship.type === "destroyer") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="dark-destroyer-img-h" class="grid-stack-item-content" src="css/images/icons/dark-destroyer-h.png" alt="destroyer"></div>'),
+                    xInGrid, yInGrid, 4, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="dark-destroyer-img-v" class="grid-stack-item-content" src="css/images/icons/dark-destroyer-v.png" alt="destroyer"></div>'),
+                    xInGrid, yInGrid, 1, 4, false);
+                }
+            } else if (ship.type === "bomber") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="dark-bomber-img-h" class="grid-stack-item-content" src="css/images/icons/dark-bomber-h.png" alt="bomber"></div>'),
+                    xInGrid, yInGrid, 3, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="dark-bomber-img-v" class="grid-stack-item-content" src="css/images/icons/dark-bomber-v.png" alt="bomber"></div>'),
+                    xInGrid, yInGrid, 1, 3, false);
+                }
+            } else if (ship.type === "fighter") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="dark-fighter-img-h" class="grid-stack-item-content" src="css/images/icons/dark-fighter-h.png" alt="fighter"></div>'),
+                    xInGrid, yInGrid, 3, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="dark-fighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-fighter-v.png" alt="fighter"></div>'),
+                    xInGrid, yInGrid, 1, 3, false);
+                }
+            } else if (ship.type === "starFighter") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="dark-starfighter-img-h" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-h.png" alt="starFighter"></div>'),
+                    xInGrid, yInGrid, 2, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="dark-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-v.png" alt="starFighter"></div>'),
+                    xInGrid, yInGrid, 1, 2, false);
+                }
+            }
+
+        } else if (app.gameViewerSide === "LIGHT") {
+            if (ship.type === "cruiser") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="light-cruiser-img-h" class="grid-stack-item-content" src="css/images/icons/light-cruiser-h.png" alt="cruiser"></div>'),
+                    xInGrid, yInGrid, 5, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="light-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/light-cruiser-v.png" alt="cruiser"></div>'),
+                    xInGrid, yInGrid, 1, 5, false);
+                }
+            } else if (ship.type === "destroyer") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="light-destroyer-img-h" class="grid-stack-item-content" src="css/images/icons/light-destroyer-h.png" alt="destroyer"></div>'),
+                    xInGrid, yInGrid, 4, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="light-destroyer-img-v" class="grid-stack-item-content" src="css/images/icons/light-destroyer-v.png" alt="destroyer"></div>'),
+                    xInGrid, yInGrid, 1, 4, false);
+                }
+            } else if (ship.type === "bomber") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="light-bomber-img-h" class="grid-stack-item-content" src="css/images/icons/light-bomber-h.png" alt="bomber"></div>'),
+                    xInGrid, yInGrid, 3, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="light-bomber-img-v" class="grid-stack-item-content" src="css/images/icons/light-bomber-v.png" alt="bomber"></div>'),
+                    xInGrid, yInGrid, 1, 3, false);
+                }
+            } else if (ship.type === "fighter") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="light-fighter-img-h" class="grid-stack-item-content" src="css/images/icons/light-fighter-h.png" alt="fighter"></div>'),
+                    xInGrid, yInGrid, 3, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="light-fighter-img-v" class="grid-stack-item-content" src="css/images/icons/light-fighter-v.png" alt="fighter"></div>'),
+                    xInGrid, yInGrid, 1, 3, false);
+                }
+            } else if (ship.type === "starFighter") {
+                if (ship.position === "Horizontal") {
+                    grid.addWidget($('<div><img id="light-starfighter-img-h" class="grid-stack-item-content" src="css/images/icons/light-starfighter-h.png" alt="starFighter"></div>'),
+                    xInGrid, yInGrid, 2, 1, false);
+                } else if (ship.position === "Vertical") {
+                    grid.addWidget($('<div><img id="light-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/light-starfighter-v.png" alt="starFighter"></div>'),
+                    xInGrid, yInGrid, 1, 2, false);
+                }
+            }
+        }
     })
-
-    var width;
-    var height;
-
-    if (app.gameViewerSide === "DARK") {
-        grid.addWidget($('<div><img id="dark-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/dark-cruiser-v.png" alt="cruiser"></div>'),
-        1, 0, 1, 5, false);
-        grid.addWidget($('<div><img id="dark-destroyer-img-v" class="grid-stack-item-content" src="css/images/icons/dark-destroyer-v.png" alt="destroyer"></div>'),
-        8, 0, 1, 4, false);
-        grid.addWidget($('<div><img id="dark-bomber-img-v" class="grid-stack-item-content" src="css/images/icons/dark-bomber-v.png" alt="bomber"></div>'),
-        5, 1, 1, 3, false);
-        grid.addWidget($('<div><img id="dark-fighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-fighter-v.png" alt="fighter"></div>'),
-        3, 5, 1, 3, false);
-        grid.addWidget($('<div><img id="dark-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-v.png" alt="starFighter"></div>'),
-        6, 7, 1, 2, false);
-
-    } else if (app.gameViewerSide === "LIGHT") {
-        grid.addWidget($('<div><img id="light-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/light-cruiser-v.png" alt="cruiser"></div>'),
-        1, 0, 1, 5, false);
-        grid.addWidget($('<div><img id="light-destroyer-img-v" class="grid-stack-item-content" src="css/images/icons/light-destroyer-v.png" alt="destroyer"></div>'),
-        8, 2, 1, 4, false);
-        grid.addWidget($('<div><img id="light-bomber-img-v" class="grid-stack-item-content" src="css/images/icons/light-bomber-v.png" alt="bomber"></div>'),
-        4, 2, 1, 3, false);
-        grid.addWidget($('<div><img id="light-fighter-img-h" class="grid-stack-item-content" src="css/images/icons/light-fighter-h.png" alt="fighter"></div>'),
-        1, 7, 3, 1, false);
-        grid.addWidget($('<div><img id="light-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/light-starfighter-v.png" alt="starFighter"></div>'),
-        6, 7, 1, 2, false);
-    }
-    setListener(grid);
 }

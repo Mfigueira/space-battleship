@@ -22,18 +22,18 @@
                 <div class="row justify-content-center">
                     <div class="col-auto">
                         <h1>Battleship Grid:</h1>
-                        <div class="card mb-4">
-                            <h2>Place your Ships</h2>
-                            <div class="card-body">
+                        <div id="place-ships-card" class="card mb-4 text-center display-none">
+                            <h2 class="mt-2">Place your Ships</h2>
+                            <div class="card-body pt-0">
                                 Move with cursor. Double click to rotate. Battle when ready.
                             </div>
-                            <button id="placed-ships-btn" type="button" class="btn btn-dark">Battle!</button>
+                            <button id="placed-ships-btn" type="button" class="btn btn-dark btn-block">Battle!</button>
                         </div>
 
-                        <div class="grid-ships mb-4">
+                        <div class="grid-ships mx-auto mb-4">
                             <div id="grid" class="grid-stack grid-stack-10"></div>
                         </div>
-
+<!--
                         <table id="battleshipGrid" class="mb-4">
                             <thead>
                                 <tr>
@@ -48,7 +48,7 @@
                                 </tr>
                             </tbody>
                         </table>
-
+-->
                     </div>
                     <div class="col-auto">
                         <h1>Players:</h1>
