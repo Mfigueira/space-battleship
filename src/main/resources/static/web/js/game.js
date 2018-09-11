@@ -26,6 +26,12 @@ function loadData() {
         showPlayersByGamePlayerId(gamePlayerId, gameDTO);
         displaySalvoes(gamePlayerId, gameDTO);
 
+        if (app.gameViewerSide === "DARK") {
+            $(".container-fluid").addClass("bkg-empire");
+        } else if (app.gameViewerSide === "LIGHT") {
+            $(".container-fluid").addClass("bkg-rebels");
+        }
+
         if (gameDTO.ships.length === 0) {
             placeNewShips();
         } else {
@@ -209,20 +215,46 @@ function setListener(grid) {
     $(".grid-stack-item").dblclick(function() {
         var h = parseInt($(this).attr("data-gs-height"));
         var w = parseInt($(this).attr("data-gs-width"));
-        // var posX = parseInt($(this).attr("data-gs-x"));
-        // var posY = parseInt($(this).attr("data-gs-y"));
+        var posX = parseInt($(this).attr("data-gs-x"));
+        var posY = parseInt($(this).attr("data-gs-y"));
 
-        // Check available space to rotate Ship...
-        for (var j=0; j<10; j++) {
-            var found = false;
-            for (var i=0; i<10; i++) {
-                if ( grid.isAreaEmpty(i, j, h, w) && i+h<=10 && j+w<=10 ) {
-                    grid.update($(this), i, j, h, w);
-                    found = true;
-                    break;
-                }
+        // Rotate Ships Mechanics...
+        if (w>h) {
+            if ( grid.isAreaEmpty(posX, posY+1, h, w-1) && posX+h<=10 && posY+w<=10 ) {
+                grid.update($(this), posX, posY, h, w);
+            } else if ( grid.isAreaEmpty(posX, posY-w+1, h, w-1) && posX+h<=10 && posY-w+1>=0 ) {
+                grid.update($(this), posX, posY-w+1, h, w);
+            } else {
+                searchSpaceAndRotate($(this));
             }
-            if (found===true){break;}
+        } else if (h>w) {
+            if ( grid.isAreaEmpty(posX+1, posY, h-1, w) && posX+h<=10 ) {
+                grid.update($(this), posX, posY, h, w);
+            } else if ( grid.isAreaEmpty(posX+1, posY+1, h-1, w) && posX+h<=10 ) {
+                grid.update($(this), posX, posY+1, h, w);
+            } else if ( grid.isAreaEmpty(posX+1, posY+2, h-1, w) && posX+h<=10 ) {
+                grid.update($(this), posX, posY+2, h, w);
+            } else if ( grid.isAreaEmpty(posX, posY-1, h, w) && posX+h<=10 && posY>0) {
+                grid.update($(this), posX, posY-1, h, w);
+            } else if ( grid.isAreaEmpty(posX, posY-2, h, w) && posX+h<=10 && posY>1) {
+                grid.update($(this), posX, posY-2, h, w);
+            } else {
+                searchSpaceAndRotate($(this));
+            }
+        }
+        // When no space near to rotate, search the first available in Grid...
+        function searchSpaceAndRotate(widget) {
+            for (var j=0; j<10; j++) {
+                var found = false;
+                for (var i=0; i<10; i++) {
+                    if ( grid.isAreaEmpty(i, j, h, w) && i+h<=10 && j+w<=10 ) {
+                        grid.update(widget, i, j, h, w);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found===true){break;}
+            }
         }
 
         if ( $(this).children().attr("id") === "dark-cruiser-img-v" ){
