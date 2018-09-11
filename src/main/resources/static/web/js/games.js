@@ -215,21 +215,3 @@ $("#app").on("click", ".join-game-btn", function() {
     })
 });
 
-
-//--------------------------------PLACING SHIPS----------------------------------
-$.post({
-  url: "/api/games/players/15/ships",
-  data: JSON.stringify([{ type: "destroyer", cells: ["H1", "H2", "H3", "H4", "H5"] },
-                      { type: "bomber", cells: ["D2", "D3"] },
-                      { type: "fighter", cells: ["A8", "A9", "A10"] },
-                      { type: "cruiser", cells: ["C4", "C5", "C6", "C7", "C8"] },
-                      { type: "starFighter", cells: ["F8", "F9", "F10"] }]),
-  dataType: "text",
-  contentType: "application/json"
-})
-.done(function (response) {
-  console.log( "Ships added: " + response );
-})
-.fail(function () {
-  console.log("Failed to add ships: ");
-})

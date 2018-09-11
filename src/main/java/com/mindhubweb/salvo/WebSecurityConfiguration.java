@@ -29,7 +29,7 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
             if (player.getUserName().equals("j.bauer@ctu.gov")) {
                 return new User(player.getUserName(), passwordEncoder().encode(player.getPassword()),
                         AuthorityUtils.createAuthorityList("ADMIN"));
-            } else if (player != null) {
+            } else if (player.getUserName() != null) {
                 return new User(player.getUserName(), passwordEncoder().encode(player.getPassword()),
                         AuthorityUtils.createAuthorityList("USER"));
             } else {

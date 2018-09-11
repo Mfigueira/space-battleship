@@ -226,3 +226,140 @@ img.ship-img{
     background-color: #0099ff;
     border-color: #0099ff;
 }
+
+/*----------------------------------PLACING SHIPS-----------------------------------*/
+
+.grid-ships {
+    background-image: url("images/grid-bg.png"), url("images/space.gif");
+    background-size: cover;
+    height: 385px;
+    width: 385px;
+    padding-top: 35px;
+    padding-left: 35px;
+}
+.grid-stack-item-content {
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+}
+
+.grid-stack-item {
+    background-color:rgba(255,255,255,0.2);
+}
+
+#dark-cruiser-img-v {
+    height: 205px;
+    width: 80px;
+    left: -23px;
+    margin-top: -15px;
+}
+#dark-cruiser-img-h {
+    height: 80px;
+    width: 205px;
+    top: -22px;
+    margin-left: -15px;
+}
+#dark-destroyer-img-v {
+    height: 140px;
+    width: 70px;
+    left: -17px;
+}
+#dark-destroyer-img-h {
+    width: 140px;
+    height: 70px;
+    top: -17px;
+}
+#dark-bomber-img-v {
+    height: 85px;
+    width: 50px;
+    left: -7px;
+    margin-top: 10px;
+}
+#dark-bomber-img-h {
+    width: 85px;
+    height: 50px;
+    top: -7px;
+    margin-left: 10px;
+}
+#dark-fighter-img-v {
+    height: 105px;
+    width: 55px;
+    left: -10px;
+}
+#dark-fighter-img-h {
+    width: 105px;
+    height: 55px;
+    top: -10px;
+}
+#dark-starfighter-img-v {
+    height: 70px;
+    width: 55px;
+    margin-top: 10px;
+    left: -10px;
+}
+#dark-starfighter-img-h {
+    width: 70px;
+    height: 55px;
+    margin-left: 10px;
+    top: -10px;
+}
+
+
+
+#light-cruiser-img-v {
+    height: 175px;
+    width: 95px;
+    left: -31px;
+    margin-top: 5px;
+}
+#light-cruiser-img-h {
+    height: 95px;
+    width: 175px;
+    top: -29px;
+    margin-left: 5px;
+}
+#light-destroyer-img-v {
+    height: 140px;
+    width: 70px;
+    left: -17px;
+    top: 10px;
+}
+#light-destroyer-img-h {
+    width: 140px;
+    height: 70px;
+    top: -17px;
+    left: 10px;
+}
+#light-bomber-img-v {
+    height: 110px;
+    width: 50px;
+    left: -9px;
+    margin-top: 5px;
+}
+#light-bomber-img-h {
+    width: 110px;
+    height: 50px;
+    top: -6px;
+    margin-left: 5px;
+}
+#light-fighter-img-v {
+    height: 105px;
+    width: 80px;
+    left: -22px;
+}
+#light-fighter-img-h {
+    width: 105px;
+    height: 80px;
+    top: -22px;
+}
+#light-starfighter-img-v {
+    height: 95px;
+    width: 51px;
+    left: -8px;
+    top: -5px;
+}
+#light-starfighter-img-h {
+    width: 95px;
+    height: 51px;
+    left: -5px;
+    top: -8px;
+}

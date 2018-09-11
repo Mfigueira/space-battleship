@@ -18,21 +18,19 @@ public class SalvoController {
     private GameRepository gameRepository;
     private GamePlayerRepository gamePlayerRepository;
     private PlayerRepository playerRepository;
-    private ShipRepository shipRepository;
 
     @Autowired
-    SalvoController(GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository, ShipRepository shipRepository) {
+    SalvoController(GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, PlayerRepository playerRepository) {
         this.gameRepository = gameRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.playerRepository = playerRepository;
-        this.shipRepository = shipRepository;
     }
 
     @GetMapping("/game_view/{gamePlayerId}")
     public ResponseEntity<Map<String, Object>> getGameView(@PathVariable Long gamePlayerId, Authentication authentication) {
-        GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).get();
-        if ( gamePlayer.getPlayer().getUserName().equals(authentication.getName())) {
-            return new ResponseEntity<>(gamePlayer.makeGameViewDTO(), HttpStatus.OK);
+        Optional <GamePlayer> gamePlayer = gamePlayerRepository.findById(gamePlayerId);
+        if ( gamePlayer.isPresent() && gamePlayer.get().getPlayer().getUserName().equals(authentication.getName())) {
+            return new ResponseEntity<>(gamePlayer.get().makeGameViewDTO(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_FORBIDDEN), HttpStatus.FORBIDDEN);
         }
@@ -75,7 +73,7 @@ public class SalvoController {
         }
 
         gamePlayer.get().addShips(ships);
-        ships.forEach(ship -> shipRepository.save(ship));
+        gamePlayerRepository.save(gamePlayer.get());
 
         return new ResponseEntity<>(makeMap(MyConsts.KEY_CREATED, MyConsts.MSG_CREATED), HttpStatus.CREATED);
 
