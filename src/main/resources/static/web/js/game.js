@@ -28,8 +28,12 @@ function loadData() {
 
         if (app.gameViewerSide === "DARK") {
             $(".container-fluid").addClass("bkg-empire");
+            $("#app").addClass("shd-dark");
+            $("#audio-theme").html('<source src="css/audio/dark-side-theme.mp3" type="audio/mp3">');
         } else if (app.gameViewerSide === "LIGHT") {
             $(".container-fluid").addClass("bkg-rebels");
+            $("#app").addClass("shd-light");
+            $("#audio-theme").html('<source src="css/audio/light-side-theme.mp3" type="audio/mp3">');
         }
 
         if (gameDTO.ships.length === 0) {
@@ -79,6 +83,7 @@ $("#logout").click(function() {
     })
 });
 
+//-------------------------------------------------------GET QUERY PARAM FUNCTION---------------------------------------------------------
 function getQueryVariable(variable) {
    var query = window.location.search.substring(1);
    var vars = query.split("&");
@@ -86,11 +91,10 @@ function getQueryVariable(variable) {
        var pair = vars[i].split("=");
        if(pair[0] == variable){
            return pair[1];
-           }
+       }
    }
    return(false);
 }
-
 
 /*
 function displayShipLocations(ships) {
@@ -257,46 +261,70 @@ function setListener(grid) {
             }
         }
 
-        if ( $(this).children().attr("id") === "dark-cruiser-img-v" ){
-            $(this).children().attr("id", "dark-cruiser-img-h").attr("src", "css/images/icons/dark-cruiser-h.png");
-        } else if ( $(this).children().attr("id") === "dark-cruiser-img-h" ){
-            $(this).children().attr("id", "dark-cruiser-img-v").attr("src", "css/images/icons/dark-cruiser-v.png");
-        } else if ( $(this).children().attr("id") === "dark-destroyer-img-h" ){
-            $(this).children().attr("id", "dark-destroyer-img-v").attr("src", "css/images/icons/dark-destroyer-v.png");
-        } else if ( $(this).children().attr("id") === "dark-destroyer-img-v" ){
-            $(this).children().attr("id", "dark-destroyer-img-h").attr("src", "css/images/icons/dark-destroyer-h.png");
-        } else if ( $(this).children().attr("id") === "dark-bomber-img-v" ){
-            $(this).children().attr("id", "dark-bomber-img-h").attr("src", "css/images/icons/dark-bomber-h.png");
-        } else if ( $(this).children().attr("id") === "dark-bomber-img-h" ){
-            $(this).children().attr("id", "dark-bomber-img-v").attr("src", "css/images/icons/dark-bomber-v.png");
-        } else if ( $(this).children().attr("id") === "dark-fighter-img-h" ){
-            $(this).children().attr("id", "dark-fighter-img-v").attr("src", "css/images/icons/dark-fighter-v.png");
-        } else if ( $(this).children().attr("id") === "dark-fighter-img-v" ){
-            $(this).children().attr("id", "dark-fighter-img-h").attr("src", "css/images/icons/dark-fighter-h.png");
-        } else if ( $(this).children().attr("id") === "dark-starfighter-img-v" ){
-            $(this).children().attr("id", "dark-starfighter-img-h").attr("src", "css/images/icons/dark-starfighter-h.png");
-        } else if ( $(this).children().attr("id") === "dark-starfighter-img-h" ){
-            $(this).children().attr("id", "dark-starfighter-img-v").attr("src", "css/images/icons/dark-starfighter-v.png");
-        } else if ( $(this).children().attr("id") === "light-cruiser-img-v" ){
-            $(this).children().attr("id", "light-cruiser-img-h").attr("src", "css/images/icons/light-cruiser-h.png");
-        } else if ( $(this).children().attr("id") === "light-cruiser-img-h" ){
-            $(this).children().attr("id", "light-cruiser-img-v").attr("src", "css/images/icons/light-cruiser-v.png");
-        } else if ( $(this).children().attr("id") === "light-destroyer-img-h" ){
-            $(this).children().attr("id", "light-destroyer-img-v").attr("src", "css/images/icons/light-destroyer-v.png");
-        } else if ( $(this).children().attr("id") === "light-destroyer-img-v" ){
-            $(this).children().attr("id", "light-destroyer-img-h").attr("src", "css/images/icons/light-destroyer-h.png");
-        } else if ( $(this).children().attr("id") === "light-bomber-img-v" ){
-            $(this).children().attr("id", "light-bomber-img-h").attr("src", "css/images/icons/light-bomber-h.png");
-        } else if ( $(this).children().attr("id") === "light-bomber-img-h" ){
-            $(this).children().attr("id", "light-bomber-img-v").attr("src", "css/images/icons/light-bomber-v.png");
-        } else if ( $(this).children().attr("id") === "light-fighter-img-h" ){
-            $(this).children().attr("id", "light-fighter-img-v").attr("src", "css/images/icons/light-fighter-v.png");
-        } else if ( $(this).children().attr("id") === "light-fighter-img-v" ){
-            $(this).children().attr("id", "light-fighter-img-h").attr("src", "css/images/icons/light-fighter-h.png");
-        } else if ( $(this).children().attr("id") === "light-starfighter-img-v" ){
-            $(this).children().attr("id", "light-starfighter-img-h").attr("src", "css/images/icons/light-starfighter-h.png");
-        } else if ( $(this).children().attr("id") === "light-starfighter-img-h" ){
-            $(this).children().attr("id", "light-starfighter-img-v").attr("src", "css/images/icons/light-starfighter-v.png");
+        var shipImgId = $(this).children().attr("id");
+        switch (shipImgId) {
+            case "dark-cruiser-img-v":
+                $(this).children().attr("id", "dark-cruiser-img-h").attr("src", "css/images/icons/dark-cruiser-h.png");
+                break;
+            case "dark-cruiser-img-h":
+                $(this).children().attr("id", "dark-cruiser-img-v").attr("src", "css/images/icons/dark-cruiser-v.png");
+                break;
+            case "dark-destroyer-img-h":
+                $(this).children().attr("id", "dark-destroyer-img-v").attr("src", "css/images/icons/dark-destroyer-v.png");
+                break;
+            case "dark-destroyer-img-v":
+                $(this).children().attr("id", "dark-destroyer-img-h").attr("src", "css/images/icons/dark-destroyer-h.png");
+                break;
+            case "dark-bomber-img-v":
+                $(this).children().attr("id", "dark-bomber-img-h").attr("src", "css/images/icons/dark-bomber-h.png");
+                break;
+            case "dark-bomber-img-h":
+                $(this).children().attr("id", "dark-bomber-img-v").attr("src", "css/images/icons/dark-bomber-v.png");
+                break;
+            case "dark-fighter-img-h":
+                $(this).children().attr("id", "dark-fighter-img-v").attr("src", "css/images/icons/dark-fighter-v.png");
+                break;
+            case "dark-fighter-img-v":
+                $(this).children().attr("id", "dark-fighter-img-h").attr("src", "css/images/icons/dark-fighter-h.png");
+                break;
+            case "dark-starfighter-img-v":
+                $(this).children().attr("id", "dark-starfighter-img-h").attr("src", "css/images/icons/dark-starfighter-h.png");
+                break;
+            case "dark-starfighter-img-h":
+                $(this).children().attr("id", "dark-starfighter-img-v").attr("src", "css/images/icons/dark-starfighter-v.png");
+                break;
+            case "light-cruiser-img-v":
+                $(this).children().attr("id", "light-cruiser-img-h").attr("src", "css/images/icons/light-cruiser-h.png");
+                break;
+            case "light-cruiser-img-h":
+                $(this).children().attr("id", "light-cruiser-img-v").attr("src", "css/images/icons/light-cruiser-v.png");
+                break;
+            case "light-destroyer-img-h":
+                $(this).children().attr("id", "light-destroyer-img-v").attr("src", "css/images/icons/light-destroyer-v.png");
+                break;
+            case "light-destroyer-img-v":
+                $(this).children().attr("id", "light-destroyer-img-h").attr("src", "css/images/icons/light-destroyer-h.png");
+                break;
+            case "light-bomber-img-v":
+                $(this).children().attr("id", "light-bomber-img-h").attr("src", "css/images/icons/light-bomber-h.png");
+                break;
+            case "light-bomber-img-h":
+                $(this).children().attr("id", "light-bomber-img-v").attr("src", "css/images/icons/light-bomber-v.png");
+                break;
+            case "light-fighter-img-h":
+                $(this).children().attr("id", "light-fighter-img-v").attr("src", "css/images/icons/light-fighter-v.png");
+                break;
+            case "light-fighter-img-v":
+                $(this).children().attr("id", "light-fighter-img-h").attr("src", "css/images/icons/light-fighter-h.png");
+                break;
+            case "light-starfighter-img-v":
+                $(this).children().attr("id", "light-starfighter-img-h").attr("src", "css/images/icons/light-starfighter-h.png");
+                break;
+            case "light-starfighter-img-h":
+                $(this).children().attr("id", "light-starfighter-img-v").attr("src", "css/images/icons/light-starfighter-v.png");
+                break;
+            default:
+                $(this).children().attr("id", "default-img").attr("src", "css/images/star.png");
         }
     })
 }
@@ -333,12 +361,12 @@ function placeNewShips() {
     if (app.gameViewerSide === "DARK") {
         grid.addWidget($('<div><img id="dark-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/dark-cruiser-v.png" alt="cruiser"></div>'),
         1, 0, 1, 5, false);
-        grid.addWidget($('<div><img id="dark-destroyer-img-v" class="grid-stack-item-content" src="css/images/icons/dark-destroyer-v.png" alt="destroyer"></div>'),
-        8, 0, 1, 4, false);
+        grid.addWidget($('<div><img id="dark-destroyer-img-h" class="grid-stack-item-content" src="css/images/icons/dark-destroyer-h.png" alt="destroyer"></div>'),
+        5, 1, 4, 1, false);
         grid.addWidget($('<div><img id="dark-bomber-img-v" class="grid-stack-item-content" src="css/images/icons/dark-bomber-v.png" alt="bomber"></div>'),
-        5, 1, 1, 3, false);
+        4, 3, 1, 3, false);
         grid.addWidget($('<div><img id="dark-fighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-fighter-v.png" alt="fighter"></div>'),
-        3, 5, 1, 3, false);
+        2, 6, 1, 3, false);
         grid.addWidget($('<div><img id="dark-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-v.png" alt="starFighter"></div>'),
         6, 7, 1, 2, false);
 
