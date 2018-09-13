@@ -61,7 +61,7 @@
                                     <span class="mr-3"><b>Choose your Allegiance:</b></span>
                                     <input type="radio" class="form-check-input" name="side" id="light-side-radio" value="LIGHT">
                                     <label class="form-check-label text-LIGHT p-2" for="light-side-radio">
-                                        <img class="side-logo" src="css/images/rebellion.jpg">
+                                        <img class="side-logo" src="css/images/rebellion.png">
                                         Light Side
                                     </label>
                                 </div>
@@ -92,7 +92,7 @@
 
                             <form id="logout-form">
                                 <img v-if="current_player.side === 'DARK'" class="side-logo" src="css/images/empire.png">
-                                <img v-else-if="current_player.side === 'LIGHT'" class="side-logo" src="css/images/rebellion.jpg">
+                                <img v-else-if="current_player.side === 'LIGHT'" class="side-logo" src="css/images/rebellion.png">
                                 <span id="logged-in-name" class="align-middle mx-2"></span>
                                 <button id="logout-btn" type="button" class="btn btn-dark">Logout</button>
                             </form>
@@ -162,7 +162,7 @@
                             <div v-if="current_player !== 'guest'">
                                 <div class="mb-3">
                                     <button id="toggle-leaders-btn" :class="[current_player.side == 'DARK' ? 'btn btn-danger' : 'btn btn-success']">
-                                        <img class="side-logo" :src="[current_player.side == 'DARK' ? 'css/images/empire.png' : 'css/images/rebellion.jpg']">
+                                        <img class="side-logo" :src="[current_player.side == 'DARK' ? 'css/images/empire.png' : 'css/images/rebellion.png']">
                                     </button>
                                 </div>
 

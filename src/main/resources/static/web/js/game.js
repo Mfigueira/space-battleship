@@ -22,7 +22,6 @@ $(function() {
 function loadData() {
     var gamePlayerId = getQueryVariable("gp");
     $.get("/api/game_view/"+gamePlayerId).done(function(gameDTO) {
-        //displayShipLocations(gameDTO.ships);
         showPlayersByGamePlayerId(gamePlayerId, gameDTO);
         displaySalvoes(gamePlayerId, gameDTO);
 
@@ -47,6 +46,9 @@ function loadData() {
             app.gameViewerShips = gameDTO.ships;
             placeShipsFromBackEnd();
         }
+    })
+    .fail(function () {
+        console.log("Failed to get game view data... ");
     });
 }
 
@@ -78,8 +80,12 @@ function showPlayersByGamePlayerId(id, obj) {
 
 //-------------------------------------------------------LOGOUT FUNCTION---------------------------------------------------------
 $("#logout").click(function() {
-    $.post("/api/logout").done(function() {
-        window.location.replace("/web/games.html")
+    $.post("/api/logout")
+    .done(function() {
+        window.location.replace("/web/games.html");
+    })
+    .fail(function () {
+        console.log("Failed to logout... ");
     })
 });
 
@@ -96,43 +102,7 @@ function getQueryVariable(variable) {
    return(false);
 }
 
-/*
-function displayShipLocations(ships) {
-    var cruiser = "<img class='ship-img' src=\"css/images/icons/light-cruiser.png\">";
-    var starFighter = "<img class='ship-img' src=\"css/images/icons/light-starfighter.png\">";
-    var destroyer = "<img class='ship-img' src=\"css/images/icons/light-fighter.png\">";
-    var bomber = "<img class='ship-img' src=\"css/images/icons/light-bomber.png\">";
-    for (var i=0;i<ships.length;i++){
-        var locations = ships[i].locations;
-        var shipType = ships[i].type;
-        for (var e=0;e<locations.length;e++){
-            var letter = locations[e].substring(0, 1);
-            var number = locations[e].substring(1, 3);
-            switch (shipType) {
-                case "cruiser":
-                    $("#grid-body>."+letter+" td:eq("+number+")").html(cruiser).addClass("bg-ship");
-                    break;
-                case "bomber":
-                    $("#grid-body>."+letter+" td:eq("+number+")").html(bomber).addClass("bg-ship");
-                    break;
-                case "destroyer":
-                    $("#grid-body>."+letter+" td:eq("+number+")").html(destroyer).addClass("bg-ship");
-                    break;
-                case "starFighter":
-                    $("#grid-body>."+letter+" td:eq("+number+")").html(starFighter).addClass("bg-ship");
-                    break;
-                case "fighter":
-                    $("#grid-body>."+letter+" td:eq("+number+")").html(starFighter).addClass("bg-ship");
-                    break;
-                default:
-                    $("#grid-body>."+letter+" td:eq("+number+")").html("SHIP").addClass("bg-ship");
-            }
-        }
-    }
-}
-*/
-
-
+//-------------------------------------------------------DISPLAY SALVOS FUNCTION---------------------------------------------------------
 function displaySalvoes(gamePlayerId, gameDTO) {
 
    for (var i=0;i<gameDTO.gamePlayers.length;i++){
@@ -260,7 +230,7 @@ function setListener(grid) {
                 if (found===true){break;}
             }
         }
-
+        // Ship Img rotation...
         var shipImgId = $(this).children().attr("id");
         switch (shipImgId) {
             case "dark-cruiser-img-v":

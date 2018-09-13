@@ -188,7 +188,7 @@ $("#leaderBoardDiv").on("click", "#toggle-leaders-btn", function() {
     } else if ( $("#darkLeaders").hasClass("display-block") ) {
         $("#darkLeaders").removeClass("display-block").addClass("display-none")
         $("#lightLeaders").removeClass("display-none").addClass("display-block")
-        $("#toggle-leaders-btn").removeClass("btn-danger").addClass("btn-success").html("<img class='side-logo' src='css/images/rebellion.jpg'>")
+        $("#toggle-leaders-btn").removeClass("btn-danger").addClass("btn-success").html("<img class='side-logo' src='css/images/rebellion.png'>")
     }
 })
 

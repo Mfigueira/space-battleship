@@ -2,6 +2,10 @@ package com.mindhubweb.salvo;
 
 public class MyConsts {
 
+    private MyConsts() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static final String KEY_ERROR = "error";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_GAME_PLAYER_ID = "gpid";

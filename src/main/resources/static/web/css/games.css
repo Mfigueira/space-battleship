@@ -41,7 +41,8 @@ table {
 }
 
 
-/*----------------------------------HEADER-----------------------------------*/
+/*----------------------------------BODY AND HEADER-----------------------------------*/
+
 
 .container-fluid {
     min-width: 425px;
@@ -145,7 +146,7 @@ input[type=radio]:checked+label {
 }
 
 
-/*----------------------------------LEADER BOARD-----------------------------------*/
+/*----------------------------------LEADER BOARD AND LOGOS/AVATARS-----------------------------------*/
 .avatar {
     height: 40px;
     margin-top: -5px;
@@ -154,8 +155,10 @@ input[type=radio]:checked+label {
 .side-logo {
     height: 40px;
 }
-.side-logo-game {
+.side-logo-in-game {
     height: 35px;
+    margin-top: -8px;
+    margin-left: 5px;
 }
 .table td, .table th {
     vertical-align: middle;
@@ -256,7 +259,7 @@ img.ship-img{
 }
 
 
-/*----------------------------------------------PLACING SHIPS----------------------------------------------*/
+/*----------------------------------------------GRIDSTACK SHIPS----------------------------------------------*/
 
 .grid-ships {
     background-image: url("images/grid-bg.png"), url("images/space.gif");
@@ -336,26 +339,26 @@ img.ship-img{
 
 #light-cruiser-img-v {
     height: 200px;
-    width: 95px;
-    left: -31px;
+    width: 55px;
+    left: -10px;
     top: -10px;
 }
 #light-cruiser-img-h {
-    height: 95px;
+    height: 55px;
     width: 200px;
-    top: -29px;
+    top: -10px;
     left: -10px;
 }
 #light-destroyer-img-v {
-    height: 150px;
-    width: 66px;
-    left: -16px;
+    height: 130px;
+    width: 47px;
+    left: -7px;
     top: 7px;
 }
 #light-destroyer-img-h {
-    width: 150px;
-    height: 66px;
-    top: -16px;
+    width: 130px;
+    height: 47px;
+    top: -6px;
     left: 7px;
 }
 #light-bomber-img-v {
