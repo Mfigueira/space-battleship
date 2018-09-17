@@ -26,11 +26,13 @@ function getData(){
 }
 
 //--------------------------------REGISTRATION FORM----------------------------------
+
+//----------------------------------------------LOG IN FORM-----------------------------------------
 $("#login-btn").click(function() {
     if (!$("#inputUserName").val() || !$("#inputPassword").val()) {
-        $("#login-alert").html("Please enter email and password.");
-    } else if (!correctEmailFormat($("#inputUserName").val())) {
-        $("#login-alert").html("Please enter valid email format.");
+        $("#login-alert").html("Please enter Username and Password.");
+    //} else if (!correctEmailFormat($("#inputUserName").val())) {
+        //$("#login-alert").html("Please enter valid email format.");
     } else {
         $.post("/api/login", { username: $("#inputUserName").val(), password: $("#inputPassword").val() })
             .done(function() {
@@ -43,6 +45,7 @@ $("#login-btn").click(function() {
     }
 });
 
+//----------------------------------------------LOG OUT-------------------------------------------
 $("#logout-btn").click(function() {
     $.post("/api/logout").done(function() {
         getData();
@@ -50,15 +53,16 @@ $("#logout-btn").click(function() {
     })
 });
 
+//-----------------------------------------------SIGN UP-----------------------------------------
 $("#sign-up-btn").click(function() {
-    if (!$("#inputEmail").val() || !$("#signPassword").val() || !$("input[name=side]:checked").val()) {
+    if (!$("#inputUser").val() || !$("#inputEmail").val() || !$("#signPassword").val() || !$("input[name=side]:checked").val()) {
         $("#signUp-alert").html("Please complete form to Sign Up.");
     } else if (!correctEmailFormat($("#inputEmail").val())) {
         $("#signUp-alert").html("Please enter valid email format.");
     } else {
-        $.post("/api/players", { username: $("#inputEmail").val(), password: $("#signPassword").val(), side: $("input[name=side]:checked").val() })
+        $.post("/api/players", { username: $("#inputUser").val(), email: $("#inputEmail").val(), password: $("#signPassword").val(), side: $("input[name=side]:checked").val() })
             .done(function() {
-                $.post("/api/login", { username: $("#inputEmail").val(), password: $("#signPassword").val() })
+                $.post("/api/login", { username: $("#inputUser").val(), password: $("#signPassword").val() })
                     .done(function() {
                         $("#signUp-alert").html("");
                         getData();
@@ -74,11 +78,13 @@ $("#sign-up-btn").click(function() {
     }
 });
 
+//-----------------------------------------------CHECK EMAIL-----------------------------------------
 function correctEmailFormat(email){
    var RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
    return RegExp.test(email);
 }
+
 
 $("#go-to-sign-up-btn").click(function() {
     $("#login-alert").html("");
@@ -101,9 +107,9 @@ function registerForm(player) {
         $("#login-form").show();
         $("#logout-form").hide();
     } else {
-        if (player.side === "DARK") { $("#logged-in-name").html("Welcome Sith! "+player.email).removeClass("text-LIGHT").addClass("text-DARK"); }
-        else if (player.side === "LIGHT") { $("#logged-in-name").html("Welcome Jedi! "+player.email).removeClass("text-DARK").addClass("text-LIGHT"); }
-        else { $("#logged-in-name").html("Welcome, "+player.email); }
+        if (player.side === "DARK") { $("#logged-in-name").html("Welcome Sith! "+player.userName).removeClass("text-LIGHT").addClass("text-DARK"); }
+        else if (player.side === "LIGHT") { $("#logged-in-name").html("Welcome Jedi! "+player.userName).removeClass("text-DARK").addClass("text-LIGHT"); }
+        else { $("#logged-in-name").html("Welcome, "+player.userName); }
         $("#profile-title").html("My Profile");
         $("#login-form").hide();
         $("#logout-form").show();
@@ -145,9 +151,9 @@ function getLeaderBoard(gameList) {
 
             if (playersIds.indexOf(thisPlayerId) == -1) {
                 playersIds.push(thisPlayerId);
-                var pEmail = game.gamePlayers[i].player.email;
+                var pUserName = game.gamePlayers[i].player.userName;
                 var pSide = game.gamePlayers[i].player.side;
-                var playerJson = JSON.parse('{ "pId": "'+thisPlayerId+'", "pEmail": "'+pEmail+'", "side": "'+pSide+'", "totalScore": 0, "wins": 0, "losses": 0, "ties": 0}');
+                var playerJson = JSON.parse('{ "pId": "'+thisPlayerId+'", "pUserName": "'+pUserName+'", "side": "'+pSide+'", "totalScore": 0, "wins": 0, "losses": 0, "ties": 0}');
                 playersList.push(playerJson);
             }
             for (var e=0; e<playersList.length; e++) {

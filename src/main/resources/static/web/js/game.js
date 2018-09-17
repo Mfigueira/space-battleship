@@ -9,7 +9,10 @@ var app = new Vue({
     player_1: "",
     player_2: "",
     gameViewerSide: "",
-    gameViewerShips: []
+    gameViewerShips: [],
+    allShipPositions: [],
+    viewerPlayerId: 0,
+    viewerSalvoTurn: 0
   }
 });
 
@@ -22,8 +25,8 @@ $(function() {
 function loadData() {
     var gamePlayerId = getQueryVariable("gp");
     $.get("/api/game_view/"+gamePlayerId).done(function(gameDTO) {
+
         showPlayersByGamePlayerId(gamePlayerId, gameDTO);
-        displaySalvoes(gamePlayerId, gameDTO);
 
         if (app.gameViewerSide === "DARK") {
             $(".container-fluid").addClass("bkg-empire");
@@ -44,35 +47,64 @@ function loadData() {
                 grid.destroy(false);
             }
             app.gameViewerShips = gameDTO.ships;
+            getAllShipLocations(app.gameViewerShips);
             placeShipsFromBackEnd();
+            if ($("#salvo-col").hasClass("display-none")) {
+                $("#salvo-col").removeClass("display-none");
+                $("#salvo-col").addClass("display-block");
+            }
+            getCurrentTurn(gameDTO.salvoes);
+            displaySalvoes(gamePlayerId, gameDTO);
         }
+
     })
     .fail(function () {
         console.log("Failed to get game view data... ");
     });
 }
 
-//-------------------------------------------------------SHOW PLAYERS NAMES---------------------------------------------------------
+
+//----------------------------------------------------GET ALL SHIP CELLS LOCATION TO COMPARE WITH SALVOS---------------------------------------------------------
+function getAllShipLocations(set) {
+    set.map(function(ship) {
+        for (var i=0; i<ship.locations.length; i++){
+            app.allShipPositions.push(ship.locations[i]);
+        }
+    });
+    console.log(app.allShipPositions);
+    return;
+}
+
+//--------------------------------------------------------------------SHOW PLAYERS NAMES-------------------------------------------------------------------------
 function showPlayersByGamePlayerId(id, obj) {
     obj.gamePlayers.map(function (gamePlayer) {
         if (id == gamePlayer.id) {
-            app.player_1 = gamePlayer.player.email + " (you)";
+            app.player_1 = gamePlayer.player.userName;
+            app.viewerPlayerId = gamePlayer.player.id;
             app.gameViewerSide = gamePlayer.player.side;
             if (gamePlayer.player.side === "LIGHT") {
-                $("#p1").removeClass("text-DARK")
-                $("#p1").addClass("text-LIGHT")
+                $("#p1").removeClass("text-DARK");
+                $("#p1").addClass("text-LIGHT");
+                $("#p1-div").removeClass("para-DARK");
+                $("#p1-div").addClass("para-LIGHT");
             } else if (gamePlayer.player.side === "DARK") {
-                $("#p1").removeClass("text-LIGHT")
-                $("#p1").addClass("text-DARK")
+                $("#p1").removeClass("text-LIGHT");
+                $("#p1").addClass("text-DARK");
+                $("#p1-div").removeClass("para-LIGHT");
+                $("#p1-div").addClass("para-DARK");
             }
         } else if (id != gamePlayer.id) {
-            app.player_2 = " vs " + gamePlayer.player.email;
+            app.player_2 = gamePlayer.player.userName;
             if (gamePlayer.player.side === "LIGHT") {
-                $("#p2").removeClass("text-DARK")
-                $("#p2").addClass("text-LIGHT")
+                $("#p2").removeClass("text-DARK");
+                $("#p2").addClass("text-LIGHT");
+                $("#p2-div").removeClass("para-DARK");
+                $("#p2-div").addClass("para-LIGHT");
             } else if (gamePlayer.player.side === "DARK") {
-                $("#p2").removeClass("text-LIGHT")
-                $("#p2").addClass("text-DARK")
+                $("#p2").removeClass("text-LIGHT");
+                $("#p2").addClass("text-DARK");
+                $("#p2-div").removeClass("para-LIGHT");
+                $("#p2-div").addClass("para-DARK");
             }
         }
     });
@@ -100,36 +132,6 @@ function getQueryVariable(variable) {
        }
    }
    return(false);
-}
-
-//-------------------------------------------------------DISPLAY SALVOS FUNCTION---------------------------------------------------------
-function displaySalvoes(gamePlayerId, gameDTO) {
-
-   for (var i=0;i<gameDTO.gamePlayers.length;i++){
-
-       if (gameDTO.gamePlayers[i].id == gamePlayerId) {
-           var thisPlayerId = gameDTO.gamePlayers[i].player.id;
-           gameDTO.salvoes.map(function (salvo) {
-               if (salvo.player == thisPlayerId) {
-                   var myTurn = salvo.turn;
-                   for (var e=0;e<salvo.locations.length;e++){
-                       var letterP1 = salvo.locations[e].substring(0, 1);
-                       var numberP1 = salvo.locations[e].substring(1, 3);
-                       $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").addClass("bg-salvo").html(myTurn);
-                   }
-               } else if (salvo.player != thisPlayerId) {
-                   var yourTurn = salvo.turn;
-                   for (var h=0;h<salvo.locations.length;h++){
-                       var letter = salvo.locations[h].substring(0, 1);
-                       var number = salvo.locations[h].substring(1, 3);
-                       if ($("#grid-body>."+letter+" td:eq("+number+")").hasClass("bg-ship")) {
-                           $("#grid-body>."+letter+" td:eq("+number+")").addClass("bg-salvo").html(yourTurn);
-                       }
-                   }
-               }
-           });
-       }
-   }
 }
 
 
@@ -311,7 +313,6 @@ function placeNewShips() {
         verticalMargin: 0,
         //altura de las celdas
         cellHeight: 35,
-        cellWidth: 35,
         //desabilitando el resize de los widgets
         disableResize: true,
         //widgets flotantes
@@ -365,7 +366,6 @@ function placeShipsFromBackEnd() {
         height: 10,
         verticalMargin: 0,
         cellHeight: 35,
-        cellWidth: 35,
         disableResize: true,
         float: true,
         disableOneColumnMode: true,
@@ -486,4 +486,133 @@ function placeShipsFromBackEnd() {
             }
         }
     })
+}
+
+//-------------------------------------------------------GET CURRENT TURN---------------------------------------------------------
+function getCurrentTurn(arrayOfSalvos) {
+    $("#fire-card").removeClass("display-none").addClass("display-block");
+    var allTurnsFromViewer = [];
+    arrayOfSalvos.map(function(salvo) {
+        if (salvo.player === app.viewerPlayerId) {
+            allTurnsFromViewer.push(parseInt(salvo.turn));
+        }
+    })
+    var currentTurn = function(){if(allTurnsFromViewer.length===0){return 1;}else{return Math.max(...allTurnsFromViewer)+1;}};
+    $("#turn-number").html(currentTurn);
+}
+
+
+
+//----------------------------------------------------------------AJAX POST SALVOS-----------------------------------------------------------------
+function postSalvos(salvoJSON) {
+    var gamePlayerId = getQueryVariable("gp");
+    $.post({
+        url: "/api/games/players/"+gamePlayerId+"/salvos",
+        data: JSON.stringify(salvoJSON),
+        dataType: "text",
+        contentType: "application/json"
+    })
+    .done(function (response) {
+        if ($("#salvo-action").hasClass("game-play-alert")) {
+            $("#salvo-action").removeClass("game-play-alert");
+        }
+        loadData();
+        console.log( "Salvo added: " + response );
+    })
+    .fail(function () {
+        console.log("Failed to add salvo... ");
+    })
+}
+
+//-------------------------------------------------------WHEN SHIPS CREATED...---------------------------------------------------------
+
+    //-------------------------------------------------------CREATE SALVOS IN GRID---------------------------------------------------------
+    $("#salvo-body > tr > td").click(function() {
+        if ( $(this).hasClass("bg-salvo") ) {
+            return;
+        } else if ( $(this).children().length > 0 ) {
+            $(this).html("");
+        } else if ( $(".aim-img").length < 5 ) {
+            var letter = $(this).parent().attr("class");
+            var number = $(this).attr("class");
+            var cell = letter+number;
+
+            $(this).html("<img data-cell='"+cell+"'class='aim-img' src='css/images/aim.png'>");
+        }
+    })
+    //-------------------------------------------------ON CLICK FIRE - POST NEW SALVO------------------------------------------------------
+    $("#salvo-col").on("click", "#fire-salvo-btn", function(){
+
+        if ( $(".aim-img").length != 0 && $(".aim-img").length <= 5 ) {
+            playFireSound();
+            var salvoJSON = {};
+            var turn = $("#turn-number").text();
+            var shots = [];
+            $(".aim-img").each(function() {
+               shots.push($(this).data("cell"));
+            })
+            salvoJSON.turn = turn;
+            salvoJSON.shots = shots;
+            postSalvos(salvoJSON);
+
+        } else {
+            if (!$("#salvo-action").hasClass("game-play-alert")) {
+                $("#salvo-action").addClass("game-play-alert");
+            }
+        }
+    })
+
+
+//-------------------------------------------------------DISPLAY SALVOS FUNCTION---------------------------------------------------------
+function displaySalvoes(gamePlayerId, gameDTO) {
+
+   for (var i=0;i<gameDTO.gamePlayers.length;i++){
+
+       if (gameDTO.gamePlayers[i].id == gamePlayerId) {
+           var thisPlayerId = gameDTO.gamePlayers[i].player.id;
+           gameDTO.salvoes.map(function (salvo) {
+               if (salvo.player == thisPlayerId) {
+                   var myTurn = salvo.turn;
+                   for (var e=0;e<salvo.locations.length;e++){
+                       var letterP1 = salvo.locations[e].substring(0, 1);
+                       var numberP1 = salvo.locations[e].substring(1, 3);
+                       $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").addClass("bg-salvo").html(myTurn);
+                   }
+               } else if (salvo.player != thisPlayerId) {
+
+                   for (var h=0;h<salvo.locations.length;h++){
+                       var letter = salvo.locations[h].substring(0, 1);
+                       var number = salvo.locations[h].substring(1, 3)-1;
+
+                       switch(letter) {
+                            case "A":letter = 0;break;
+                            case "B":letter = 1;break;
+                            case "C":letter = 2;break;
+                            case "D":letter = 3;break;
+                            case "E":letter = 4;break;
+                            case "F":letter = 5;break;
+                            case "G":letter = 6;break;
+                            case "H":letter = 7;break;
+                            case "I":letter = 8;break;
+                            case "J":letter = 9;break;
+                            default:letter = 0;break;
+                       }
+
+                       if ( app.allShipPositions.indexOf(salvo.locations[h]) != -1 ) {
+                           $('#grid').append('<div style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><img class="spark" src="css/images/spark.gif"></div>');
+                       } else {
+                           $('#grid').append('<div style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><img class="spark" src="css/images/cross.png"></div>');
+                       }
+
+                   }
+               }
+           });
+       }
+   }
+}
+
+//----------------------------------------------WHEN SHIPS CREATED...----------------------------------------------
+function playFireSound() {
+   var fireAudio = document.getElementById("fire-audio");
+   fireAudio.play();
 }

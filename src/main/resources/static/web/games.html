@@ -22,18 +22,20 @@
                     <h1 id="profile-title"></h1>
                     <div class="card my-3">
                         <div class="card-body">
-
+                            <!-- -------------------------------------LOG IN FORM------------------------------------- -->
                             <form id="login-form">
                                 <div class="mb-2">
                                     <span id="login-alert" style="color: red;"></span>
                                 </div>
+
                                 <label class="sr-only" for="inputUserName">Username</label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text"><img class="login-icon" src="css/images/stormtrooper.png"></div>
                                     </div>
-                                    <input type="email" class="form-control form-control-sm" id="inputUserName" placeholder="Email" name="username">
+                                    <input type="text" class="form-control form-control-sm" id="inputUserName" placeholder="Username" name="username">
                                 </div>
+
                                 <label class="sr-only" for="inputPassword">Password</label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
@@ -41,19 +43,25 @@
                                     </div>
                                     <input type="password" class="form-control form-control-sm" id="inputPassword" placeholder="Password" name="password">
                                 </div>
+
                                 <button id="login-btn" type="button" class="btn btn-dark">Login</button>
                                 <span class="align-middle ml-2">New Player?</span>
                                 <button id="go-to-sign-up-btn" type="button" class="btn btn-link px-0">Sign Up!</button>
                             </form>
+                            <!-- -------------------------------------SIGN UP FORM------------------------------------- -->
                             <form id="signUp-form" style="display: none;">
                                 <div class="mb-2">
                                     <span id="signUp-alert" style="color: red;"></span>
                                 </div>
-                                <label class="mb-2" for="inputEmail"><b>Enter email:</b></label>
+                                <label class="mb-2" for="inputUser"><b>Enter Username:</b></label>
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control form-control-sm" id="inputUser" placeholder="Username" name="username">
+                                </div>
+                                <label class="mb-2" for="inputEmail"><b>Enter Email:</b></label>
                                 <div class="input-group mb-2">
                                     <input type="email" class="form-control form-control-sm" id="inputEmail" placeholder="Email" name="email">
                                 </div>
-                                <label class="mb-2" for="signPassword"><b>Enter password:</b></label>
+                                <label class="mb-2" for="signPassword"><b>Enter Password:</b></label>
                                 <div class="input-group mb-2">
                                     <input type="password" class="form-control form-control-sm" id="signPassword" placeholder="Password" name="pass">
                                 </div>
@@ -90,6 +98,7 @@
                                 </div>
                             </form>
 
+                            <!-- -------------------------------------LOG OUT FORM - MY PROFILE------------------------------------- -->
                             <form id="logout-form">
                                 <img v-if="current_player.side === 'DARK'" class="side-logo" src="css/images/empire.png">
                                 <img v-else-if="current_player.side === 'LIGHT'" class="side-logo" src="css/images/rebellion.png">
@@ -103,6 +112,7 @@
 
             <div class="row justify-content-center">
 
+                <!-- -------------------------------------GAME LIST------------------------------------- -->
                 <div class="col-12 col-md-auto mb-5">
                     <h1>Games</h1>
                     <div id="creation-game" class="mb-2">
@@ -116,7 +126,7 @@
                                     <strong>Game {{game.id}}, created: {{game.created}}</strong>
                                     <h3 class="ml-2 my-1">Players:</h3>
                                     <ol class="ml-5">
-                                        <li v-for="gamePlayer in game.gamePlayers">{{gamePlayer.player.email}}
+                                        <li v-for="gamePlayer in game.gamePlayers">{{gamePlayer.player.userName}}
                                             <a v-if="current_player.id === gamePlayer.player.id" :href="'/web/game.html?gp='+gamePlayer.id">
                                                 <span>Return to Game</span>
                                             </a>
@@ -132,6 +142,7 @@
                     </div>
                 </div>
 
+                <!-- -------------------------------------LEADER BOARD------------------------------------- -->
                 <div id="leaderBoardDiv" class="col-12 col-md-auto">
                     <h1>Space Leaders</h1>
                     <div class="card">
@@ -149,7 +160,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="player in playersLeaderBoard" :class="[player.side == 'DARK' ? 'text-DARK' : 'text-LIGHT']">
-                                            <td><img class="avatar" :src="[player.side == 'DARK' ? 'css/images/darth.gif' : 'css/images/luke.gif']">{{player.pEmail}}</td>
+                                            <td><img class="avatar" :src="[player.side == 'DARK' ? 'css/images/darth.gif' : 'css/images/luke.gif']">{{player.pUserName}}</td>
                                             <td class="text-center">{{player.totalScore}}</td>
                                             <td class="text-center">{{player.wins}}</td>
                                             <td class="text-center">{{player.ties}}</td>
@@ -180,7 +191,7 @@
                                             </thead>
                                             <tbody>
                                             <tr v-for="player in lightLeaders" class="text-LIGHT">
-                                                <td><img class="avatar" src="css/images/luke.gif">{{player.pEmail}}</td>
+                                                <td><img class="avatar" src="css/images/luke.gif">{{player.pUserName}}</td>
                                                 <td class="text-center">{{player.totalScore}}</td>
                                                 <td class="text-center">{{player.wins}}</td>
                                                 <td class="text-center">{{player.ties}}</td>
@@ -205,7 +216,7 @@
                                             </thead>
                                             <tbody class="text-DARK">
                                             <tr v-for="player in darkLeaders">
-                                                <td><img class="avatar" src="css/images/darth.gif">{{player.pEmail}}</td>
+                                                <td><img class="avatar" src="css/images/darth.gif">{{player.pUserName}}</td>
                                                 <td class="text-center">{{player.totalScore}}</td>
                                                 <td class="text-center">{{player.wins}}</td>
                                                 <td class="text-center">{{player.ties}}</td>

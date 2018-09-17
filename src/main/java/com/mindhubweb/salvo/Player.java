@@ -11,6 +11,8 @@ public class Player {
 
     private String userName;
 
+    private String email;
+
     private String password;
 
     private Side side;
@@ -23,8 +25,9 @@ public class Player {
 
     public Player() { }
 
-    public Player(String email, String password, Side side) {
-        this.userName = email;
+    public Player(String userName, String email, String password, Side side) {
+        this.userName = userName;
+        this.email = email;
         this.password = password;
         this.side = side;
     }
@@ -32,8 +35,11 @@ public class Player {
     public Map<String, Object> makePlayerDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
-        dto.put("email", this.getUserName());
+        dto.put("userName", this.getUserName());
+        dto.put("email", this.getEmail());
         dto.put("side", this.getSide());
+        double totalScore = this.getScores().stream().mapToDouble(Score::getScorePoint).sum();
+        dto.put("totalScore", totalScore);
         return dto;
     }
 
@@ -45,12 +51,16 @@ public class Player {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUserName() { return userName; }
+
+    public void setUserName(String userName) { this.userName = userName; }
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() { return password; }

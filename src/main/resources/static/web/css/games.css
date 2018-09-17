@@ -43,7 +43,6 @@ table {
 
 /*----------------------------------BODY AND HEADER-----------------------------------*/
 
-
 .container-fluid {
     min-width: 425px;
     min-height: 821px;
@@ -99,8 +98,12 @@ b {
 .display-block {
     display: block;
 }
+.game-play-alert {
+    font-size: 17px;
+    color: red;
+}
 
-/*----------------------------------SIGN FORM-----------------------------------*/
+/*--------------------------------------SIGN FORM---------------------------------------*/
 .login-icon {
     height: 25px;
 }
@@ -169,7 +172,7 @@ input[type=radio]:checked+label {
 }
 
 
-/*----------------------------------GAMES LIST-----------------------------------*/
+/*---------------------------------------GAMES LIST--------------------------------------*/
 #new-game-btn {
     color: black;
     font-size: 26px;
@@ -183,54 +186,63 @@ li>ol {
 	list-style-type: decimal;
 }
 
-/*----------------------------------GRID DISPLAY-----------------------------------*/
-img.ship-img{
-    height: 35px;
-    width: 35px;
-}
+/*----------------------------------SALVO GRID DISPLAY-----------------------------------*/
 
-#battleshipGrid, #salvoGrid {
+#salvoGrid {
     background-image: url("images/space.gif");
     background-size: cover;
     color: white;
 }
 
-#battleshipGrid>thead>tr>th, #battleshipGrid>tbody>tr>td {
-    border: 1px solid grey;
-    height: 35px;
-    width: 35px;
-    text-align: center;
-}
 #salvoGrid>thead>tr>th, #salvoGrid>tbody>tr>td {
     border: 1px solid grey;
     height: 25px;
     width: 25px;
     text-align: center;
 }
-
-/*----------------------------------MEDIA QUERYS-----------------------------------*/
-@media screen and (max-width: 600px) {
-  #place-ships-card {
-    width: 385px;
-  }
+/*--------------------------------------PLAYERS---------------------------------------*/
+#p1, #p2 {
+    font-size: 18px;
+    padding: 4.5%;
 }
+#logout {
+    margin: 2%;
+}
+
+.para {
+  box-shadow: 5px 5px 0 rgba(0,0,0,.5);
+  display: inline-block;
+  height: 45px;
+  width: 300px;
+}
+.para-LIGHT {
+  border: 2px solid #28a745;
+  background-color: rgba(40, 167, 69, 0.6);
+}
+.para-DARK {
+  border: 2px solid #dc3545;
+  background-color: rgba(220, 53, 69, 0.6);
+}
+.para:hover {
+
+}
+.parallelogram{
+  transform: skew(-20deg);
+}
+.skew-fix{
+  display:inline-block;
+  transform: skew(20deg);
+}
+
+/*--------------------------------------MEDIA QUERYS-----------------------------------*/
+
 @media screen and (max-width: 500px) {
   .main-logo {
       height: 125px;
   }
-  #battleshipGrid>thead>tr>th, #battleshipGrid>tbody>tr>td, th, td {
-      height: 25px;
-      width: 25px;
-  }
-  img.ship-img{
-      height: 25px;
-      width: 25px;
-  }
-  .player-email {
-      display: block;
-  }
 }
-/*----------------------------------SHIPS-----------------------------------*/
+
+/*-----------------------------------------SHIPS-----------------------------------------*/
 .bg-ship {
     background-color: black;
 }
@@ -397,3 +409,15 @@ img.ship-img{
     left: -5px;
     top: -8px;
 }
+
+/*----------------------------------------------SALVO GRID----------------------------------------------*/
+.aim-img {
+    height: 24px;
+    width: 24px;
+}
+.spark {
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+}
+

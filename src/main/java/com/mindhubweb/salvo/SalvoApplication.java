@@ -19,13 +19,13 @@ public class SalvoApplication {
 		return args -> {
 			//---------------------------save some players-----------------------------------
 
-			Player p1 = new Player ("j.bauer@ctu.gov", "24", Side.DARK);
+			Player p1 = new Player ("J_bauer", "j.bauer@ctu.gov", "24", Side.DARK);
 			playerRepository.save(p1);
-			Player p2 = new Player("c.obrian@ctu.gov","42", Side.LIGHT);
+			Player p2 = new Player("C_obrian", "c.obrian@ctu.gov","42", Side.LIGHT);
 			playerRepository.save(p2);
-			Player p3 = new Player("kim_bauer@gmail.com", "kb", Side.DARK);
+			Player p3 = new Player("K_bauer", "kim_bauer@gmail.com", "kb", Side.DARK);
 			playerRepository.save(p3);
-			Player p4 = new Player("t.almeida@ctu.gov", "mole", Side.LIGHT);
+			Player p4 = new Player("T_almeida", "t.almeida@ctu.gov", "mole", Side.LIGHT);
 			playerRepository.save(p4);
 
 			//---------------------------save some games-----------------------------------
@@ -58,28 +58,28 @@ public class SalvoApplication {
 
 			Set<Ship> shipSet1 = new HashSet<>();
 			shipSet1.add(new Ship (cruiser, new ArrayList<>(Arrays.asList("H1", "H2", "H3", "H4", "H5"))));
-			shipSet1.add(new Ship (bomber, new ArrayList<>(Arrays.asList("D2", "D3"))));
+			shipSet1.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("D2", "D3"))));
 			shipSet1.add(new Ship (fighter, new ArrayList<>(Arrays.asList("A8", "A9", "A10"))));
-			shipSet1.add(new Ship (destroyer, new ArrayList<>(Arrays.asList("C4", "C5", "C6", "C7", "C8"))));
-			shipSet1.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("F8", "F9", "F10"))));
+			shipSet1.add(new Ship (destroyer, new ArrayList<>(Arrays.asList("C4", "C5", "C6", "C7"))));
+			shipSet1.add(new Ship (bomber, new ArrayList<>(Arrays.asList("F8", "F9", "F10"))));
 
 			Set<Ship> shipSet2 = new HashSet<>();
 			shipSet2.add(new Ship (cruiser, new ArrayList<>(Arrays.asList("B4", "B5", "B6", "B7", "B8"))));
-			shipSet2.add(new Ship (bomber, new ArrayList<>(Arrays.asList("D2", "D3"))));
+			shipSet2.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("D2", "D3"))));
 			shipSet2.add(new Ship (fighter, new ArrayList<>(Arrays.asList("A5", "A6", "A7"))));
-			shipSet2.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("G5", "H5", "I5"))));
+			shipSet2.add(new Ship (bomber, new ArrayList<>(Arrays.asList("G5", "H5", "I5"))));
 			shipSet2.add(new Ship (destroyer, new ArrayList<>(Arrays.asList("F1", "F2", "F3", "F4"))));
 
 			Set<Ship> shipSet3 = new HashSet<>();
-			shipSet3.add(new Ship (destroyer, new ArrayList<>(Arrays.asList("C4", "C5", "C6", "C7", "C8"))));
-			shipSet3.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("F5", "G5", "H5"))));
+			shipSet3.add(new Ship (cruiser, new ArrayList<>(Arrays.asList("C4", "C5", "C6", "C7", "C8"))));
+			shipSet3.add(new Ship (bomber, new ArrayList<>(Arrays.asList("F5", "G5", "H5"))));
 
 			Set<Ship> shipSet4 = new HashSet<>();
-			shipSet4.add(new Ship (bomber, new ArrayList<>(Arrays.asList("D2", "D3"))));
-			shipSet4.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("B5", "C5", "D5"))));
+			shipSet4.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("D2", "D3"))));
+			shipSet4.add(new Ship (bomber, new ArrayList<>(Arrays.asList("B5", "C5", "D5"))));
 
 			Set<Ship> shipSet5 = new HashSet<>();
-			shipSet5.add(new Ship (bomber, new ArrayList<>(Arrays.asList("D2", "D3"))));
+			shipSet5.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("D2", "D3"))));
 			shipSet5.add(new Ship (fighter, new ArrayList<>(Arrays.asList("A1", "A2", "A3"))));
 
 
@@ -93,7 +93,7 @@ public class SalvoApplication {
 			Set<Salvo> salvoes2 = new HashSet<>();
 			salvoes2.add(new Salvo (1, new ArrayList<>(Arrays.asList("A9", "A8", "A5"))));
 			salvoes2.add(new Salvo (2, new ArrayList<>(Arrays.asList("A10", "H2", "I2"))));
-			salvoes2.add(new Salvo (2, new ArrayList<>(Arrays.asList("F10", "F2", "F2"))));
+			salvoes2.add(new Salvo (3, new ArrayList<>(Arrays.asList("F10", "F2", "F2"))));
 
 			Set<Salvo> salvoes3 = new HashSet<>();
 			salvoes3.add(new Salvo (1, new ArrayList<>(Arrays.asList("C4", "C5", "C3", "C7", "C8"))));

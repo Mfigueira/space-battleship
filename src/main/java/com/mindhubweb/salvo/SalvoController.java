@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.openmbean.ArrayType;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,12 +64,9 @@ public class SalvoController {
         Optional <GamePlayer> gamePlayer = gamePlayerRepository.findById(gamePlayerId);
 
         if ( isGuest(authentication) || (!gamePlayer.isPresent()) || (!gamePlayer.get().getPlayer().getUserName().equals(authentication.getName()))) {
-
             return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
-
         }
         if (gamePlayer.get().getShips().size() > 0 || ships.size() != 5) {
-
             return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_FORBIDDEN), HttpStatus.FORBIDDEN);
         }
 
@@ -77,6 +75,35 @@ public class SalvoController {
 
         return new ResponseEntity<>(makeMap(MyConsts.KEY_CREATED, MyConsts.MSG_CREATED), HttpStatus.CREATED);
 
+    }
+
+    @PostMapping(value="/games/players/{gamePlayerId}/salvos")
+    public ResponseEntity<Map<String, Object>> fireSalvos(@PathVariable Long gamePlayerId, Authentication authentication, @RequestBody Salvo salvo) {
+
+        Optional <GamePlayer> gamePlayer = gamePlayerRepository.findById(gamePlayerId);
+        if ( isGuest(authentication) || (!gamePlayer.isPresent()) || (!gamePlayer.get().getPlayer().getUserName().equals(authentication.getName()))) {
+            return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+        }
+
+        Optional <Salvo> salvoRepeated = gamePlayer.get().getSalvoes().stream().filter(salvo1 -> salvo1.getTurn() == salvo.getTurn()).findAny();
+        if ( salvoRepeated.isPresent() ) {
+            return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_FORBIDDEN), HttpStatus.FORBIDDEN);
+        }
+
+        int maxTurn = gamePlayer.get().getSalvoes().stream().mapToInt(Salvo::getTurn).max().orElse(0);
+        if ( maxTurn+1 != salvo.getTurn() ) {
+            return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_FORBIDDEN), HttpStatus.FORBIDDEN);
+        }
+
+        Optional <GamePlayer> opponentGamePlayer = gamePlayer.get().getGame().getGamePlayers().stream().filter(gamePlayer1 -> gamePlayer1.getId() != gamePlayer.get().getId()).findFirst();
+        if ( !(opponentGamePlayer.isPresent()) || opponentGamePlayer.get().getSalvoes().size() < salvo.getTurn()-1) {
+            return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_FORBIDDEN), HttpStatus.FORBIDDEN);
+        }
+
+        gamePlayer.get().addSalvo(salvo);
+        gamePlayerRepository.save(gamePlayer.get());
+
+        return new ResponseEntity<>(makeMap(MyConsts.KEY_CREATED, MyConsts.MSG_CREATED), HttpStatus.CREATED);
     }
 
     @PostMapping(value="/games")
@@ -110,14 +137,14 @@ public class SalvoController {
     }
 
     @PostMapping(value="/players")
-    public ResponseEntity<Map<String, Object>> addPlayer(@RequestParam("username") String username, @RequestParam("password") String password, @RequestParam("side") Side side) {
-        if (username.isEmpty() || password.isEmpty() || (side != Side.LIGHT && side != Side.DARK)) {
+    public ResponseEntity<Map<String, Object>> addPlayer(@RequestParam("username") String username, @RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("side") Side side) {
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty() || (side != Side.LIGHT && side != Side.DARK)) {
             return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_INCOMPLETE_FORM), HttpStatus.BAD_REQUEST);
         }
-        else if (playerRepository.findByUserName(username) != null) {
+        else if ((playerRepository.findByUserName(username) != null) || (playerRepository.findByUserName(email) != null)) {
             return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_CONFLICT), HttpStatus.CONFLICT);
         } else {
-            Player player = new Player(username, password, side);
+            Player player = new Player(username, email, password, side);
             playerRepository.save(player);
             return new ResponseEntity<>(makeMap(MyConsts.KEY_USERNAME, username), HttpStatus.CREATED);
         }

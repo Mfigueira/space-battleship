@@ -19,9 +19,45 @@
             </div>
         </header>
         <section class="row justify-content-center">
-            <div id="app" class="col-11 col-lg-auto mb-4">
+            <div id="app" class="col-11 mb-4">
                 <div class="row justify-content-center">
-                    <!-- ------------------SECTION COL 1, MY SHIPS------------------ -->
+                    <!-- ------------------SECTION COL 1, GAME ACTION------------------ -->
+                    <div id="game-state" class="col-auto">
+                        <!-- ------------------PLAYERS------------------ -->
+                        <h1>Players</h1>
+                        <div class="mb-5">
+                            <div>
+                                <div id="p1-div" class="parallelogram para">
+                                    <span id="p1" class="skew-fix ml-2 pr-0"><b>YOU:</b> {{player_1}}</span>
+                                    <button id="logout" type="button" class="btn btn-dark btn-sm float-right ml-0 mr-2">Logout</button>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="p2-div" class="parallelogram para">
+                                    <span id="p2" class="skew-fix ml-2"><b>VS:</b> {{player_2}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ------------------BATTLE STATE------------------ -->
+                        <h1>Battle Log</h1>
+                        <div id="battle-log" class="card mb-2">
+                            <h2 class="my-2">> Your turn</h2>
+                            <div class="card-body pt-1 pb-3">
+                                <div class="mb-1 mx-4"></div>
+                            </div>
+                        </div>
+                        <!-- ------------------PLACE SHIPS CARD------------------ -->
+                        <div id="place-ships-card" class="card mb-2 text-center display-none">
+                            <h2 class="my-2">Place your Ships</h2>
+                            <div class="card-body pt-1 pb-3">
+                                <div class="mb-1 mx-4">Move with cursor</div>
+                                <div class="mb-1 mx-4">Double click to rotate</div>
+                                <div class="mb-1 mx-4">Battle when ready</div>
+                            </div>
+                            <button id="placed-ships-btn" class="btn btn-dark btn-block" type="button">Battle!</button>
+                        </div>
+                    </div>
+                    <!-- ------------------SECTION COL 2, MY SHIPS------------------ -->
                     <div class="col-auto">
                         <h1 v-if="gameViewerSide === 'DARK'">
                             <img class="side-logo-in-game" src="css/images/empire.png">
@@ -31,30 +67,28 @@
                             <img  class="side-logo-in-game" src="css/images/rebellion.png">
                             Alliance Fleet
                         </h1>
-                        <div id="place-ships-card" class="card mb-2 text-center display-none">
-                            <h2 class="my-2">Place your Ships</h2>
-                            <div class="card-body pt-0 pb-3">
-                                Move with cursor. Double click to rotate. Battle when ready.
-                            </div>
-                            <button id="placed-ships-btn" type="button" class="btn btn-dark btn-block">Battle!</button>
-                        </div>
-
                         <!-- ------------------GRIDSTACK FRAMEWORK------------------ -->
                         <div class="grid-ships mx-auto mb-4">
                             <div id="grid" class="grid-stack grid-stack-10"></div>
                         </div>
-
                     </div>
-                    <!-- ------------------SECTION COL 2, PLAYERS AND FIRES------------------ -->
-                    <div class="col-auto">
-                        <h1>Players</h1>
-                        <div class="mb-4">
-                            <span id="p1" class="player-email py-2">{{player_1}}</span>
-                            <button id="logout" type="button" class="btn btn-dark btn-sm">Logout</button>
-                            <span id="p2" class="player-email py-2">{{player_2}}</span>
+                    <!-- ------------------SECTION COL 3, SALVOS------------------ -->
+                    <div id="salvo-col" class="col-auto display-none">
+                        <!-- ------------------SALVOS------------------ -->
+                        <h1>Blasting Grid</h1>
+                        <!-- ------------------FIRE SALVOS CARD------------------ -->
+                        <div id="fire-card" class="card mb-2 text-center display-none">
+                            <h2 class="my-2">Turn <span id="turn-number"></span>:</h2>
+                            <div id="salvo-action" class="card-body pt-0 pb-3">
+                                Aim 1 to 5 spots. Fire when Ready.
+                            </div>
+                            <button id="fire-salvo-btn" type="button" class="btn btn-dark btn-block">Fire!</button>
+                            <audio id="fire-audio">
+                                <source src="css/audio/fire.mp3" type="audio/mp3">
+                            </audio>
                         </div>
-                        <h1>Salvo Grid</h1>
-                        <table id="salvoGrid">
+
+                        <table id="salvoGrid" class="mx-auto">
                             <thead>
                             <tr>
                                 <th></th>
@@ -64,7 +98,7 @@
                             <tbody id="salvo-body">
                             <tr v-for="letter in grid.letters" :class="letter">
                                 <td>{{letter}}</td>
-                                <td v-for="letter in grid.letters"></td>
+                                <td v-for="number in grid.numbers" :class="number"></td>
                             </tr>
                             </tbody>
                         </table>
