@@ -1,10 +1,7 @@
 package com.mindhubweb.salvo;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -59,6 +56,7 @@ public class GamePlayer {
         dto.put("salvoes", this.game.getGamePlayers().stream().flatMap(gamePlayer -> gamePlayer.getSalvoes().stream().map(Salvo::makeSalvoDTO)));
         return dto;
     }
+
 
     public long getId() { return id; }
 

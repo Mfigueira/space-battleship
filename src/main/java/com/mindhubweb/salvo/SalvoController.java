@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.openmbean.ArrayType;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -91,12 +90,12 @@ public class SalvoController {
         }
 
         int maxTurn = gamePlayer.get().getSalvoes().stream().mapToInt(Salvo::getTurn).max().orElse(0);
-        if ( maxTurn+1 != salvo.getTurn() ) {
+        if (salvo.getTurn() != maxTurn + 1) {
             return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_FORBIDDEN), HttpStatus.FORBIDDEN);
         }
 
-        Optional <GamePlayer> opponentGamePlayer = gamePlayer.get().getGame().getGamePlayers().stream().filter(gamePlayer1 -> gamePlayer1.getId() != gamePlayer.get().getId()).findFirst();
-        if ( !(opponentGamePlayer.isPresent()) || opponentGamePlayer.get().getSalvoes().size() < salvo.getTurn()-1) {
+        Optional <GamePlayer> opponentGamePlayer = gamePlayer.get().getGame().getGamePlayers().stream().filter(gamePlayer1 -> gamePlayer1.getId() != gamePlayerId).findFirst();
+        if ( !opponentGamePlayer.isPresent() || opponentGamePlayer.get().getSalvoes().size() < salvo.getTurn()-1) {
             return new ResponseEntity<>(makeMap(MyConsts.KEY_ERROR, MyConsts.MSG_ERROR_FORBIDDEN), HttpStatus.FORBIDDEN);
         }
 

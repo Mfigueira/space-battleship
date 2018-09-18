@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ElementCollection;
 import javax.persistence.Column;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Salvo {
@@ -40,7 +41,36 @@ public class Salvo {
         dto.put("turn", this.getTurn());
         dto.put("player", this.gamePlayer.getPlayer().getId());
         dto.put("locations", this.getShots());
+
+        Optional<GamePlayer> opponentGamePlayer = gamePlayer.getGame().getGamePlayers().stream().filter(gamePlayer2 -> gamePlayer2.getId() != this.gamePlayer.getId()).findFirst();
+        if (opponentGamePlayer.isPresent()) {
+            Set<Ship> opponentShips = opponentGamePlayer.get().getShips();
+            dto.put("hits", this.getHits(this.shots, opponentShips));
+            dto.put("sinks", this.getSinks(this.getTurn(), this.gamePlayer.getSalvoes(), opponentShips));
+        }
         return dto;
+    }
+
+    public List<String> getHits(List <String> currentSalvoShots, Set<Ship> opponentShips) {
+        return currentSalvoShots
+            .stream()
+            .filter(shot -> opponentShips
+                .stream()
+                .anyMatch(ship -> ship.getCells().contains(shot)))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getSinks(int turn, Set <Salvo> mySalvos, Set<Ship> opponentShips) {
+        List<String> allShots = new ArrayList<>();
+        mySalvos
+            .stream()
+            .filter(salvo -> salvo.getTurn() <= turn)
+            .forEach(salvo -> allShots.addAll(salvo.getShots()));
+        return opponentShips
+            .stream()
+            .filter(ship -> allShots.containsAll(ship.getCells()))
+                .map(Ship::getType)
+                .collect(Collectors.toList());
     }
 
     public Long getId() { return id; }
