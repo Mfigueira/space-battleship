@@ -53,28 +53,55 @@ $("#logout-btn").click(function() {
     })
 });
 
-//-----------------------------------------------SIGN UP-----------------------------------------
+
+//-----------------------------------------------SIGN UP AJAX-----------------------------------------
+function signUpAjaxPost() {
+    $.post("/api/players", { username: $("#inputUser").val(), email: $("#inputEmail").val(), password: $("#signPassword").val(), side: $("input[name=side]:checked").val() })
+        .done(function() {
+            $.post("/api/login", { username: $("#inputUser").val(), password: $("#signPassword").val() })
+                .done(function() {
+                    // Open Modal and Play Opening
+                    $('#intro-modal').modal("show");
+                    starWarsOpening();
+
+                    $("#signUp-alert").html("");
+                    getData();
+                    $("#signUp-form").hide();
+                })
+                .fail(function() {
+                    $("#signUp-alert").html("Login error. Please try again");
+                })
+        })
+        .fail(function() {
+            $("#signUp-alert").html("This user already exist");
+        })
+}
+
+//----------------------------------------------- INTRO OPENING FUNCTION-----------------------------------------
+function starWarsOpening() {
+    // Audio to play the opening crawl
+    var openingAudio = document.getElementById("opening-audio");
+    openingAudio.play();
+    // When intro finishes, close Modal
+    $(openingAudio).bind('ended', $.proxy(function() {
+        openingAudio.currentTime = 0;
+        $('#intro-modal').modal("hide");
+    }));
+}
+$("#close-modal-btn").click(function(){
+    var openingAudio = document.getElementById("opening-audio");
+    openingAudio.pause();
+    openingAudio.currentTime = 0;
+    $('#intro-modal').modal("hide");
+})
+//-----------------------------------------------SIGN UP BUTTON-----------------------------------------
 $("#sign-up-btn").click(function() {
     if (!$("#inputUser").val() || !$("#inputEmail").val() || !$("#signPassword").val() || !$("input[name=side]:checked").val()) {
         $("#signUp-alert").html("Please complete form to Sign Up.");
     } else if (!correctEmailFormat($("#inputEmail").val())) {
         $("#signUp-alert").html("Please enter valid email format.");
     } else {
-        $.post("/api/players", { username: $("#inputUser").val(), email: $("#inputEmail").val(), password: $("#signPassword").val(), side: $("input[name=side]:checked").val() })
-            .done(function() {
-                $.post("/api/login", { username: $("#inputUser").val(), password: $("#signPassword").val() })
-                    .done(function() {
-                        $("#signUp-alert").html("");
-                        getData();
-                        $("#signUp-form").hide();
-                    })
-                    .fail(function() {
-                        $("#signUp-alert").html("Login error. Please try again");
-                    })
-            })
-            .fail(function() {
-                $("#signUp-alert").html("This user already exist");
-            })
+        signUpAjaxPost();
     }
 });
 

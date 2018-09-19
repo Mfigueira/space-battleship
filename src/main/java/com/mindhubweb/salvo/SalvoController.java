@@ -37,7 +37,7 @@ public class SalvoController {
     }
 
     @GetMapping("/games")
-    public Map<String, Object> gameListWithCurrentUserDTO(Authentication authentication) {
+    public ResponseEntity<Map<String, Object>> gameListWithCurrentUserDTO(Authentication authentication) {
         Map<String, Object> dto = new LinkedHashMap<>();
         if ( isGuest(authentication) ) {
             dto.put("current_player", "guest");
@@ -46,7 +46,7 @@ public class SalvoController {
             dto.put("current_player", playerRepository.findByUserName(authentication.getName()).makePlayerDTO());
         }
         dto.put("games", this.getGames());
-        return dto;
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     public List<Map<String, Object>> getGames() {

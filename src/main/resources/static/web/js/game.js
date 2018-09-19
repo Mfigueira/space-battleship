@@ -513,6 +513,7 @@ function postSalvos(salvoJSON) {
         contentType: "application/json"
     })
     .done(function (response) {
+        playFireSound();
         if ($("#salvo-action").hasClass("game-play-alert")) {
             $("#salvo-action").removeClass("game-play-alert");
         }
@@ -544,7 +545,6 @@ function postSalvos(salvoJSON) {
     $("#salvo-col").on("click", "#fire-salvo-btn", function(){
 
         if ( $(".aim-img").length != 0 && $(".aim-img").length <= 5 ) {
-            playFireSound();
             var salvoJSON = {};
             var turn = $("#turn-number").text();
             var shots = [];

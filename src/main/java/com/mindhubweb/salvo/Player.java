@@ -36,7 +36,6 @@ public class Player {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("userName", this.getUserName());
-        dto.put("email", this.getEmail());
         dto.put("side", this.getSide());
         double totalScore = this.getScores().stream().mapToDouble(Score::getScorePoint).sum();
         dto.put("totalScore", totalScore);

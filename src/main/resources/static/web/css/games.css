@@ -149,6 +149,11 @@ input[type=radio]:checked+label {
 }
 
 
+/*--------------------------------------OPENING INTRO---------------------------------------*/
+#modal-main {
+    max-width: 100vw;
+    margin: auto;
+}
 /*----------------------------------LEADER BOARD AND LOGOS/AVATARS-----------------------------------*/
 .avatar {
     height: 40px;
@@ -205,13 +210,8 @@ li>ol {
     font-size: 18px;
     padding: 4.5%;
 }
-#logout {
-    margin: 2%;
-}
-
 .para {
   box-shadow: 5px 5px 0 rgba(0,0,0,.5);
-  display: inline-block;
   height: 45px;
   width: 300px;
 }
@@ -222,9 +222,6 @@ li>ol {
 .para-DARK {
   border: 2px solid #dc3545;
   background-color: rgba(220, 53, 69, 0.6);
-}
-.para:hover {
-
 }
 .parallelogram{
   transform: skew(-20deg);

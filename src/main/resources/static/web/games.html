@@ -7,14 +7,69 @@
     <title>Star Wars Space Battleship</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <link rel="stylesheet" href="css/games.css">
+    <link rel="stylesheet" href="intro/css/opening.css">
 </head>
 <body>
 <div class="container-fluid bkg-home">
+    <!-- Modal -->
+    <div class="modal fade" id="intro-modal" tabindex="-1" role="dialog" aria-labelledby="intro-modal" aria-hidden="true">
+        <div id="modal-main" class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div id="intro-body" class="modal-body">
+                    <!-- ----------------------------INTRO OPENING----------------------------- -->
+                    <article class="starwars">
+                        <!-- --------------------------- OPENING AUDIO ----------------------------- -->
+                        <audio id="opening-audio" preload="auto">
+                            <source src="https://s.cdpn.io/1202/Star_Wars_original_opening_crawl_1977.ogg" type="audio/ogg" />
+                            <source src="https://s.cdpn.io/1202/Star_Wars_original_opening_crawl_1977.mp3" type="audio/mpeg" />
+                        </audio>
+                        <!-- ---------------------------- OPENING MAIN----------------------------- -->
+                        <div id="opening-animation" class="animation">
+                            <section class="intro">
+                                A long time ago in a galaxy far,<br> far away....
+                            </section>
+                            <section class="titles">
+                                <div contenteditable="true" spellcheck="false">
+                                    <p>
+                                    <div class="opening-title">SPACE BATTLESHIP</div>
+                                    It's game time!
+                                    Rebel Alliance against
+                                    the evil Galactic Empire.
+                                    Create or join a battleship game,
+                                    set your fleet on a Grid,
+                                    and blast away your enemy!
+                                    </p>
+                                    <p>
+                                        Rules: each Player starts with 5 Ships.
+                                        Once positioned, the battle begins in Turn 1.
+                                        For each standing Ship you have a Shot to make,
+                                        and both Players must fire to move on the next Turn.
+                                        Win the game by destroying all your opponent ships first.
+                                        If both players get all ships blasted on the same Turn,
+                                        the game is a Tie.
+                                    </p>
+                                    <p>
+                                        Score the most points to scale up the Space Leaderboard!
+                                    </p>
+                                </div>
+                            </section>
+                            <section class="logo">
+                                <img class="opening-logo" src="intro/css/opening-logo.png" alt="star-wars-opening-logo">
+                            </section>
+                        </div>
+                    </article>
+                    <button id="close-modal-btn" type="button" class="btn btn-secondary">Skip Intro</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ---------------------------- HEADER ----------------------------- -->
     <header class="row">
         <div class="col-12">
             <img class="main-logo mx-auto d-block" src="css/images/star.png" alt="star-wars-space-battleship-main-logo">
         </div>
     </header>
+    <!-- ----------------------------  MAIN SECTION----------------------------- -->
     <section class="row justify-content-center">
         <div id="app" class="col-12 col-sm-11 col-lg-auto mb-4">
             <div class="row">
@@ -55,15 +110,15 @@
                                 </div>
                                 <label class="mb-2" for="inputUser"><b>Enter Username:</b></label>
                                 <div class="input-group mb-2">
-                                    <input type="text" class="form-control form-control-sm" id="inputUser" placeholder="Username" name="username">
+                                    <input type="text" class="form-control form-control-sm" id="inputUser" placeholder="Your username" name="username">
                                 </div>
                                 <label class="mb-2" for="inputEmail"><b>Enter Email:</b></label>
                                 <div class="input-group mb-2">
-                                    <input type="email" class="form-control form-control-sm" id="inputEmail" placeholder="Email" name="email">
+                                    <input type="email" class="form-control form-control-sm" id="inputEmail" placeholder="Your email" name="email">
                                 </div>
                                 <label class="mb-2" for="signPassword"><b>Enter Password:</b></label>
                                 <div class="input-group mb-2">
-                                    <input type="password" class="form-control form-control-sm" id="signPassword" placeholder="Password" name="pass">
+                                    <input type="password" class="form-control form-control-sm" id="signPassword" placeholder="Your password" name="pass">
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <span class="mr-3"><b>Choose your Allegiance:</b></span>
@@ -105,6 +160,7 @@
                                 <span id="logged-in-name" class="align-middle mx-2"></span>
                                 <button id="logout-btn" type="button" class="btn btn-dark">Logout</button>
                             </form>
+
                         </div>
                     </div>
                 </div>

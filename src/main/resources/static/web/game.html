@@ -24,12 +24,13 @@
                     <!-- ------------------SECTION COL 1, GAME ACTION------------------ -->
                     <div id="game-state" class="col-auto">
                         <!-- ------------------PLAYERS------------------ -->
-                        <h1>Players</h1>
+                        <h1>Players
+                            <button id="logout" type="button" class="btn btn-dark btn-sm mb-1">Logout</button>
+                        </h1>
                         <div class="mb-5">
                             <div>
                                 <div id="p1-div" class="parallelogram para">
-                                    <span id="p1" class="skew-fix ml-2 pr-0"><b>YOU:</b> {{player_1}}</span>
-                                    <button id="logout" type="button" class="btn btn-dark btn-sm float-right ml-0 mr-2">Logout</button>
+                                    <span id="p1" class="skew-fix ml-2"><b>YOU:</b> {{player_1}}</span>
                                 </div>
                             </div>
                             <div>
@@ -121,5 +122,6 @@
     <script src="dist/gridstack.js"></script>
     <script src="dist/gridstack.jQueryUI.js"></script>
     <script src="js/game.js"></script>
+
 </body>
 </html>
