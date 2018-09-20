@@ -60,7 +60,7 @@ public class Salvo {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getSinks(int turn, Set <Salvo> mySalvos, Set<Ship> opponentShips) {
+    public List<Map<String, Object>> getSinks(int turn, Set <Salvo> mySalvos, Set<Ship> opponentShips) {
         List<String> allShots = new ArrayList<>();
         mySalvos
             .stream()
@@ -69,7 +69,7 @@ public class Salvo {
         return opponentShips
             .stream()
             .filter(ship -> allShots.containsAll(ship.getCells()))
-                .map(Ship::getType)
+                .map(Ship::makeShipDTO)
                 .collect(Collectors.toList());
     }
 

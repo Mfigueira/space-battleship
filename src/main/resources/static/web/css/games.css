@@ -115,16 +115,19 @@ input[type=radio] {
     display: none;
 }
 input[type=radio]+label {
+    border: 1px solid black;
+    border-radius: 50px;
     font-size: 18px;
+    transition: background-color 0.3s;
 }
 
 #light-side-radio:hover+label {
-    background-color: #28a745;
-	border-radius: 50px;
+    background-color: rgb(40, 167, 69, 0.6);
+    border: 1px solid #28a745;
 }
 #dark-side-radio:hover+label {
-    background-color: #dc3545;
-	border-radius: 50px;
+    background-color: rgb(220, 53, 69, 0.6);
+    border: 1px solid #dc3545;
 }
 
 input[type=radio]:checked+label {
@@ -132,9 +135,11 @@ input[type=radio]:checked+label {
 }
 #light-side-radio:checked+label {
     background-color: #28a745;
+    border: 1px solid #28a745;
 }
 #dark-side-radio:checked+label {
     background-color: #dc3545;
+    border: 1px solid #dc3545;
 }
 
 .description-card {
@@ -191,20 +196,34 @@ li>ol {
 	list-style-type: decimal;
 }
 
-/*----------------------------------SALVO GRID DISPLAY-----------------------------------*/
-
-#salvoGrid {
-    background-image: url("images/space.gif");
-    background-size: cover;
-    color: white;
+/*--------------------------------------MEDIA QUERYS-----------------------------------*/
+@media screen and (max-width: 500px) {
+  .main-logo {
+      height: 125px;
+  }
 }
 
-#salvoGrid>thead>tr>th, #salvoGrid>tbody>tr>td {
-    border: 1px solid grey;
-    height: 25px;
-    width: 25px;
-    text-align: center;
+/*----------------------------------DARK-LIGHT-SIDE-EFFECTS-----------------------------------*/
+.text-DARK {
+    text-shadow: 0 0 3px #dc3545;
 }
+
+.text-LIGHT {
+    text-shadow: 0 0 3px #28a745;
+}
+.btn-primary {
+    background-color: #0099ff;
+    border-color: #0099ff;
+}
+
+.shd-light {
+    box-shadow:0 0 40px rgba(40, 167, 69) inset;
+}
+.shd-dark {
+    box-shadow:0 0 40px rgba(220, 53, 69) inset;
+}
+
+
 /*--------------------------------------PLAYERS---------------------------------------*/
 #p1, #p2 {
     font-size: 18px;
@@ -230,43 +249,103 @@ li>ol {
   display:inline-block;
   transform: skew(20deg);
 }
-
-/*--------------------------------------MEDIA QUERYS-----------------------------------*/
-
-@media screen and (max-width: 500px) {
-  .main-logo {
-      height: 125px;
-  }
+#logout {
+    position: absolute;
+    right: 24px;
+    top: 60px;
+    z-index:1;
 }
 
-/*-----------------------------------------SHIPS-----------------------------------------*/
-.bg-ship {
-    background-color: black;
+/*----------------------------------BATTLE LOG-----------------------------------*/
+#salvo-action {
+    line-height: 22px;
+}
+/*----------------------------------SALVO GRID DISPLAY-----------------------------------*/
+
+#salvoGrid {
+    background-image: url("images/space.gif");
+    background-size: cover;
+    color: white;
+}
+
+#salvoGrid>thead>tr>th, #salvoGrid>tbody>tr>td {
+    border: 1px solid grey;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+}
+.spark-salvo {
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+}
+.aim-img {
+    height: 24px;
+    width: 24px;
 }
 .bg-salvo {
-    background-color: red;
+    background-color: rgba(255, 0, 0, 0.5);
 }
 
-/*----------------------------------DARK-LIGHT-SIDE-EFFECTS-----------------------------------*/
-.text-DARK {
-    text-shadow: 0 0 3px #dc3545;
+/*-----------------------------------------HIT AND SINK SHIPS-----------------------------------------*/
+.spark {
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+}
+.remaining-ship-light {
+    margin: 0 1%;
+}
+.remaining-ship-dark {
+    margin: 0;
 }
 
-.text-LIGHT {
-    text-shadow: 0 0 3px #28a745;
+/*-----------------light ships----------------*/
+#light-starfighter-img-v2 {
+    height: 57px;
+    width: 31px;
 }
-.btn-primary {
-    background-color: #0099ff;
-    border-color: #0099ff;
+#light-fighter-img-h2 {
+    width: 62px;
+    height: 30px;
 }
-
-.shd-light {
-    box-shadow:0 0 40px rgba(40, 167, 69) inset;
+#light-bomber-img-v2 {
+    height: 75px;
+    width: 33px;
 }
-.shd-dark {
-    box-shadow:0 0 40px rgba(220, 53, 69) inset;
+#light-destroyer-img-v2 {
+    height: 78px;
+    width: 28px;
 }
-
+#light-cruiser-img-v2 {
+    height: 120px;
+    width: 33px;
+    margin-bottom: -8px;
+    margin-top: -5px;
+}
+/*-----------------dark ships----------------*/
+#dark-cruiser-img-v2 {
+    height: 111px;
+    width: 33px;
+    margin-bottom: -5px;
+}
+#dark-destroyer-img-h2 {
+    width: 90px;
+    height: 24px;
+}
+#dark-bomber-img-v2 {
+    height: 57px;
+    width: 36px;
+}
+#dark-fighter-img-v2 {
+    height: 69px;
+    width: 27px;
+}
+#dark-starfighter-img-h2 {
+    width: 42px;
+    height: 33px;
+    margin-right: -12px;
+}
 
 /*----------------------------------------------GRIDSTACK SHIPS----------------------------------------------*/
 
@@ -287,6 +366,7 @@ li>ol {
     background-color:rgba(255,255,255,0.2);
 }
 
+/*-----------------dark ships----------------*/
 #dark-cruiser-img-v {
     height: 185px;
     width: 54px;
@@ -334,18 +414,15 @@ li>ol {
 #dark-starfighter-img-v {
     height: 70px;
     width: 55px;
-    top: 8px;
-    left: -10px;
+    left: -4px;
 }
 #dark-starfighter-img-h {
     width: 70px;
     height: 55px;
-    left: 8px;
-    top: -10px;
+    top: -4px;
 }
 
-
-
+/*-----------------light ships----------------*/
 #light-cruiser-img-v {
     height: 200px;
     width: 55px;
@@ -406,15 +483,3 @@ li>ol {
     left: -5px;
     top: -8px;
 }
-
-/*----------------------------------------------SALVO GRID----------------------------------------------*/
-.aim-img {
-    height: 24px;
-    width: 24px;
-}
-.spark {
-    border-radius: 50%;
-    height: 35px;
-    width: 35px;
-}
-

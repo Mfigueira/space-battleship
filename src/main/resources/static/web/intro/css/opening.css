@@ -35,7 +35,7 @@
 }
 .starwars .opening-logo {
   width: inherit;
-  padding-top: 5em;
+  padding-top: 30%;
 }
 .starwars .opening-title {
     font-size: 1.6em;
@@ -60,8 +60,8 @@
 .starwars .titles > div {
   position: absolute;
   top: 100%;
-  -webkit-animation: titles 83s linear 11s;
-          animation: titles 83s linear 11s;
+  -webkit-animation: titles 84s linear 11s;
+          animation: titles 84s linear 11s;
 }
 .starwars .titles > div > p {
   margin: 1.35em 0 1.85em 0;

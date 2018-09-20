@@ -93,7 +93,7 @@ public class SalvoApplication {
 			Set<Salvo> salvoes2 = new HashSet<>();
 			salvoes2.add(new Salvo (1, new ArrayList<>(Arrays.asList("A9", "A8", "A5"))));
 			salvoes2.add(new Salvo (2, new ArrayList<>(Arrays.asList("A10", "H2", "I2"))));
-			salvoes2.add(new Salvo (3, new ArrayList<>(Arrays.asList("F10", "F2", "F2"))));
+			salvoes2.add(new Salvo (3, new ArrayList<>(Arrays.asList("F10", "F2", "A1"))));
 
 			Set<Salvo> salvoes3 = new HashSet<>();
 			salvoes3.add(new Salvo (1, new ArrayList<>(Arrays.asList("C4", "C5", "C3", "C7", "C8"))));

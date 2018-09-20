@@ -9,6 +9,7 @@ var app = new Vue({
     player_1: "",
     player_2: "",
     gameViewerSide: "",
+    opponentSide: "",
     gameViewerShips: [],
     allShipPositions: [],
     viewerPlayerId: 0,
@@ -95,6 +96,7 @@ function showPlayersByGamePlayerId(id, obj) {
             }
         } else if (id != gamePlayer.id) {
             app.player_2 = gamePlayer.player.userName;
+            app.opponentSide = gamePlayer.player.side;
             if (gamePlayer.player.side === "LIGHT") {
                 $("#p2").removeClass("text-DARK");
                 $("#p2").addClass("text-LIGHT");
@@ -338,8 +340,8 @@ function placeNewShips() {
         4, 3, 1, 3, false);
         grid.addWidget($('<div><img id="dark-fighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-fighter-v.png" alt="fighter"></div>'),
         2, 6, 1, 3, false);
-        grid.addWidget($('<div><img id="dark-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-v.png" alt="starFighter"></div>'),
-        6, 7, 1, 2, false);
+        grid.addWidget($('<div><img id="dark-starfighter-img-h" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-h.png" alt="starFighter"></div>'),
+        6, 7, 2, 1, false);
 
     } else if (app.gameViewerSide === "LIGHT") {
         grid.addWidget($('<div><img id="light-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/light-cruiser-v.png" alt="cruiser"></div>'),
@@ -525,13 +527,18 @@ function postSalvos(salvoJSON) {
     })
 }
 
+//----------------------------------------------FIRE SOUND----------------------------------------------
+function playFireSound() {
+   var fireAudio = document.getElementById("fire-audio");
+   fireAudio.play();
+}
 //-------------------------------------------------------WHEN SHIPS CREATED...---------------------------------------------------------
 
     //-------------------------------------------------------CREATE SALVOS IN GRID---------------------------------------------------------
     $("#salvo-body > tr > td").click(function() {
-        if ( $(this).hasClass("bg-salvo") ) {
+        if ( $(this).children().hasClass("spark-salvo") ) {
             return;
-        } else if ( $(this).children().length > 0 ) {
+        } else if ( $(this).children().hasClass("aim-img") ) {
             $(this).html("");
         } else if ( $(".aim-img").length < 5 ) {
             var letter = $(this).parent().attr("class");
@@ -566,25 +573,87 @@ function postSalvos(salvoJSON) {
 //-------------------------------------------------------DISPLAY SALVOS FUNCTION---------------------------------------------------------
 function displaySalvoes(gamePlayerId, gameDTO) {
 
-   for (var i=0;i<gameDTO.gamePlayers.length;i++){
+    for (var i=0;i<gameDTO.gamePlayers.length;i++){
 
-       if (gameDTO.gamePlayers[i].id == gamePlayerId) {
-           var thisPlayerId = gameDTO.gamePlayers[i].player.id;
-           gameDTO.salvoes.map(function (salvo) {
-               if (salvo.player == thisPlayerId) {
-                   var myTurn = salvo.turn;
-                   for (var e=0;e<salvo.locations.length;e++){
-                       var letterP1 = salvo.locations[e].substring(0, 1);
-                       var numberP1 = salvo.locations[e].substring(1, 3);
-                       $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").addClass("bg-salvo").html(myTurn);
-                   }
-               } else if (salvo.player != thisPlayerId) {
+        if (gameDTO.gamePlayers[i].id == gamePlayerId) {
+            var thisPlayerId = gameDTO.gamePlayers[i].player.id;
+            gameDTO.salvoes.map(function (salvo) {
+                // --------------------------------------------------- OPPONENT GRID ----------------------------------------------------
+                if (salvo.player == thisPlayerId) {
+                    // --------------------------------------------------- HITS or MISSES ----------------------------------------------------
+                    for (var e=0;e<salvo.locations.length;e++){
+                        var letterP1 = salvo.locations[e].substring(0, 1);
+                        var numberP1 = salvo.locations[e].substring(1, 3);
 
-                   for (var h=0;h<salvo.locations.length;h++){
-                       var letter = salvo.locations[h].substring(0, 1);
-                       var number = salvo.locations[h].substring(1, 3)-1;
+                        if (salvo.hits.indexOf(salvo.locations[e]) != -1) {
+                           $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").html('<img class="spark-salvo" src="css/images/spark.gif">');
+                        } else {
+                           $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").html('<img class="spark-salvo" src="css/images/cross.png">');
+                        }
+                    }
+                    // --------------------------------------------------- SINKS ----------------------------------------------------
+                    for (var ss=0;ss<salvo.sinks.length;ss++) {
 
-                       switch(letter) {
+                        for (var s=0;s<salvo.sinks[ss].locations.length;s++) {
+                            var sinkLetter = salvo.sinks[ss].locations[s].substring(0, 1);
+                            var sinkNumber = salvo.sinks[ss].locations[s].substring(1, 3);
+                            var sinkCell = $("#salvo-body>."+sinkLetter+" td:eq("+sinkNumber+")");
+
+                            if (!sinkCell.hasClass("bg-salvo")) {
+                                sinkCell.addClass("bg-salvo");
+                            }
+                        }
+
+                        if (app.opponentSide === "LIGHT") {
+                            switch (salvo.sinks[ss].type) {
+                                case "cruiser":
+                                    $("#light-cruiser-img-v2").attr("src", "css/images/icons/light-cruiser-v2.png");
+                                    break;
+                                case "destroyer":
+                                    $("#light-destroyer-img-v2").attr("src", "css/images/icons/light-destroyer-v2.png");
+                                    break;
+                                case "bomber":
+                                    $("#light-bomber-img-v2").attr("src", "css/images/icons/light-bomber-v2.png");
+                                    break;
+                                case "fighter":
+                                    $("#light-fighter-img-h2").attr("src", "css/images/icons/light-fighter-h2.png");
+                                    break;
+                                case "starFighter":
+                                    $("#light-starfighter-img-v2").attr("src", "css/images/icons/light-starfighter-v2.png");
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } else if (app.opponentSide === "DARK") {
+                            switch (salvo.sinks[ss].type) {
+                                case "cruiser":
+                                   $("#dark-cruiser-img-v2").attr("src", "css/images/icons/dark-cruiser-v2.png");
+                                   break;
+                                case "destroyer":
+                                   $("#dark-destroyer-img-h2").attr("src", "css/images/icons/dark-destroyer-h2.png");
+                                   break;
+                                case "bomber":
+                                   $("#dark-bomber-img-v2").attr("src", "css/images/icons/dark-bomber-v2.png");
+                                   break;
+                                case "fighter":
+                                   $("#dark-fighter-img-v2").attr("src", "css/images/icons/dark-fighter-v2.png");
+                                   break;
+                                case "starFighter":
+                                   $("#dark-starfighter-img-h2").attr("src", "css/images/icons/dark-starfighter-h2.png");
+                                   break;
+                                default:
+                                   break;
+                            }
+                        }
+                    }
+                // --------------------------------------------------- MY GRID ----------------------------------------------------
+                } else if (salvo.player != thisPlayerId) {
+                    // --------------------------------------------------- HITS or MISSES ----------------------------------------------------
+                    for (var h=0;h<salvo.locations.length;h++){
+                        var letter = salvo.locations[h].substring(0, 1);
+                        var number = salvo.locations[h].substring(1, 3)-1;
+
+                        switch(letter) {
                             case "A":letter = 0;break;
                             case "B":letter = 1;break;
                             case "C":letter = 2;break;
@@ -596,23 +665,17 @@ function displaySalvoes(gamePlayerId, gameDTO) {
                             case "I":letter = 8;break;
                             case "J":letter = 9;break;
                             default:letter = 0;break;
-                       }
+                        }
 
-                       if ( app.allShipPositions.indexOf(salvo.locations[h]) != -1 ) {
+                        if ( app.allShipPositions.indexOf(salvo.locations[h]) != -1 ) {
                            $('#grid').append('<div style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><img class="spark" src="css/images/spark.gif"></div>');
-                       } else {
+                        } else {
                            $('#grid').append('<div style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><img class="spark" src="css/images/cross.png"></div>');
-                       }
-
-                   }
-               }
-           });
-       }
-   }
+                        }
+                    }
+                }
+            });
+        }
+    }
 }
 
-//----------------------------------------------WHEN SHIPS CREATED...----------------------------------------------
-function playFireSound() {
-   var fireAudio = document.getElementById("fire-audio");
-   fireAudio.play();
-}
