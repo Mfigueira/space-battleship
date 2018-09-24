@@ -110,7 +110,7 @@
                                 </div>
                                 <label class="mb-2" for="inputUser"><b>Enter Username:</b></label>
                                 <div class="input-group mb-2">
-                                    <input type="text" class="form-control form-control-sm" id="inputUser" placeholder="Your username" name="username">
+                                    <input type="text" class="form-control form-control-sm" id="inputUser" placeholder="Your username (max. 14 characters)" name="username">
                                 </div>
                                 <label class="mb-2" for="inputEmail"><b>Enter Email:</b></label>
                                 <div class="input-group mb-2">
@@ -155,10 +155,18 @@
 
                             <!-- -------------------------------------LOG OUT FORM - MY PROFILE------------------------------------- -->
                             <form id="logout-form">
-                                <img v-if="current_player.side === 'DARK'" class="side-logo" src="css/images/empire.png">
-                                <img v-else-if="current_player.side === 'LIGHT'" class="side-logo" src="css/images/rebellion.png">
-                                <span id="logged-in-name" class="align-middle mx-2"></span>
-                                <button id="logout-btn" type="button" class="btn btn-dark">Logout</button>
+                                <div class="float-left">
+                                    <img v-if="current_player.side === 'DARK'" class="side-logo" src="css/images/empire.png">
+                                    <img v-else-if="current_player.side === 'LIGHT'" class="side-logo" src="css/images/rebellion.png">
+                                    <span id="logged-in-name" class="align-middle mx-2"></span>
+                                </div>
+                                <div class="float-right">
+                                    <div id="display-points" class="card align-bottom text-center h5 score-popover" data-container="body" data-toggle="popover" data-placement="top" data-content="My Score" data-trigger="click, hover">
+                                        <img id="trophy" src="css/images/trophy.png">
+                                        {{current_player.totalScore}}
+                                    </div>
+                                    <button id="logout-btn" type="button" class="btn btn-dark">Logout</button>
+                                </div>
                             </form>
 
                         </div>

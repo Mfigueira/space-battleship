@@ -1,8 +1,8 @@
 package com.mindhubweb.salvo;
 
-public class MyConsts {
+public final class AppMessages {
 
-    private MyConsts() {
+    private AppMessages() {
         throw new IllegalStateException("Utility class");
     }
 

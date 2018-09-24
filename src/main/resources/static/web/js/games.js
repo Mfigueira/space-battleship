@@ -26,13 +26,10 @@ function getData(){
 }
 
 //--------------------------------REGISTRATION FORM----------------------------------
-
 //----------------------------------------------LOG IN FORM-----------------------------------------
 $("#login-btn").click(function() {
     if (!$("#inputUserName").val() || !$("#inputPassword").val()) {
         $("#login-alert").html("Please enter Username and Password.");
-    //} else if (!correctEmailFormat($("#inputUserName").val())) {
-        //$("#login-alert").html("Please enter valid email format.");
     } else {
         $.post("/api/login", { username: $("#inputUserName").val(), password: $("#inputPassword").val() })
             .done(function() {
@@ -50,7 +47,9 @@ $("#logout-btn").click(function() {
     $.post("/api/logout").done(function() {
         getData();
         console.log("logged out");
-    })
+    }).fail(function() {
+        console.log("failed to log out...");
+    });
 });
 
 
@@ -98,12 +97,20 @@ $("#close-modal-btn").click(function(){
 $("#sign-up-btn").click(function() {
     if (!$("#inputUser").val() || !$("#inputEmail").val() || !$("#signPassword").val() || !$("input[name=side]:checked").val()) {
         $("#signUp-alert").html("Please complete form to Sign Up.");
+    } else if ( !isStringMaxCharAllowed($("#inputUser").val(), 14)) {
+        $("#signUp-alert").html("Please enter no more than 14 characters on Username.");
     } else if (!correctEmailFormat($("#inputEmail").val())) {
         $("#signUp-alert").html("Please enter valid email format.");
     } else {
         signUpAjaxPost();
     }
 });
+
+function isStringMaxCharAllowed(string, max) {
+    var n = string.length;
+    if (n <= max) {return true;}
+    return false;
+}
 
 //-----------------------------------------------CHECK EMAIL-----------------------------------------
 function correctEmailFormat(email){
@@ -248,3 +255,7 @@ $("#app").on("click", ".join-game-btn", function() {
     })
 });
 
+//--------------------------------SCORE POPOVER----------------------------------
+$(function () {
+  $('.score-popover').popover()
+})

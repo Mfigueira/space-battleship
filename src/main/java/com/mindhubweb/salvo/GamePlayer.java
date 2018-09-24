@@ -3,6 +3,7 @@ package com.mindhubweb.salvo;
 import javax.persistence.*;
 import java.util.*;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Entity
 public class GamePlayer {
@@ -40,6 +41,9 @@ public class GamePlayer {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("player", this.player.makePlayerDTO());
+        dto.put("gameState", getGameState());
+        dto.put("salvoTurn", currentTurn());
+        dto.put("remainingShips", remainingShips());
         if (this.getScore() != null)
             dto.put("score", this.getScore().getScorePoint());
         else
@@ -55,6 +59,68 @@ public class GamePlayer {
         dto.put("ships", this.getShips().stream().map(Ship::makeShipDTO));
         dto.put("salvoes", this.game.getGamePlayers().stream().flatMap(gamePlayer -> gamePlayer.getSalvoes().stream().map(Salvo::makeSalvoDTO)));
         return dto;
+    }
+
+    public int currentTurn() {
+        return this.getSalvoes().stream().mapToInt(Salvo::getTurn).max().orElse(0)+1;
+    }
+
+    public int remainingShips() {
+        Optional <GamePlayer> opponentGamePlayer = this.getGame().getGamePlayers().stream().filter(gamePlayer1 -> gamePlayer1.getId() != this.getId()).findFirst();
+
+        return opponentGamePlayer.map(gamePlayer -> 5 - this.getSinks(opponentGamePlayer.get().getSalvoes().stream().mapToInt(Salvo::getTurn).max().orElse(0), gamePlayer.getSalvoes(), this.getShips()).size()).orElse(5);
+    }
+
+
+
+    public Enum<GamePlayerState> getGameState() {
+        Optional <GamePlayer> opponentGamePlayer = this.getGame().getGamePlayers().stream().filter(gamePlayer1 -> gamePlayer1.getId() != this.getId()).findFirst();
+        int lastTurn = this.getSalvoes().stream().mapToInt(Salvo::getTurn).max().orElse(0);
+
+        if ( !(opponentGamePlayer.isPresent()) ) {
+            return GamePlayerState.WAIT_OPPONENT;
+        }
+        if (this.getShips().isEmpty()) {
+            return GamePlayerState.PLACE_SHIPS;
+        }
+        if (opponentGamePlayer.get().getShips().isEmpty()) {
+            return GamePlayerState.WAIT_OPPONENT_SHIPS;
+        }
+        if ( (this.getSalvoes().size() == opponentGamePlayer.get().getSalvoes().size()) && (this.getSinks(lastTurn, this.getSalvoes(), opponentGamePlayer.get().getShips()).size() == 5) && (this.getSinks(lastTurn, opponentGamePlayer.get().getSalvoes(), this.getShips()).size() < 5)) {
+            return GamePlayerState.WIN;
+        }
+        if ( (this.getSalvoes().size() == opponentGamePlayer.get().getSalvoes().size()) && (this.getSinks(lastTurn, this.getSalvoes(), opponentGamePlayer.get().getShips()).size() == 5) && (this.getSinks(lastTurn, opponentGamePlayer.get().getSalvoes(), this.getShips()).size() == 5)) {
+            return GamePlayerState.DRAW;
+        }
+        if ( (this.getSalvoes().size() == opponentGamePlayer.get().getSalvoes().size()) && (this.getSinks(lastTurn, this.getSalvoes(), opponentGamePlayer.get().getShips()).size() < 5) && (this.getSinks(lastTurn, opponentGamePlayer.get().getSalvoes(), this.getShips()).size() == 5)) {
+            return GamePlayerState.LOSE;
+        }
+        if ( (this.getId() < opponentGamePlayer.get().getId()) && (this.getSalvoes().size() == opponentGamePlayer.get().getSalvoes().size())) {
+            return GamePlayerState.ENTER_SALVO;
+        }
+        if ( (this.getId() < opponentGamePlayer.get().getId()) && (this.getSalvoes().size() > opponentGamePlayer.get().getSalvoes().size())) {
+            return GamePlayerState.WAIT_OPPONENT_SALVO;
+        }
+        if ( (this.getId() > opponentGamePlayer.get().getId()) && (this.getSalvoes().size() < opponentGamePlayer.get().getSalvoes().size())) {
+            return GamePlayerState.ENTER_SALVO;
+        }
+        if ( (this.getId() > opponentGamePlayer.get().getId()) && (this.getSalvoes().size() == opponentGamePlayer.get().getSalvoes().size())) {
+            return GamePlayerState.WAIT_OPPONENT_SALVO;
+        }
+        return GamePlayerState.ERROR;
+    }
+
+    public List<Map<String, Object>> getSinks(int turn, Set <Salvo> mySalvos, Set<Ship> opponentShips) {
+        List<String> allShots = new ArrayList<>();
+        mySalvos
+                .stream()
+                .filter(salvo -> salvo.getTurn() <= turn)
+                .forEach(salvo -> allShots.addAll(salvo.getShots()));
+        return opponentShips
+                .stream()
+                .filter(ship -> allShots.containsAll(ship.getCells()))
+                .map(Ship::makeShipDTO)
+                .collect(Collectors.toList());
     }
 
 

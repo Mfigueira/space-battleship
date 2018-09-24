@@ -181,6 +181,31 @@ input[type=radio]:checked+label {
     margin: 0 29.75%;
 }
 
+/*---------------------------------------MY PROFILE--------------------------------------*/
+#display-points {
+    display: inline-block;
+    width: 100px;
+    height: 38px;
+    margin-bottom: 0;
+    padding-top: 6px;
+    border: 1px solid black;
+}
+#trophy {
+    position: absolute;
+    width: 50px;
+    height: 54px;
+    left: -25px;
+    bottom: -8px;
+}
+.popover-body {
+    border: 1px solid #343a40;
+    border-radius: 4px;
+    color: #343a40;
+}
+.bs-popover-auto[x-placement^=top] .arrow::after, .bs-popover-top .arrow::after {
+    border-top-color: #343a40;
+}
+
 
 /*---------------------------------------GAMES LIST--------------------------------------*/
 #new-game-btn {
@@ -200,6 +225,10 @@ li>ol {
 @media screen and (max-width: 500px) {
   .main-logo {
       height: 125px;
+  }
+  #close-btn {
+      right: 8px;
+      left: auto;
   }
 }
 
@@ -225,14 +254,20 @@ li>ol {
 
 
 /*--------------------------------------PLAYERS---------------------------------------*/
+
 #p1, #p2 {
     font-size: 18px;
     padding: 4.5%;
 }
+#p1name, #p2name {
+    font-size: 17px;
+}
+
 .para {
   box-shadow: 5px 5px 0 rgba(0,0,0,.5);
   height: 45px;
-  width: 300px;
+  min-width: 300px;
+  max-width: 370px;
 }
 .para-LIGHT {
   border: 2px solid #28a745;
@@ -249,16 +284,65 @@ li>ol {
   display:inline-block;
   transform: skew(20deg);
 }
-#logout {
+.close-logout-btn {
     position: absolute;
-    right: 24px;
-    top: 60px;
-    z-index:1;
+    left: 8px;
+    top: 8px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
 }
 
 /*----------------------------------BATTLE LOG-----------------------------------*/
+
+#battlelog>.card-dark {
+    background-image: url("images/vader-log.jpg");
+    background-size: cover;
+    color: white;
+    text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+}
+
+#battlelog>.card-light {
+    background-image: url("images/luke-log.jpg");
+    background-size: cover;
+    color: white;
+    text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+}
+
+
+
+#waiting-opponent-card, #place-ships-card {
+    height: 217px;
+}
+#placed-ships-btn {
+    position: absolute;
+    bottom: 0%;
+}
 #salvo-action {
     line-height: 22px;
+}
+#turn-state {
+    height: 37px;
+    line-height: 20px;
+}
+#turn-title {
+    font-size: 25px;
+}
+.battle-log-h2 {
+    border-bottom: 1px solid white;
+    margin: 0 6%;
+}
+.check-my-ships {
+    height: 16px;
+    margin-top: -4px;
+}
+.my-ship-out {
+    text-decoration: line-through;
+    text-decoration-style: wavy;
+}
+#waiting-opponent-ships-card {
+    height: 72px;
+    line-height: 20px;
 }
 /*----------------------------------SALVO GRID DISPLAY-----------------------------------*/
 
@@ -357,7 +441,7 @@ li>ol {
     padding-top: 35px;
     padding-left: 35px;
 }
-.grid-stack-item-content {
+.grab-cursor {
     cursor: -webkit-grab;
     cursor: -moz-grab;
 }
