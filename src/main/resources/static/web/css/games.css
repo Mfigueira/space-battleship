@@ -42,7 +42,15 @@ table {
 
 
 /*----------------------------------BODY AND HEADER-----------------------------------*/
-
+#loading-page-div {
+    z-index: 99;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+}
 .container-fluid {
     min-width: 425px;
     min-height: 821px;

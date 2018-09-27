@@ -96,6 +96,7 @@ function loadData() {
             displaySalvoes(gamePlayerId, gameDTO);
             displayWinLoseDraw(app.viewerGameState);
         }
+        $("#loading-page-div").hide();
     })
     .fail(function () {
         console.log("Failed to get game view data... ");
