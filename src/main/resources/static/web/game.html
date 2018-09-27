@@ -22,7 +22,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
-                        <button id="logout" type="button" class="btn btn-primary">Logout</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href = '/web/games.html';">Home</button>
+                        <button id="logout" type="button" class="btn btn-dark">Logout</button>
                     </div>
                 </div>
             </div>
@@ -33,14 +34,28 @@
                 <img class="main-logo mx-auto d-block" src="css/images/star.png" alt="star-wars-space-battleship-main-logo">
             </div>
         </header>
+
         <section class="row justify-content-center">
             <div id="app" class="col-11 mb-4">
+
+                <!-- ------------------GAME END------------------ -->
+                <div id="end-game" class="display-none">
+                    <button id="end-game-back-btn" type="button" class="btn btn-secondary display-none" onclick="window.location.href = '/web/games.html';">Back to Home</button>
+                    <div id="end-game-lose" class="end-game-letter display-none">YOU LOSE<br>+0 Points</div>
+                    <div id="end-game-win" class="end-game-letter display-none">YOU WIN<br>+3 Points</div>
+                    <div id="end-game-draw" class="end-game-letter display-none">DRAW<br>+1 Point</div>
+                    <div id="end-game-epic" class="end-game-letter display-none">EPIC WIN!<br>+3 Points</div>
+                    <video id="epic-video" class="display-none"><source src="css/audio/ee.mp4" type="video/mp4"></video>
+                </div>
+
                 <img id="close-btn" class="close-logout-btn" src="css/images/close.png" alt="close-btn" data-toggle="modal" data-target="#log-out-modal">
                 <div class="row justify-content-center">
                     <!-- ------------------SECTION COL 1, GAME ACTION------------------ -->
                     <div id="game-state" class="col-auto">
                         <!-- ------------------PLAYERS------------------ -->
-                        <h1>Players</h1>
+                        <h1>
+                            <img src="css/images/players-h1.png">
+                        </h1>
                         <div class="mb-4">
                             <div>
                                 <div id="p1-div" class="parallelogram para">
@@ -55,7 +70,10 @@
                         </div>
 
                         <!-- ------------------BATTLE LOG------------------ -->
-                        <h1>Battlelog</h1>
+                        <h1>
+                            <img src="css/images/battlelog-h1.png">
+                            <span id="turn-title" class="display-none">- Turn <span id="turn-number"></span></span>
+                        </h1>
                         <div id="battlelog">
                             <!-- ------------------WAITING OPPONENT CARD------------------ -->
                             <div id="waiting-opponent-card" class="card mb-2 text-center display-none">
@@ -67,7 +85,7 @@
 
                             <!-- ------------------PLACE SHIPS CARD------------------ -->
                             <div id="place-ships-card" class="card mb-2 text-center display-none">
-                                <h2 class="my-2">Place your Ships</h2>
+                                <h2 class="mt-4 mb-2">Place your Ships</h2>
                                 <div class="card-body pt-1 pb-3">
                                     <div class="mb-2 mx-4">Move with cursor</div>
                                     <div class="mb-2 mx-4">Double click to rotate</div>
@@ -89,10 +107,23 @@
 
                                 <!-- ------------------TURN ACTION------------------ -->
                                 <div id="turn-card" class="display-none">
-                                    <h2 id="turn-title" class="my-1 pt-1 text-center">Turn <span id="turn-number"></span></h2>
-                                    <div id="turn-state" class="card-body text-center pt-0 pb-0"></div>
+                                    <div id="turn-state" class="card-body text-center pt-2"></div>
                                 </div>
 
+                                <!-- ------------------LOSE CARD------------------ -->
+                                <div id="lose-card" class="display-none">
+                                    <div class="text-center">LOSE</div>
+                                </div>
+
+                                <!-- ------------------WIN CARD------------------ -->
+                                <div id="win-card" class="display-none">
+                                    <div class="text-center">WIN</div>
+                                </div>
+
+                                <!-- ------------------DRAW CARD------------------ -->
+                                <div id="draw-card" class="display-none">
+                                    <div class="text-center">DRAW</div>
+                                </div>
 
                                 <!-- ------------------MY SHIPS------------------ -->
                                 <h2 class="my-2 battle-log-h2 pl-2">My Ships</h2>
@@ -149,13 +180,13 @@
                     </div>
                     <!-- ------------------SECTION COL 2, MY SHIPS------------------ -->
                     <div class="col-auto">
-                        <h1 v-if="gameViewerSide === 'DARK'" class="text-center pr-2">
+                        <h1 v-if="gameViewerSide === 'DARK'" class="text-center pr-3">
                             <img class="side-logo-in-game" src="css/images/empire.png">
-                            Empire Fleet
+                            <img class="mb-1" src="css/images/empire-h1.png">
                         </h1>
                         <h1 v-else-if="gameViewerSide === 'LIGHT'" class="text-center pr-3">
-                            <img  class="side-logo-in-game" src="css/images/rebellion.png">
-                            Alliance Fleet
+                            <img class="side-logo-in-game" src="css/images/rebellion.png">
+                            <img class="mb-1" src="css/images/alliance-h1.png">
                         </h1>
                         <!-- ------------------GRIDSTACK FRAMEWORK------------------ -->
                         <div class="grid-ships mx-auto mb-4">
@@ -165,12 +196,10 @@
                     <!-- ------------------SECTION COL 3, SALVOS------------------ -->
                     <div id="salvo-col" class="col-auto display-none">
                         <!-- ------------------SALVOS------------------ -->
-                        <h1>Blasting Grid
-                            <button id="fire-salvo-btn" type="button" class="btn btn-warning py-1 px-4 border border-dark float-right"><b>Fire!</b></button>
+                        <h1>
+                            <img  class="mb-1" src="css/images/target-h1.png">
+                            <button id="fire-salvo-btn" type="button" class="btn btn-warning float-right"></button>
                         </h1>
-                        <audio id="fire-audio">
-                            <source src="css/audio/fire.mp3" type="audio/mp3">
-                        </audio>
                         <!-- ------------------SHIPS REMAINING------------------ -->
                         <div :class="[!(player_2==='') ? 'text-center battle-log card display-block' : 'text-center battle-log card display-none']">
 
@@ -212,7 +241,32 @@
         </section>
         <footer class="row mb-4">
             <div class="col-12 pb-4">
-                <audio id="audio-theme" class="mx-auto d-block" autoplay></audio>
+                <audio id="dark-theme" class="mx-auto d-block"></audio>
+                <audio id="light-theme" class="mx-auto d-block"></audio>
+                <audio id="fire-audio">
+                    <source src="css/audio/fire.mp3" type="audio/mp3">
+                </audio>
+                <audio id="fire-2-audio">
+                    <source src="css/audio/fire-2.mp3" type="audio/mp3">
+                </audio>
+                <audio id="engine-audio">
+                    <source src="css/audio/engine.mp3" type="audio/mp3">
+                </audio>
+
+                <audio id="dark-lose">
+                    <source src="css/audio/dark-lose.mp3" type="audio/mp3">
+                </audio>
+                <audio id="light-lose">
+                    <source src="css/audio/light-lose.mp3" type="audio/mp3">
+                </audio>
+                <audio id="dark-win">
+                    <source src="css/audio/dark-win.mp3" type="audio/mp3">
+                </audio>
+                <audio id="light-win">
+                    <source src="css/audio/light-win.mp3" type="audio/mp3">
+                </audio>
+
+
             </div>
         </footer>
     </div>

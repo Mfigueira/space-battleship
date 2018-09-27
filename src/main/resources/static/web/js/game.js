@@ -1,27 +1,45 @@
 //-------------------------------------------------------VUE FRAMEWORK---------------------------------------------------------
 var app = new Vue({
-  el: "#app",
-  data: {
-    grid: {
-            "numbers": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-            "letters": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
-    },
-    player_1: "",
-    player_2: "",
-    gameViewerSide: "",
-    opponentSide: "",
-    gameViewerShips: [],
-    allShipPositions: [],
-    viewerPlayerId: 0,
-    viewerSalvoTurn: 0,
-    viewerGameState: ""
-  }
+    el: "#app",
+    data: {
+        grid: {
+                "numbers": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+                "letters": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+        },
+        player_1: "",
+        player_2: "",
+        gameViewerSide: "",
+        opponentSide: "",
+        gameViewerShips: [],
+        allShipPositions: [],
+        viewerPlayerId: 0,
+        viewerSalvoTurn: 0,
+        viewerShotsToMake: 0,
+        viewerGameState: "",
+        viewerGamePlayerId: 0,
+        opponentGamePlayerId: 0
+
+    }
 });
 
-//-------------------------------------------------------WHEN DOM READY, CALL LOAD DATA---------------------------------------------------------
+
+//-------------------------------------------------------------WHEN DOM READY, CALL LOAD DATA---------------------------------------------------------
 $(function() {
+    refreshData();
     loadData();
 });
+
+//-------------------------------------------------------------------REFRESH DATA WHEN WAITING OPPONENT MOVE---------------------------------------------------------
+var timerId;
+
+function refreshData() {
+    timerId = setInterval(function() { loadData(); }, 5000);
+}
+
+function stopRefreshing() {
+    clearInterval(timerId);
+}
+
 
 //-------------------------------------------------------MAIN FUNCTION WHEN PAGE LOADS - AJAX GET DATA---------------------------------------------------------
 function loadData() {
@@ -34,26 +52,49 @@ function loadData() {
             $(".container-fluid").addClass("bkg-empire");
             $("#app").addClass("shd-dark");
             $("#battlelog>.card").addClass("card-dark");
-            $("#audio-theme").html('<source src="css/audio/dark-side-theme.mp3" type="audio/mp3">');
+            if (!isDarkPlaying() && !(app.viewerGameState === "WIN" || app.viewerGameState === "LOSE" || app.viewerGameState === "DRAW")) {
+                playDarkTheme();
+            }
+
         } else if (app.gameViewerSide === "LIGHT") {
             $(".container-fluid").addClass("bkg-rebels");
             $("#app").addClass("shd-light");
             $("#battlelog>.card").addClass("card-light");
-            $("#audio-theme").html('<source src="css/audio/light-side-theme.mp3" type="audio/mp3">');
+            if (!isLightPlaying() && !(app.viewerGameState === "WIN" || app.viewerGameState === "LOSE" || app.viewerGameState === "DRAW")) {
+                playLightTheme();
+            }
         }
 
         if (app.viewerGameState === "WAIT_OPPONENT") {
             waitingOpponent();
         } else if (app.viewerGameState === "PLACE_SHIPS") {
-            placeNewShips();
+            stopRefreshing();
+            $("#p1-div").addClass("para-turn");
+            $("#p2-div").removeClass("para-turn");
+            if ( $("#grid").children().length != 5 ) {
+                placeNewShips();
+            }
         } else if (app.viewerGameState === "WAIT_OPPONENT_SHIPS") {
             waitingOpponentShips();
             getShipCol(gameDTO);
-        } else {
-            getShipCol(gameDTO);
 
+        } else if (app.viewerGameState === "ENTER_SALVO" || app.viewerGameState === "WAIT_OPPONENT_SALVO") {
+            $("#waiting-opponent-ships-card").hide();
+            getShipCol(gameDTO);
             displaySalvoTurn(app.viewerGameState);
             displaySalvoes(gamePlayerId, gameDTO);
+
+        } else if (app.viewerGameState === "WIN" || app.viewerGameState === "LOSE" || app.viewerGameState === "DRAW" || app.viewerGameState === "EPIC_WIN") {
+            stopRefreshing();
+            if (app.gameViewerSide === "DARK") {
+                stopDarkTheme();
+            }
+            if (app.gameViewerSide === "LIGHT") {
+                stopLightTheme();
+            }
+            getShipCol(gameDTO);
+            displaySalvoes(gamePlayerId, gameDTO);
+            displayWinLoseDraw(app.viewerGameState);
         }
     })
     .fail(function () {
@@ -81,7 +122,6 @@ function getAllShipLocations(set) {
             app.allShipPositions.push(ship.locations[i]);
         }
     });
-    console.log(app.allShipPositions);
     return;
 }
 //----------------------------------------------------DISPLAY MY SHIPS IN LOG---------------------------------------------------------
@@ -98,11 +138,13 @@ function displayMyShips() {
 function showPlayersByGamePlayerId(id, obj) {
     obj.gamePlayers.map(function (gamePlayer) {
         if (id == gamePlayer.id) {
+            app.viewerGamePlayerId = gamePlayer.id;
             app.player_1 = gamePlayer.player.userName;
             app.viewerPlayerId = gamePlayer.player.id;
             app.gameViewerSide = gamePlayer.player.side;
             app.viewerGameState = gamePlayer.gameState;
             app.viewerSalvoTurn = gamePlayer.salvoTurn;
+            app.viewerShotsToMake = gamePlayer.shotsToMake;
 
             if (gamePlayer.player.side === "LIGHT") {
                 $("#p1").removeClass("text-DARK");
@@ -116,6 +158,7 @@ function showPlayersByGamePlayerId(id, obj) {
                 $("#p1-div").addClass("para-DARK");
             }
         } else if (id != gamePlayer.id) {
+            app.opponentGamePlayerId = gamePlayer.id;
             app.player_2 = gamePlayer.player.userName;
             app.opponentSide = gamePlayer.player.side;
             if (gamePlayer.player.side === "LIGHT") {
@@ -131,12 +174,6 @@ function showPlayersByGamePlayerId(id, obj) {
             }
         }
     });
-}
-
-function reducePlayerFont() {
-    if ($("#p1").width() > 200) {
-        $("#p1").removeClass("larger-text").addClass("shorten");
-    }
 }
 
 //-------------------------------------------------------LOGOUT FUNCTION---------------------------------------------------------
@@ -163,11 +200,17 @@ function getQueryVariable(variable) {
    return(false);
 }
 
-
 //----------------------------------------------------------------WAITING OPPONENT----------------------------------------------------------------
-
 function waitingOpponent() {
+    $("#p1-div").addClass("para-turn");
     $("#waiting-opponent-card").show();
+}
+
+function waitingOpponentShips() {
+    $("#p1-div").removeClass("para-turn");
+    $("#p2-div").addClass("para-turn");
+    $("#fire-card").show();
+    $("#waiting-opponent-ships-card").show();
 }
 
 //----------------------------------------------------------------AJAX POST NEW SHIPS-----------------------------------------------------------------
@@ -180,8 +223,10 @@ function postShips(shipTypeAndCells) {
       contentType: "application/json"
     })
     .done(function (response) {
+      playEngineSound();
       loadData();
       console.log( "Ships added: " + response );
+      refreshData();
     })
     .fail(function () {
       console.log("Failed to add ships... ");
@@ -271,64 +316,64 @@ function setListener(grid) {
         var shipImgId = $(this).children().attr("id");
         switch (shipImgId) {
             case "dark-cruiser-img-v":
-                $(this).children().attr("id", "dark-cruiser-img-h").attr("src", "css/images/icons/dark-cruiser-h.png");
+                $(this).children().attr("id", "dark-cruiser-img-h");
                 break;
             case "dark-cruiser-img-h":
-                $(this).children().attr("id", "dark-cruiser-img-v").attr("src", "css/images/icons/dark-cruiser-v.png");
+                $(this).children().attr("id", "dark-cruiser-img-v");
                 break;
             case "dark-destroyer-img-h":
-                $(this).children().attr("id", "dark-destroyer-img-v").attr("src", "css/images/icons/dark-destroyer-v.png");
+                $(this).children().attr("id", "dark-destroyer-img-v");
                 break;
             case "dark-destroyer-img-v":
-                $(this).children().attr("id", "dark-destroyer-img-h").attr("src", "css/images/icons/dark-destroyer-h.png");
+                $(this).children().attr("id", "dark-destroyer-img-h");
                 break;
             case "dark-bomber-img-v":
-                $(this).children().attr("id", "dark-bomber-img-h").attr("src", "css/images/icons/dark-bomber-h.png");
+                $(this).children().attr("id", "dark-bomber-img-h");
                 break;
             case "dark-bomber-img-h":
-                $(this).children().attr("id", "dark-bomber-img-v").attr("src", "css/images/icons/dark-bomber-v.png");
+                $(this).children().attr("id", "dark-bomber-img-v");
                 break;
             case "dark-fighter-img-h":
-                $(this).children().attr("id", "dark-fighter-img-v").attr("src", "css/images/icons/dark-fighter-v.png");
+                $(this).children().attr("id", "dark-fighter-img-v");
                 break;
             case "dark-fighter-img-v":
-                $(this).children().attr("id", "dark-fighter-img-h").attr("src", "css/images/icons/dark-fighter-h.png");
+                $(this).children().attr("id", "dark-fighter-img-h");
                 break;
             case "dark-starfighter-img-v":
-                $(this).children().attr("id", "dark-starfighter-img-h").attr("src", "css/images/icons/dark-starfighter-h.png");
+                $(this).children().attr("id", "dark-starfighter-img-h");
                 break;
             case "dark-starfighter-img-h":
-                $(this).children().attr("id", "dark-starfighter-img-v").attr("src", "css/images/icons/dark-starfighter-v.png");
+                $(this).children().attr("id", "dark-starfighter-img-v");
                 break;
             case "light-cruiser-img-v":
-                $(this).children().attr("id", "light-cruiser-img-h").attr("src", "css/images/icons/light-cruiser-h.png");
+                $(this).children().attr("id", "light-cruiser-img-h");
                 break;
             case "light-cruiser-img-h":
-                $(this).children().attr("id", "light-cruiser-img-v").attr("src", "css/images/icons/light-cruiser-v.png");
+                $(this).children().attr("id", "light-cruiser-img-v");
                 break;
             case "light-destroyer-img-h":
-                $(this).children().attr("id", "light-destroyer-img-v").attr("src", "css/images/icons/light-destroyer-v.png");
+                $(this).children().attr("id", "light-destroyer-img-v");
                 break;
             case "light-destroyer-img-v":
-                $(this).children().attr("id", "light-destroyer-img-h").attr("src", "css/images/icons/light-destroyer-h.png");
+                $(this).children().attr("id", "light-destroyer-img-h");
                 break;
             case "light-bomber-img-v":
-                $(this).children().attr("id", "light-bomber-img-h").attr("src", "css/images/icons/light-bomber-h.png");
+                $(this).children().attr("id", "light-bomber-img-h");
                 break;
             case "light-bomber-img-h":
-                $(this).children().attr("id", "light-bomber-img-v").attr("src", "css/images/icons/light-bomber-v.png");
+                $(this).children().attr("id", "light-bomber-img-v");
                 break;
             case "light-fighter-img-h":
-                $(this).children().attr("id", "light-fighter-img-v").attr("src", "css/images/icons/light-fighter-v.png");
+                $(this).children().attr("id", "light-fighter-img-v");
                 break;
             case "light-fighter-img-v":
-                $(this).children().attr("id", "light-fighter-img-h").attr("src", "css/images/icons/light-fighter-h.png");
+                $(this).children().attr("id", "light-fighter-img-h");
                 break;
             case "light-starfighter-img-v":
-                $(this).children().attr("id", "light-starfighter-img-h").attr("src", "css/images/icons/light-starfighter-h.png");
+                $(this).children().attr("id", "light-starfighter-img-h");
                 break;
             case "light-starfighter-img-h":
-                $(this).children().attr("id", "light-starfighter-img-v").attr("src", "css/images/icons/light-starfighter-v.png");
+                $(this).children().attr("id", "light-starfighter-img-v");
                 break;
             default:
                 break;
@@ -338,7 +383,9 @@ function setListener(grid) {
 
 //-------------------------------------------------------PLACE NEW SHIPS WITH GRIDSTACK FRAMEWORK---------------------------------------------------------
 function placeNewShips() {
+    $("#waiting-opponent-card").hide();
     $("#place-ships-card").show();
+
 
     var options = {
         //grilla de 10 x 10
@@ -365,32 +412,31 @@ function placeNewShips() {
     var grid = $('#grid').data('gridstack');
 
     if (app.gameViewerSide === "DARK") {
-        grid.addWidget($('<div><img id="dark-cruiser-img-v" class="grid-stack-item-content grab-cursor" src="css/images/icons/dark-cruiser-v.png" alt="cruiser"></div>'),
+        grid.addWidget($('<div><div id="dark-cruiser-img-v" class="grid-stack-item-content grab-cursor" alt="cruiser"></div></div>'),
         1, 0, 1, 5, false);
-        grid.addWidget($('<div><img id="dark-destroyer-img-h" class="grid-stack-item-content grab-cursor" src="css/images/icons/dark-destroyer-h.png" alt="destroyer"></div>'),
+        grid.addWidget($('<div><div id="dark-destroyer-img-h" class="grid-stack-item-content grab-cursor" alt="destroyer"></div></div>'),
         5, 1, 4, 1, false);
-        grid.addWidget($('<div><img id="dark-bomber-img-v" class="grid-stack-item-content grab-cursor" src="css/images/icons/dark-bomber-v.png" alt="bomber"></div>'),
+        grid.addWidget($('<div><div id="dark-bomber-img-v" class="grid-stack-item-content grab-cursor" alt="bomber"></div></div>'),
         4, 3, 1, 3, false);
-        grid.addWidget($('<div><img id="dark-fighter-img-v" class="grid-stack-item-content grab-cursor" src="css/images/icons/dark-fighter-v.png" alt="fighter"></div>'),
+        grid.addWidget($('<div><div id="dark-fighter-img-v" class="grid-stack-item-content grab-cursor" alt="fighter"></div></div>'),
         2, 6, 1, 3, false);
-        grid.addWidget($('<div><img id="dark-starfighter-img-h" class="grid-stack-item-content grab-cursor" src="css/images/icons/dark-starfighter-h.png" alt="starFighter"></div>'),
+        grid.addWidget($('<div><div id="dark-starfighter-img-h" class="grid-stack-item-content grab-cursor" alt="starFighter"></div></div>'),
         6, 7, 2, 1, false);
 
     } else if (app.gameViewerSide === "LIGHT") {
-        grid.addWidget($('<div><img id="light-cruiser-img-v" class="grid-stack-item-content grab-cursor" src="css/images/icons/light-cruiser-v.png" alt="cruiser"></div>'),
+        grid.addWidget($('<div><div id="light-cruiser-img-v" class="grid-stack-item-content grab-cursor" alt="cruiser"></div></div>'),
         1, 0, 1, 5, false);
-        grid.addWidget($('<div><img id="light-destroyer-img-v" class="grid-stack-item-content grab-cursor" src="css/images/icons/light-destroyer-v.png" alt="destroyer"></div>'),
+        grid.addWidget($('<div><div id="light-destroyer-img-v" class="grid-stack-item-content grab-cursor" alt="destroyer"></div></div>'),
         8, 2, 1, 4, false);
-        grid.addWidget($('<div><img id="light-bomber-img-v" class="grid-stack-item-content grab-cursor" src="css/images/icons/light-bomber-v.png" alt="bomber"></div>'),
+        grid.addWidget($('<div><div id="light-bomber-img-v" class="grid-stack-item-content grab-cursor" alt="bomber"></div></div>'),
         4, 2, 1, 3, false);
-        grid.addWidget($('<div><img id="light-fighter-img-h" class="grid-stack-item-content grab-cursor" src="css/images/icons/light-fighter-h.png" alt="fighter"></div>'),
+        grid.addWidget($('<div><div id="light-fighter-img-h" class="grid-stack-item-content grab-cursor" alt="fighter"></div></div>'),
         1, 7, 3, 1, false);
-        grid.addWidget($('<div><img id="light-starfighter-img-v" class="grid-stack-item-content grab-cursor" src="css/images/icons/light-starfighter-v.png" alt="starFighter"></div>'),
+        grid.addWidget($('<div><div id="light-starfighter-img-v" class="grid-stack-item-content grab-cursor" alt="starFighter"></div></div>'),
         6, 7, 1, 2, false);
     }
     setListener(grid);
 }
-
 
 //-------------------------------------------------------LOAD SHIPS FROM BACKEND WITH GRIDSTACK FRAMEWORK---------------------------------------------------------
 function placeShipsFromBackEnd() {
@@ -437,42 +483,42 @@ function placeShipsFromBackEnd() {
         if (app.gameViewerSide === "DARK") {
             if (ship.type === "cruiser") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="dark-cruiser-img-h" class="grid-stack-item-content" src="css/images/icons/dark-cruiser-h.png" alt="cruiser"></div>'),
+                    grid.addWidget($('<div><div id="dark-cruiser-img-h" class="grid-stack-item-content" alt="cruiser"></div></div>'),
                     xInGrid, yInGrid, 5, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="dark-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/dark-cruiser-v.png" alt="cruiser"></div>'),
+                    grid.addWidget($('<div><div id="dark-cruiser-img-v" class="grid-stack-item-content" alt="cruiser"></div></div>'),
                     xInGrid, yInGrid, 1, 5, false);
                 }
             } else if (ship.type === "destroyer") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="dark-destroyer-img-h" class="grid-stack-item-content" src="css/images/icons/dark-destroyer-h.png" alt="destroyer"></div>'),
+                    grid.addWidget($('<div><div id="dark-destroyer-img-h" class="grid-stack-item-content" alt="destroyer"></div></div>'),
                     xInGrid, yInGrid, 4, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="dark-destroyer-img-v" class="grid-stack-item-content" src="css/images/icons/dark-destroyer-v.png" alt="destroyer"></div>'),
+                    grid.addWidget($('<div><div id="dark-destroyer-img-v" class="grid-stack-item-content" alt="destroyer"></div></div>'),
                     xInGrid, yInGrid, 1, 4, false);
                 }
             } else if (ship.type === "bomber") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="dark-bomber-img-h" class="grid-stack-item-content" src="css/images/icons/dark-bomber-h.png" alt="bomber"></div>'),
+                    grid.addWidget($('<div><div id="dark-bomber-img-h" class="grid-stack-item-content" alt="bomber"></div></div>'),
                     xInGrid, yInGrid, 3, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="dark-bomber-img-v" class="grid-stack-item-content" src="css/images/icons/dark-bomber-v.png" alt="bomber"></div>'),
+                    grid.addWidget($('<div><div id="dark-bomber-img-v" class="grid-stack-item-content" alt="bomber"></div></div>'),
                     xInGrid, yInGrid, 1, 3, false);
                 }
             } else if (ship.type === "fighter") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="dark-fighter-img-h" class="grid-stack-item-content" src="css/images/icons/dark-fighter-h.png" alt="fighter"></div>'),
+                    grid.addWidget($('<div><div id="dark-fighter-img-h" class="grid-stack-item-content" alt="fighter"></div></div>'),
                     xInGrid, yInGrid, 3, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="dark-fighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-fighter-v.png" alt="fighter"></div>'),
+                    grid.addWidget($('<div><div id="dark-fighter-img-v" class="grid-stack-item-content" alt="fighter"></div></div>'),
                     xInGrid, yInGrid, 1, 3, false);
                 }
             } else if (ship.type === "starFighter") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="dark-starfighter-img-h" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-h.png" alt="starFighter"></div>'),
+                    grid.addWidget($('<div><div id="dark-starfighter-img-h" class="grid-stack-item-content" alt="starFighter"></div></div>'),
                     xInGrid, yInGrid, 2, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="dark-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/dark-starfighter-v.png" alt="starFighter"></div>'),
+                    grid.addWidget($('<div><div id="dark-starfighter-img-v" class="grid-stack-item-content" alt="starFighter"></div></div>'),
                     xInGrid, yInGrid, 1, 2, false);
                 }
             }
@@ -480,42 +526,42 @@ function placeShipsFromBackEnd() {
         } else if (app.gameViewerSide === "LIGHT") {
             if (ship.type === "cruiser") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="light-cruiser-img-h" class="grid-stack-item-content" src="css/images/icons/light-cruiser-h.png" alt="cruiser"></div>'),
+                    grid.addWidget($('<div><div id="light-cruiser-img-h" class="grid-stack-item-content" alt="cruiser"></div></div>'),
                     xInGrid, yInGrid, 5, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="light-cruiser-img-v" class="grid-stack-item-content" src="css/images/icons/light-cruiser-v.png" alt="cruiser"></div>'),
+                    grid.addWidget($('<div><div id="light-cruiser-img-v" class="grid-stack-item-content" alt="cruiser"></div></div>'),
                     xInGrid, yInGrid, 1, 5, false);
                 }
             } else if (ship.type === "destroyer") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="light-destroyer-img-h" class="grid-stack-item-content" src="css/images/icons/light-destroyer-h.png" alt="destroyer"></div>'),
+                    grid.addWidget($('<div><div id="light-destroyer-img-h" class="grid-stack-item-content" alt="destroyer"></div></div>'),
                     xInGrid, yInGrid, 4, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="light-destroyer-img-v" class="grid-stack-item-content" src="css/images/icons/light-destroyer-v.png" alt="destroyer"></div>'),
+                    grid.addWidget($('<div><div id="light-destroyer-img-v" class="grid-stack-item-content" alt="destroyer"></div></div>'),
                     xInGrid, yInGrid, 1, 4, false);
                 }
             } else if (ship.type === "bomber") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="light-bomber-img-h" class="grid-stack-item-content" src="css/images/icons/light-bomber-h.png" alt="bomber"></div>'),
+                    grid.addWidget($('<div><div id="light-bomber-img-h" class="grid-stack-item-content" alt="bomber"></div></div>'),
                     xInGrid, yInGrid, 3, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="light-bomber-img-v" class="grid-stack-item-content" src="css/images/icons/light-bomber-v.png" alt="bomber"></div>'),
+                    grid.addWidget($('<div><div id="light-bomber-img-v" class="grid-stack-item-content" alt="bomber"></div></div>'),
                     xInGrid, yInGrid, 1, 3, false);
                 }
             } else if (ship.type === "fighter") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="light-fighter-img-h" class="grid-stack-item-content" src="css/images/icons/light-fighter-h.png" alt="fighter"></div>'),
+                    grid.addWidget($('<div><div id="light-fighter-img-h" class="grid-stack-item-content" alt="fighter"></div></div>'),
                     xInGrid, yInGrid, 3, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="light-fighter-img-v" class="grid-stack-item-content" src="css/images/icons/light-fighter-v.png" alt="fighter"></div>'),
+                    grid.addWidget($('<div><div id="light-fighter-img-v" class="grid-stack-item-content" alt="fighter"></div></div>'),
                     xInGrid, yInGrid, 1, 3, false);
                 }
             } else if (ship.type === "starFighter") {
                 if (ship.position === "Horizontal") {
-                    grid.addWidget($('<div><img id="light-starfighter-img-h" class="grid-stack-item-content" src="css/images/icons/light-starfighter-h.png" alt="starFighter"></div>'),
+                    grid.addWidget($('<div><div id="light-starfighter-img-h" class="grid-stack-item-content" alt="starFighter"></div></div>'),
                     xInGrid, yInGrid, 2, 1, false);
                 } else if (ship.position === "Vertical") {
-                    grid.addWidget($('<div><img id="light-starfighter-img-v" class="grid-stack-item-content" src="css/images/icons/light-starfighter-v.png" alt="starFighter"></div>'),
+                    grid.addWidget($('<div><div id="light-starfighter-img-v" class="grid-stack-item-content" alt="starFighter"></div></div>'),
                     xInGrid, yInGrid, 1, 2, false);
                 }
             }
@@ -528,20 +574,90 @@ function displaySalvoTurn(gameState) {
 
     $("#fire-card").show();
     $("#turn-card").show();
+    $("#turn-title").show();
     $("#turn-number").html(app.viewerSalvoTurn);
 
     if (gameState === "WAIT_OPPONENT_SALVO") {
-        $("#turn-state").html("Wait Enemy Fire...")
+        $("#p1-div").removeClass("para-turn");
+        $("#p2-div").addClass("para-turn");
+        $("#fire-salvo-btn").html("Wait...").attr("disabled", true);
+        $("#turn-state").html("Wait Enemy Fire...");
     } else if (gameState === "ENTER_SALVO") {
-        $("#turn-state").html("Aim 1 to 5 spots on <b>Blasting Grid</b>.<br><b>Fire</b> when Ready.")
+        if (!(app.viewerSalvoTurn===1&&app.viewerGamePlayerId<app.opponentGamePlayerId)) {
+            playFire2();
+        }
+        $("#p1-div").addClass("para-turn");
+        $("#p2-div").removeClass("para-turn");
+        $("#fire-salvo-btn").html("<b>Fire!</b>").attr("disabled", false);
+        stopRefreshing();
+        if (app.viewerShotsToMake > 1) {
+            $("#turn-state").html("Aim at "+app.viewerShotsToMake+" cells on<br><b>Target Grid</b>.<br><b>Fire</b> when Ready.");
+        } else if (app.viewerShotsToMake === 1) {
+            $("#turn-state").html("Aim at "+app.viewerShotsToMake+" cell on<br> <b>Target Grid</b>.<br><b>Fire</b> when Ready.");
+        }
     }
 }
 
-function waitingOpponentShips() {
-    $("#fire-card").show();
-    $("#waiting-opponent-ships-card").show();
-}
+//-------------------------------------------------------CHANGE SALVO CURRENT TURN---------------------------------------------------------
+function displayWinLoseDraw(gameState) {
+        if (app.viewerGamePlayerId<app.opponentGamePlayerId) {
+            playFire2();
+        }
+        $("#p1-div").removeClass("para-turn");
+        $("#p2-div").removeClass("para-turn");
+        $("#fire-salvo-btn").html("Ended").attr("disabled", true);
+        $("#fire-card").show();
+        $("#turn-title").hide();
+        $("#turn-card").hide();
 
+        if (gameState === "WIN") {
+            $("#win-card").show();
+            if (app.gameViewerSide==="DARK") {
+                $("#end-game").addClass("end-dark").show();
+                playDarkWin();
+            } else if (app.gameViewerSide==="LIGHT") {
+                $("#end-game").addClass("end-light").show();
+                playLightWin();
+            }
+            setTimeout(function(){ $("#end-game-win").show(); }, 3500);
+            setTimeout(function(){ $("#end-game-back-btn").show(); }, 5000);
+
+        } else if (gameState === "LOSE") {
+            $("#lose-card").show();
+            if (app.gameViewerSide==="DARK") {
+                $("#end-game").addClass("end-dark").show();
+                setTimeout(function(){ playDarkLose(); }, 3500);
+            } else if (app.gameViewerSide==="LIGHT") {
+                $("#end-game").addClass("end-light").show();
+                setTimeout(function(){ playLightLose(); }, 3000);
+            }
+            setTimeout(function(){ $("#end-game-lose").show(); }, 3500);
+            setTimeout(function(){ $("#end-game-back-btn").show(); }, 5000);
+
+
+
+        } else if (gameState === "DRAW") {
+            $("#draw-card").show();
+
+            if (app.gameViewerSide==="DARK") {
+                $("#end-game").addClass("end-dark").show();
+            } else if (app.gameViewerSide==="LIGHT") {
+                $("#end-game").addClass("end-light").show();
+            }
+            setTimeout(function(){ $("#end-game-draw").show(); }, 3500);
+            setTimeout(function(){ $("#end-game-back-btn").show(); }, 5000);
+
+        } else if (gameState === "EPIC_WIN") {
+            $("#win-card").show();
+            $("#end-game").addClass("end-dark").show();
+            playDarkWin();
+
+            setTimeout(function(){ $("#end-game-epic").show(); }, 3500);
+            setTimeout(function(){ $("#epic-video").show(); }, 8000);
+            setTimeout(function(){ playEpic(); }, 9000);
+            setTimeout(function(){ $("#end-game-back-btn").show(); }, 52000);
+        }
+}
 
 //----------------------------------------------------------------AJAX POST SALVOS-----------------------------------------------------------------
 function postSalvos(salvoJSON) {
@@ -553,42 +669,39 @@ function postSalvos(salvoJSON) {
         contentType: "application/json"
     })
     .done(function (response) {
-        if ($("#salvo-action").hasClass("game-play-alert")) {
-            $("#salvo-action").removeClass("game-play-alert");
+        if ($("#turn-state").hasClass("game-play-alert")) {
+            $("#turn-state").removeClass("game-play-alert");
         }
         loadData();
         console.log( "Salvo added: " + response );
+        refreshData();
     })
     .fail(function () {
         console.log("Failed to add salvo... ");
     })
 }
 
-//----------------------------------------------FIRE SOUND----------------------------------------------
-function playFireSound() {
-   var fireAudio = document.getElementById("fire-audio");
-   fireAudio.play();
-}
-//-------------------------------------------------------WHEN SHIPS CREATED...---------------------------------------------------------
 
-    //-------------------------------------------------------CREATE SALVOS IN GRID---------------------------------------------------------
-    $("#salvo-body > tr > td").click(function() {
-        if ( $(this).children().hasClass("spark-salvo") || $(this).hasClass("grid-letter")) {
+//-------------------------------------------------------EVENT CLICK AIM ON GRID---------------------------------------------------------
+$("#salvo-body > tr > td").click(function () {
+    if (app.viewerGameState === "ENTER_SALVO") {
+        if ( $(this).children().hasClass("cross-salvo") || $(this).children().hasClass("spark-salvo") || $(this).hasClass("grid-letter")) {
             return;
         } else if ( $(this).children().hasClass("aim-img") ) {
             $(this).html("");
-        } else if ( $(".aim-img").length < 5 ) {
+        } else if ( $(".aim-img").length < app.viewerShotsToMake ) {
             var letter = $(this).parent().attr("class");
             var number = $(this).attr("class");
             var cell = letter+number;
 
-            $(this).html("<img data-cell='"+cell+"'class='aim-img' src='css/images/aim.png'>");
+            $(this).html("<div data-cell='"+cell+"'class='aim-img'></div>");
         }
-    })
+    }
+})
     //-------------------------------------------------ON CLICK FIRE - POST NEW SALVO------------------------------------------------------
-    $("#salvo-col").on("click", "#fire-salvo-btn", function(){
+    $("#salvo-col").on("click", "#fire-salvo-btn", function() {
 
-        if ( $(".aim-img").length != 0 && $(".aim-img").length <= 5 ) {
+        if ( $(".aim-img").length === app.viewerShotsToMake ) {
             var salvoJSON = {};
             var turn = $("#turn-number").text();
             var shots = [];
@@ -601,8 +714,10 @@ function playFireSound() {
             postSalvos(salvoJSON);
 
         } else {
-            if (!$("#salvo-action").hasClass("game-play-alert")) {
-                $("#salvo-action").addClass("game-play-alert");
+            if (!$("#turn-state").hasClass("game-play-alert")) {
+            // aca no va ningun mensaje
+                $("#turn-state").addClass("game-play-alert");
+                //BUSCAR UN AUDIO PARA TIRAR ACA SI NO PUSISTE TODOS LOS TIROS!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
         }
     })
@@ -612,6 +727,7 @@ function playFireSound() {
 function displaySalvoes(gamePlayerId, gameDTO) {
 
     $("#salvo-col").show();
+    $(".hitsAndMissesAbsoluteDiv").remove();
 
     for (var i=0;i<gameDTO.gamePlayers.length;i++){
 
@@ -626,9 +742,9 @@ function displaySalvoes(gamePlayerId, gameDTO) {
                         var numberP1 = salvo.locations[e].substring(1, 3);
 
                         if (salvo.hits.indexOf(salvo.locations[e]) != -1) {
-                           $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").html('<img class="spark-salvo" src="css/images/spark.gif">');
+                           $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").html('<div class="spark-salvo"></div>');
                         } else {
-                           $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").html('<img class="spark-salvo" src="css/images/cross.png">');
+                           $("#salvo-body>."+letterP1+" td:eq("+numberP1+")").html('<div class="cross-salvo"></div>');
                         }
                     }
                     // --------------------------------------------------- SINKS ----------------------------------------------------
@@ -708,9 +824,9 @@ function displaySalvoes(gamePlayerId, gameDTO) {
                         }
 
                         if ( app.allShipPositions.indexOf(salvo.locations[h]) != -1 ) {
-                           $('#grid').append('<div style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><img class="spark" src="css/images/spark.gif"></div>');
+                           $('#grid').append('<div class="hitsAndMissesAbsoluteDiv" style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><div class="spark"></div></div>');
                         } else {
-                           $('#grid').append('<div style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><img class="spark" src="css/images/cross.png"></div>');
+                           $('#grid').append('<div class="hitsAndMissesAbsoluteDiv" style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><div class="cross"></div></div>');
                         }
                     }
                     // --------------------------------------------------- MY SINKS ----------------------------------------------------
@@ -759,4 +875,89 @@ function displaySalvoes(gamePlayerId, gameDTO) {
             break;
         }
     }
+}
+
+
+
+
+
+//---------------------------------------------- SOUND EFFECTS ----------------------------------------------
+function playFireSound() {
+   var fireAudio = document.getElementById("fire-audio");
+   fireAudio.play();
+}
+function playFire2() {
+   var fireAudio = document.getElementById("fire-2-audio");
+   fireAudio.play();
+}
+function playEngineSound() {
+   var engineAudio = document.getElementById("engine-audio");
+   engineAudio.play();
+}
+function playDarkLose() {
+   var darkLose = document.getElementById("dark-lose");
+   darkLose.play();
+}
+function playLightLose() {
+   var lightLose = document.getElementById("light-lose");
+   lightLose.play();
+}
+function playDarkWin() {
+   var darkWin = document.getElementById("dark-win");
+   darkWin.play();
+}
+function playLightWin() {
+   var lightWin = document.getElementById("light-win");
+   lightWin.play();
+}
+function playEpic() {
+   var epicVid = document.getElementById("epic-video");
+   epicVid.play();
+}
+//----------------------------------------------LIGHT THEME----------------------------------------------
+function playLightTheme() {
+   var random = Math.floor((Math.random() * 3) + 1);
+   var lightTheme = document.getElementById("light-theme");
+
+   if (random === 1) {
+      $("#light-theme").html('<source src="css/audio/light-theme-1.mp3" type="audio/mp3">');
+   } else if (random === 2) {
+      $("#light-theme").html('<source src="css/audio/light-theme-2.mp3" type="audio/mp3">');
+   } else if (random === 3) {
+      $("#light-theme").html('<source src="css/audio/light-theme-3.mp3" type="audio/mp3">');
+   }
+   lightTheme.play();
+}
+function stopLightTheme() {
+   var lightTheme = document.getElementById("light-theme");
+   lightTheme.pause();
+   lightTheme.currentTime = 0;
+}
+function isLightPlaying() {
+    var audio = document.getElementById("light-theme");
+    return !audio.paused;
+}
+//----------------------------------------------DARK THEME----------------------------------------------
+function playDarkTheme() {
+   var random = Math.floor((Math.random() * 3) + 1);
+   var darkTheme = document.getElementById("dark-theme");
+
+   if (random === 1) {
+      $("#dark-theme").html('<source src="css/audio/dark-theme-1.mp3" type="audio/mp3">');
+   } else if (random === 2) {
+      $("#dark-theme").html('<source src="css/audio/dark-theme-2.mp3" type="audio/mp3">');
+   } else if (random === 3) {
+      $("#dark-theme").html('<source src="css/audio/dark-theme-3.mp3" type="audio/mp3">');
+   }
+   darkTheme.play();
+}
+
+function stopDarkTheme() {
+   var darkTheme = document.getElementById("dark-theme");
+   darkTheme.pause();
+   darkTheme.currentTime = 0;
+}
+function isDarkPlaying() {
+    var audio = document.getElementById("dark-theme");
+    return !audio.paused;
 }

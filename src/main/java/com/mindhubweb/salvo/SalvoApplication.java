@@ -1,5 +1,10 @@
 package com.mindhubweb.salvo;
 
+import com.mindhubweb.salvo.Model.*;
+import com.mindhubweb.salvo.Repositories.GamePlayerRepository;
+import com.mindhubweb.salvo.Repositories.GameRepository;
+import com.mindhubweb.salvo.Repositories.PlayerRepository;
+import com.mindhubweb.salvo.Repositories.ScoreRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,6 +33,7 @@ public class SalvoApplication {
 			Player p4 = new Player("T_almeida", "t.almeida@ctu.gov", "mole", Side.LIGHT);
 			playerRepository.save(p4);
 
+
 			//---------------------------save some games-----------------------------------
 
 			Game g1 = new Game(LocalDateTime.now());
@@ -40,12 +46,6 @@ public class SalvoApplication {
 			gameRepository.save(g4);
 			Game g5 = new Game(LocalDateTime.now().plusSeconds(7200));
 			gameRepository.save(g5);
-			Game g6 = new Game(LocalDateTime.now().plusSeconds(7200));
-			gameRepository.save(g6);
-			Game g7 = new Game(LocalDateTime.now().plusSeconds(7200));
-			gameRepository.save(g7);
-			Game g8 = new Game(LocalDateTime.now().plusSeconds(7200));
-			gameRepository.save(g8);
 
 
 			//---------------------------save some ships-----------------------------------
@@ -57,7 +57,7 @@ public class SalvoApplication {
 			String bomber = "bomber";
 
 			Set<Ship> shipSet1 = new HashSet<>();
-			shipSet1.add(new Ship (cruiser, new ArrayList<>(Arrays.asList("H1", "H2", "H3", "H4", "H5"))));
+			shipSet1.add(new Ship(cruiser, new ArrayList<>(Arrays.asList("H1", "H2", "H3", "H4", "H5"))));
 			shipSet1.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("D2", "D3"))));
 			shipSet1.add(new Ship (fighter, new ArrayList<>(Arrays.asList("A8", "A9", "A10"))));
 			shipSet1.add(new Ship (destroyer, new ArrayList<>(Arrays.asList("C4", "C5", "C6", "C7"))));
@@ -86,14 +86,14 @@ public class SalvoApplication {
 			//---------------------------save some salvoes-----------------------------------
 
 			Set<Salvo> salvoes1 = new HashSet<>();
-			salvoes1.add(new Salvo (1, new ArrayList<>(Arrays.asList("H1", "D3", "A3"))));
-			salvoes1.add(new Salvo (2, new ArrayList<>(Arrays.asList("G5", "F2", "F3"))));
-			salvoes1.add(new Salvo (3, new ArrayList<>(Arrays.asList("D2", "H5", "H4"))));
+			salvoes1.add(new Salvo (1, new ArrayList<>(Arrays.asList("H1", "D3", "A3", "A9", "A8"))));
+			salvoes1.add(new Salvo (2, new ArrayList<>(Arrays.asList("G5", "F2", "F3", "A10", "H2"))));
+			salvoes1.add(new Salvo (3, new ArrayList<>(Arrays.asList("D2", "H5", "H4", "F10", "F9"))));
 
 			Set<Salvo> salvoes2 = new HashSet<>();
-			salvoes2.add(new Salvo (1, new ArrayList<>(Arrays.asList("A9", "A8", "A5"))));
-			salvoes2.add(new Salvo (2, new ArrayList<>(Arrays.asList("A10", "H2", "I2"))));
-			salvoes2.add(new Salvo (3, new ArrayList<>(Arrays.asList("F10", "F2", "A1"))));
+			salvoes2.add(new Salvo (1, new ArrayList<>(Arrays.asList("A9", "A8", "A5", "D2", "H5"))));
+			salvoes2.add(new Salvo (2, new ArrayList<>(Arrays.asList("A10", "H2", "I2", "D1", "D3"))));
+			salvoes2.add(new Salvo (3, new ArrayList<>(Arrays.asList("F10", "F2", "A1", "A2", "A3"))));
 
 			Set<Salvo> salvoes3 = new HashSet<>();
 			salvoes3.add(new Salvo (1, new ArrayList<>(Arrays.asList("C4", "C5", "C3", "C7", "C8"))));
@@ -104,7 +104,7 @@ public class SalvoApplication {
 			salvoes4.add(new Salvo (2, new ArrayList<>(Arrays.asList("A5", "C5", "D5"))));
 
 			Set<Salvo> salvoes5 = new HashSet<>();
-			salvoes5.add(new Salvo (1, new ArrayList<>(Arrays.asList("D2"))));
+			salvoes5.add(new Salvo (1, new ArrayList<>(Arrays.asList("D2", "D3"))));
 			salvoes5.add(new Salvo (2, new ArrayList<>(Arrays.asList("A10", "B10", "A5"))));
 
 
@@ -120,23 +120,17 @@ public class SalvoApplication {
 			gamePlayerRepository.save(new GamePlayer(g4, p1, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
 			gamePlayerRepository.save(new GamePlayer(g5, p4, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
 			gamePlayerRepository.save(new GamePlayer(g5, p1, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g6, p3, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g7, p4, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g8, p2, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g8, p4, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
 
 
 			//---------------------------save some scores-----------------------------------
-			scoreRepository.save(new Score(g1, p1, 1, LocalDateTime.now()));
-			scoreRepository.save(new Score(g1, p2, 0, LocalDateTime.now()));
-			scoreRepository.save(new Score(g2, p3, 0.5f, LocalDateTime.now()));
-			scoreRepository.save(new Score(g2, p4, 0.5f, LocalDateTime.now()));
-			scoreRepository.save(new Score(g3, p2, 1, LocalDateTime.now()));
+			scoreRepository.save(new Score(g2, p3, 1, LocalDateTime.now()));
+			scoreRepository.save(new Score(g2, p4, 1, LocalDateTime.now()));
+			scoreRepository.save(new Score(g3, p2, 3, LocalDateTime.now()));
 			scoreRepository.save(new Score(g3, p4, 0, LocalDateTime.now()));
-			scoreRepository.save(new Score(g4, p2, 0.5f, LocalDateTime.now()));
-			scoreRepository.save(new Score(g4, p1, 0.5f, LocalDateTime.now()));
+			scoreRepository.save(new Score(g4, p2, 1, LocalDateTime.now()));
+			scoreRepository.save(new Score(g4, p1, 1, LocalDateTime.now()));
 			scoreRepository.save(new Score(g5, p4, 0, LocalDateTime.now()));
-			scoreRepository.save(new Score(g5, p1, 1, LocalDateTime.now()));
+			scoreRepository.save(new Score(g5, p1, 3, LocalDateTime.now()));
 
 		};
 	}

@@ -20,7 +20,6 @@
                     <article class="starwars">
                         <!-- --------------------------- OPENING AUDIO ----------------------------- -->
                         <audio id="opening-audio" preload="auto">
-                            <source src="https://s.cdpn.io/1202/Star_Wars_original_opening_crawl_1977.ogg" type="audio/ogg" />
                             <source src="https://s.cdpn.io/1202/Star_Wars_original_opening_crawl_1977.mp3" type="audio/mpeg" />
                         </audio>
                         <!-- ---------------------------- OPENING MAIN----------------------------- -->
@@ -38,21 +37,22 @@
                                         It's game time!
                                         Rebel Alliance against
                                         the evil Galactic Empire.
-                                        Create or join a battleship game,
+                                        Create or join a 1v1 Game,
                                         set your fleet on a Grid,
                                         and blast away your enemy!
                                     </p>
                                     <p>
-                                        Rules: each Player starts with 5 Ships.
-                                        Once positioned, the battle begins in Turn 1.
-                                        Fire up to 5 Shots per Turn, one Shot per Ship standing.
-                                        Win the game by destroying your opponent's fleet first.
-                                        If both players get all ships down on the same Turn,
-                                        the game ends in a Draw.
+                                        Both Players fight with 5 Ships.
+                                        On your turn, fire at as many cells
+                                        as ships you have standing at the beginning of the Turn.
+                                        Check always the Battlelog to follow game action.
+                                        Win by destroying your opponent's fleet first.
+                                        If both players end with all ships depleted on the same turn,
+                                        the game ends in a draw.
                                     </p>
                                     <p>
                                         Score the most points to scale up the Space Leaderboard!
-                                        Win: 3 points, Draw: 1 point, Loss: 0. Have Fun!
+                                        Win: 3 points, Draw: 1 point, Lose: 0. Have Fun!
                                     </p>
                                 </div>
                             </section>
@@ -71,7 +71,7 @@
     </header>
     <!-- ----------------------------  MAIN SECTION----------------------------- -->
     <section class="row justify-content-center">
-        <div id="app" class="col-12 col-sm-11 col-lg-auto mb-4">
+        <div id="app" class="games-home col-12 col-sm-11 col-lg-auto mb-4">
             <div class="row">
                 <div class="col-12">
                     <h1 id="profile-title"></h1>
@@ -161,7 +161,7 @@
                                     <span id="logged-in-name" class="align-middle mx-2"></span>
                                 </div>
                                 <div class="float-right">
-                                    <div id="display-points" class="card align-bottom text-center h5 score-popover" data-container="body" data-toggle="popover" data-placement="top" data-content="My Score" data-trigger="click, hover">
+                                    <div id="display-points" class="card align-bottom text-center h5 score-popover" data-container="body" data-toggle="popover" data-placement="top" data-content="My Score" data-trigger="hover">
                                         <img id="trophy" src="css/images/trophy.png">
                                         {{current_player.totalScore}}
                                     </div>
@@ -178,39 +178,90 @@
 
                 <!-- -------------------------------------GAME LIST------------------------------------- -->
                 <div class="col-12 col-md-auto mb-5">
-                    <h1>Games</h1>
+                    <h1>
+                        <img class="mb-1" src="css/images/games-h1.png">
+                        <button id="refresh-btn">
+                            <img id="refresh-img" class="score-popover" src="css/images/refresh.png" data-container="body" data-toggle="popover" data-placement="right" data-content="Refresh Data" data-trigger="hover">
+                        </button>
+                        <span id="refresh-alert"></span>
+                    </h1>
                     <div id="creation-game" class="mb-2">
                         <button v-if="current_player !== 'guest'" type="button" id="new-game-btn" :class="[current_player.side == 'DARK' ? 'btn btn-danger btn-lg btn-block' : 'btn btn-success btn-lg btn-block']"><b>New Game</b></button>
                         <span id="fail-creation-game-alert"></span>
                     </div>
-                    <div class="card">
-                        <div class="card-body game-list-container p-4">
-                            <ol>
-                                <li v-for="game in games" class="mb-4">
-                                    <strong>Game {{game.id}}, created: {{game.created}}</strong>
-                                    <h3 class="ml-2 my-1">Players:</h3>
-                                    <ol class="ml-5">
-                                        <li v-for="gamePlayer in game.gamePlayers">{{gamePlayer.player.userName}}
-                                            <a v-if="current_player.id === gamePlayer.player.id" :href="'/web/game.html?gp='+gamePlayer.id">
-                                                <span>Return to Game</span>
-                                            </a>
+
+                    <div id="games-accordion" class="mx-auto">
+                        <div class="card">
+                            <!-- -------------------------------------OPEN GAMES------------------------------------- -->
+                            <button class="btn btn-dark" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Open Games
+                            </button>
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#games-accordion">
+                                <div class="card-body game-list-container p-4">
+                                    <ol>
+                                        <li v-for="game in liveGames" class="mb-4">
+                                            <strong>Game {{game.id}}, created: {{game.created}}</strong>
+                                            <h3 class="ml-2 my-1">Players:</h3>
+                                            <ol class="ml-3">
+                                                <li v-for="gamePlayer in game.gamePlayers">
+                                                    <img class="game-list-avatar" :src="[gamePlayer.player.side == 'DARK' ? 'css/images/empire.png' : 'css/images/rebellion.png']">
+                                                    <span :class="[gamePlayer.player.side == 'DARK' ? 'text-DARK' : 'text-LIGHT']">
+                                                        {{gamePlayer.player.userName}}</span>
+                                                    <a v-if="current_player.id === gamePlayer.player.id" :href="'/web/game.html?gp='+gamePlayer.id">
+                                                        - <span>Re-enter</span>
+                                                    </a>
+                                                </li>
+                                            </ol>
+                                            <div v-for="gamePlayer in game.gamePlayers" v-if="current_player.id !== gamePlayer.player.id && current_player !== 'guest' && game.gamePlayers.length < 2">
+                                                <button :data-game="game.id" type="button" class="join-game-btn btn btn-dark btn-sm mt-2">Join Game</button>
+                                                <span :data-game="game.id" class="fail-joining-game-alert text-red"></span>
+                                            </div>
                                         </li>
                                     </ol>
-                                    <div v-for="gamePlayer in game.gamePlayers" v-if="current_player.id !== gamePlayer.player.id && current_player !== 'guest' && game.gamePlayers.length < 2">
-                                        <button :data-game="game.id" type="button" class="join-game-btn btn btn-dark btn-sm mt-2">Join Game</button>
-                                        <span :data-game="game.id" class="fail-joining-game-alert text-red"></span>
-                                    </div>
-                                </li>
-                            </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- -------------------------------------ENDED GAMES------------------------------------- -->
+                        <div class="card">
+                            <button class="btn btn-dark collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Ended Games
+                            </button>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#games-accordion">
+                                <div class="card-body game-list-container p-4">
+                                    <ol>
+                                        <li v-for="game in endedGames" class="mb-4">
+                                            <strong>Game {{game.id}}, ended: {{game.ended}}</strong>
+                                            <h3 class="ml-2 my-1">Players:</h3>
+                                            <ol class="ml-3">
+                                                <li v-for="gamePlayer in game.gamePlayers">
+                                                    <img class="game-list-avatar" :src="[gamePlayer.player.side == 'DARK' ? 'css/images/empire.png' : 'css/images/rebellion.png']">
+                                                    <span :class="[gamePlayer.player.side == 'DARK' ? 'text-DARK' : 'text-LIGHT']">
+                                                        {{gamePlayer.player.userName}}</span> <b>- {{gamePlayer.gameState}}</b>
+                                                    <a v-if="current_player.id === gamePlayer.player.id" :href="'/web/game.html?gp='+gamePlayer.id">
+                                                        - <span>Review</span>
+                                                    </a>
+                                                </li>
+                                            </ol>
+                                            <div v-for="gamePlayer in game.gamePlayers" v-if="current_player.id !== gamePlayer.player.id && current_player !== 'guest' && game.gamePlayers.length < 2">
+                                                <button :data-game="game.id" type="button" class="join-game-btn btn btn-dark btn-sm mt-2">Join Game</button>
+                                                <span :data-game="game.id" class="fail-joining-game-alert text-red"></span>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- -------------------------------------LEADER BOARD------------------------------------- -->
                 <div id="leaderBoardDiv" class="col-12 col-md-auto">
-                    <h1>Space Leaders</h1>
+                    <h1>
+                        <img class="mb-1" src="css/images/space-leaders-h1.png">
+                    </h1>
                     <div class="card">
-                        <div class="card-body p-4">
+                        <div class="card-body table-list-container p-4">
                             <div class="table-responsive">
                                 <table class="table table-hover table-borderless border border-dark table-sm">
                                     <thead class="border-bottom border-dark">

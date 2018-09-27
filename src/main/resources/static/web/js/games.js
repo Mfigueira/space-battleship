@@ -2,7 +2,8 @@
 var app = new Vue({
   el: "#app",
   data: {
-    games: [],
+    liveGames: [],
+    endedGames: [],
     current_player: [],
     playersLeaderBoard: [],
     lightLeaders:[],
@@ -13,16 +14,56 @@ var app = new Vue({
 //--------------------------------GET INIT DATA----------------------------------
 $(document).ready(function() {
     getData();
+    refreshAjax();
 });
+
+function getRefreshedData(){
+    $.get("/api/games").done(function(result) {
+        getLeaderBoard(result.games);
+        getGames(result.games);
+        dateTransform(app.liveGames);
+        dateTransformEnded(app.endedGames);
+    });
+}
 
 function getData(){
     $.get("/api/games").done(function(result) {
-        app.games = result.games;
+
         app.current_player = result.current_player;
-        dateTransform(app.games);
         getLeaderBoard(result.games);
         registerForm(result.current_player);
+        getGames(result.games);
+        dateTransform(app.liveGames);
+        dateTransformEnded(app.endedGames);
     });
+}
+
+function getGames(gameList) {
+    var openGames = [];
+    var endedGames = [];
+    gameList.map(function (game) {
+        if (game.gamePlayers[0].score != null) {
+            endedGames.push(game);
+        } else {
+            openGames.push(game);
+        }
+    });
+    app.liveGames = openGames;
+    app.endedGames = endedGames;
+}
+
+
+//--------------------------------REFRESH GAME DATA ON BTN CLICK----------------------------------
+$("#refresh-btn").click(function(){
+    getRefreshedData();
+    $("#refresh-btn").addClass("spin10sec").attr("disabled", true);
+    setTimeout(function(){ $("#refresh-btn").removeClass("spin10sec").attr("disabled", false); }, 10000);
+})
+
+//-----------------------------------------------REFRESH TIMER---------------------------------------------------------
+var refreshTimer;
+function refreshAjax() {
+  refreshTimer = setInterval(function() { getRefreshedData(); }, 10000);
 }
 
 //--------------------------------REGISTRATION FORM----------------------------------
@@ -137,14 +178,14 @@ $("#back-to-login-btn").click(function() {
 
 function registerForm(player) {
     if (player === "guest") {
-        $("#profile-title").html("Registration");
+        $("#profile-title").html("<img class='mb-1' src='css/images/registration-h1.png'>");
         $("#login-form").show();
         $("#logout-form").hide();
     } else {
         if (player.side === "DARK") { $("#logged-in-name").html("Welcome Sith! "+player.userName).removeClass("text-LIGHT").addClass("text-DARK"); }
         else if (player.side === "LIGHT") { $("#logged-in-name").html("Welcome Jedi! "+player.userName).removeClass("text-DARK").addClass("text-LIGHT"); }
         else { $("#logged-in-name").html("Welcome, "+player.userName); }
-        $("#profile-title").html("My Profile");
+        $("#profile-title").html("<img class='mb-1' src='css/images/profile-h1.png'>");
         $("#login-form").hide();
         $("#logout-form").show();
     }
@@ -163,11 +204,18 @@ $("input[type=radio]").change(function() {
 
 
 
-//---------------------------------------DATE FORMAT---------------------------------------
+//---------------------------------------CREATED DATE FORMAT---------------------------------------
 function dateTransform(array){
-    for (var i=0;i<app.games.length;i++) {
-        var newDate = new Date(app.games[i].created).toLocaleString();
-        app.games[i].created = newDate;
+    for (var i=0;i<array.length;i++) {
+        var newDate = new Date(array[i].created).toLocaleString();
+        array[i].created = newDate;
+    }
+}
+//---------------------------------------ENDED DATE FORMAT---------------------------------------
+function dateTransformEnded(array){
+    for (var i=0;i<array.length;i++) {
+        var newDate = new Date(array[i].ended).toLocaleString();
+        array[i].ended = newDate;
     }
 }
 
@@ -194,7 +242,7 @@ function getLeaderBoard(gameList) {
 
                 if (playersList[e].pId == thisPlayerId) {
                     playersList[e].totalScore += game.gamePlayers[i].score;
-                    if (game.gamePlayers[i].score == 1) {playersList[e].wins += 1;} else if (game.gamePlayers[i].score == 0.5) {playersList[e].ties += 1;} else if (game.gamePlayers[i].score == 0) {playersList[e].losses += 1;}
+                    if (game.gamePlayers[i].score == 3) {playersList[e].wins += 1;} else if (game.gamePlayers[i].score == 1) {playersList[e].ties += 1;} else if (game.gamePlayers[i].score == 0) {playersList[e].losses += 1;}
                 }
             }
         }
@@ -206,7 +254,20 @@ function getLeaderBoard(gameList) {
         };
     };
 
+    var sortByKeyBackwards = function (key) {
+        return function (x, y) {
+            return ((x[key] === y[key]) ? 0 : ((x[key] > y[key]) ? 1 : -1));
+        };
+    };
+
+
+    playersList.sort(sortByKeyBackwards("pUserName"));
+    playersList.sort(sortByKeyBackwards("side"));
+    playersList.sort(sortByKeyBackwards("losses"));
+    playersList.sort(sortByKey("ties"));
+    playersList.sort(sortByKey("wins"));
     playersList.sort(sortByKey("totalScore"));
+
 
     playersList.map(function (player) {
         if (player.side === "DARK") { return darkPlayersList.push(player); } else if (player.side === "LIGHT") { return lightPlayersList.push(player); }

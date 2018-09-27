@@ -69,8 +69,9 @@ table {
 
 /*----------------------------------SECTION/GENERAL-----------------------------------*/
 h1 {
-    font-size: 30px;
-    margin-bottom: 15px;
+    font-size: 2em;
+    height: 1.25em;
+    margin-bottom: 0.4em;
     border-bottom: 2px solid black;
 }
 h2 {
@@ -81,16 +82,19 @@ h3 {
     font-size: 15px;
 }
 #app {
-    border: 1px solid black;
+    border: 2px solid black;
     border-radius: 20px;
     padding: 30px 40px;
     background-color:rgba(255,255,255,0.6);
+}
+#app.games-home {
+    min-height: 950px;
 }
 b {
     font-weight: bold;
 }
 .card {
-    background-color: rgba(245, 245, 245, 0.4);
+    background-color: rgba(245, 245, 245, 0.6);
 }
 .display-none {
     display: none;
@@ -169,7 +173,7 @@ input[type=radio]:checked+label {
     height: 40px;
 }
 .side-logo-in-game {
-    height: 35px;
+    height: 40px;
     margin-top: -8px;
     margin-left: 5px;
 }
@@ -179,6 +183,11 @@ input[type=radio]:checked+label {
 #toggle-leaders-btn {
     width: 40%;
     margin: 0 29.75%;
+}
+.table-list-container {
+    height: 593.5px;
+    min-width: 30em;
+    overflow: auto;
 }
 
 /*---------------------------------------MY PROFILE--------------------------------------*/
@@ -205,6 +214,15 @@ input[type=radio]:checked+label {
 .bs-popover-auto[x-placement^=top] .arrow::after, .bs-popover-top .arrow::after {
     border-top-color: #343a40;
 }
+.bs-popover-auto[x-placement^=bottom] .arrow::after, .bs-popover-bottom .arrow::after {
+    border-bottom-color: #343a40;
+}
+.bs-popover-auto[x-placement^=right] .arrow::after, .bs-popover-right .arrow::after {
+    border-right-color: #343a40;
+}
+.bs-popover-auto[x-placement^=left] .arrow::after, .bs-popover-left .arrow::after {
+    border-left-color: #343a40;
+}
 
 
 /*---------------------------------------GAMES LIST--------------------------------------*/
@@ -213,15 +231,55 @@ input[type=radio]:checked+label {
     font-size: 26px;
 }
 .game-list-container {
-    max-height: 400px;
+    height: 450px;
     overflow: auto;
 }
 
 li>ol {
-	list-style-type: decimal;
+	list-style:none;
+}
+#games-accordion {
+    width: 25em;
+}
+.game-list-avatar {
+    width: 16px;
+    margin-top: -4px;
+}
+#refresh-img {
+    height: 100%;
+    cursor: pointer;
+    margin-bottom: 0.4em;
+}
+#refresh-btn {
+    height: 90%;
+    padding:0;
+    margin:0;
+    border-radius: 50%;
+    background-color: #343a40;
+}
+
+#refresh-alert {
+    font-size: 0.5em;
+    font-style: italic;
+}
+.spin10sec {
+    animation: spin 10s linear forwards;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(360deg);
+    }
 }
 
 /*--------------------------------------MEDIA QUERYS-----------------------------------*/
+@media screen and (max-width: 700px) {
+  .table-list-container {
+      min-width: 20em;
+  }
+}
 @media screen and (max-width: 500px) {
   .main-logo {
       height: 125px;
@@ -229,6 +287,15 @@ li>ol {
   #close-btn {
       right: 8px;
       left: auto;
+  }
+  #games-accordion {
+      width: 100%;
+  }
+  #app.games-home {
+      min-height: 500px;
+  }
+  .table-list-container {
+      min-width: 10em;
   }
 }
 
@@ -246,10 +313,10 @@ li>ol {
 }
 
 .shd-light {
-    box-shadow:0 0 40px rgba(40, 167, 69) inset;
+    box-shadow:0 0 50px 5px rgba(40, 197, 69) inset;
 }
 .shd-dark {
-    box-shadow:0 0 40px rgba(220, 53, 69) inset;
+    box-shadow:0 0 50px 5px rgba(220, 53, 69) inset;
 }
 
 
@@ -264,19 +331,24 @@ li>ol {
 }
 
 .para {
-  box-shadow: 5px 5px 0 rgba(0,0,0,.5);
   height: 45px;
   min-width: 300px;
   max-width: 370px;
 }
 .para-LIGHT {
   border: 2px solid #28a745;
-  background-color: rgba(40, 167, 69, 0.6);
+  background-color: rgba(66, 255, 69, 0.6);
+  transition: box-shadow 0.6s;
 }
 .para-DARK {
   border: 2px solid #dc3545;
-  background-color: rgba(220, 53, 69, 0.6);
+  background-color: rgba(255, 66, 69, 0.6);
+  transition: box-shadow 0.6s;
 }
+.para-turn {
+  box-shadow: 5px 5px 0 rgba(0,0,0,0.5), 0 0 20px 10px #0ff;
+}
+
 .parallelogram{
   transform: skew(-20deg);
 }
@@ -311,7 +383,7 @@ li>ol {
 
 
 
-#waiting-opponent-card, #place-ships-card {
+#waiting-opponent-card, #place-ships-card, #fire-card {
     height: 217px;
 }
 #placed-ships-btn {
@@ -322,8 +394,8 @@ li>ol {
     line-height: 22px;
 }
 #turn-state {
-    height: 37px;
-    line-height: 20px;
+    height: 80px;
+    font-size: 1.5em;
 }
 #turn-title {
     font-size: 25px;
@@ -344,6 +416,134 @@ li>ol {
     height: 72px;
     line-height: 20px;
 }
+
+#fire-salvo-btn {
+    width: 30%;
+    box-shadow: 0 0 7px 3px white, 0 0 7px 3px #ffc107;
+}
+#fire-salvo-btn:enabled {
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0% {box-shadow: 0;}
+    20% {box-shadow: 0 0 10px 5px white, 0 0 20px 15px #ffc107, 0 0 40px 20px red;}
+    100% {box-shadow: 0 0 5px 2px white;}
+}
+
+
+
+/*----------------------------------WIN LOSE DRAW EVENTS-----------------------------------*/
+
+#epic-video {
+    z-index: 91;
+    position: absolute;
+    left: 0.5%;
+    top: 1%;
+    width: 99%;
+    animation: appear 45s linear forwards;
+}
+
+@keyframes appear {
+    0% {opacity: 0;}
+    5% {opacity: 1;}
+    95% {opacity: 1;}
+    100% {opacity: 0;}
+}
+
+#win-card, #lose-card, #draw-card {
+    font-size: 5em;
+    //animation: end 4s linear 1s forwards;
+}
+
+#end-game.end-dark {
+    text-align: center;
+    border-radius: 1.75%;
+    animation: endDark 2.5s linear 1s forwards;
+}
+#end-game.end-light {
+    text-align: center;
+    border-radius: 1.75%;
+    animation: endLight 2.5s linear 1s forwards;
+}
+.end-game-letter {
+    font-size: 2em;
+    padding-top: 3em;
+    animation: endText 0.2s linear 0s forwards;
+}
+
+#end-game-back-btn {
+    position: absolute;
+    top: 2%;
+    left: 5%;
+    z-index: 99;
+}
+
+@keyframes endDark {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
+
+@keyframes endLight {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
+
+@keyframes endText {
+    0% {
+        z-index: 95;
+        font-size: 2em;
+    }
+    100% {
+        z-index: 95;
+        font-size: 7em;
+    }
+}
+
 /*----------------------------------SALVO GRID DISPLAY-----------------------------------*/
 
 #salvoGrid {
@@ -359,13 +559,22 @@ li>ol {
     text-align: center;
 }
 .spark-salvo {
-    border-radius: 50%;
-    height: 24px;
-    width: 24px;
+    width: 100%;
+    height: 100%;
+    background-image: url("images/spark.gif");
+    background-size: cover;
+}
+.cross-salvo {
+    width: 100%;
+    height: 100%;
+    background-image: url("images/cross.png");
+    background-size: cover;
 }
 .aim-img {
-    height: 24px;
-    width: 24px;
+    width: 100%;
+    height: 100%;
+    background-image: url("images/aim.png");
+    background-size: cover;
 }
 .bg-salvo {
     background-color: rgba(255, 0, 0, 0.5);
@@ -376,6 +585,15 @@ li>ol {
     border-radius: 50%;
     height: 35px;
     width: 35px;
+    background-image: url("images/spark.gif");
+    background-size: cover;
+}
+.cross {
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+    background-image: url("images/cross.png");
+    background-size: cover;
 }
 .remaining-ship-light {
     margin: 0 1%;
@@ -455,55 +673,75 @@ li>ol {
     height: 185px;
     width: 54px;
     left: -9px;
+    background-image: url("images/icons/dark-cruiser-v.png");
+    background-size: 100% 100%;
 }
 #dark-cruiser-img-h {
     height: 54px;
     width: 185px;
     top: -10px;
+    background-image: url("images/icons/dark-cruiser-h.png");
+    background-size: 100% 100%;
 }
 #dark-destroyer-img-v {
     height: 150px;
     width: 40px;
     top: -6px;
     left: -4px;
+    background-image: url("images/icons/dark-destroyer-v.png");
+    background-size: 100% 100%;
 }
 #dark-destroyer-img-h {
     width: 150px;
     height: 40px;
     top: -3px;
     left: -6px;
+    background-image: url("images/icons/dark-destroyer-h.png");
+    background-size: 100% 100%;
 }
 #dark-bomber-img-v {
     height: 95px;
     width: 60px;
     left: -13px;
     top: 5px;
+    background-image: url("images/icons/dark-bomber-v.png");
+    background-size: 100% 100%;
 }
 #dark-bomber-img-h {
     width: 95px;
     height: 60px;
     top: -12px;
     left: 5px;
+    background-image: url("images/icons/dark-bomber-h.png");
+    background-size: 100% 100%;
 }
 #dark-fighter-img-v {
     height: 115px;
     width: 45px;
     left: -5px;
+    background-image: url("images/icons/dark-fighter-v.png");
+    background-size: 100% 100%;
 }
 #dark-fighter-img-h {
     width: 115px;
     height: 45px;
     top: -5px;
+    background-image: url("images/icons/dark-fighter-h.png");
+    background-size: 100% 100%;
 }
 #dark-starfighter-img-v {
     height: 70px;
     width: 55px;
     left: -4px;
+    background-image: url("images/icons/dark-starfighter-v.png");
+    background-size: 100% 100%;
 }
 #dark-starfighter-img-h {
     width: 70px;
     height: 55px;
     top: -4px;
+    background-image: url("images/icons/dark-starfighter-h.png");
+    background-size: 100% 100%;
 }
 
 /*-----------------light ships----------------*/
@@ -512,58 +750,78 @@ li>ol {
     width: 55px;
     left: -10px;
     top: -10px;
+    background-image: url("images/icons/light-cruiser-v.png");
+    background-size: 100% 100%;
 }
 #light-cruiser-img-h {
     height: 55px;
     width: 200px;
     top: -10px;
     left: -10px;
+    background-image: url("images/icons/light-cruiser-h.png");
+    background-size: 100% 100%;
 }
 #light-destroyer-img-v {
     height: 130px;
     width: 47px;
     left: -7px;
     top: 7px;
+    background-image: url("images/icons/light-destroyer-v.png");
+    background-size: 100% 100%;
 }
 #light-destroyer-img-h {
     width: 130px;
     height: 47px;
     top: -6px;
     left: 7px;
+    background-image: url("images/icons/light-destroyer-h.png");
+    background-size: 100% 100%;
 }
 #light-bomber-img-v {
     height: 125px;
     width: 55px;
     left: -12px;
     top: -5px;
+    background-image: url("images/icons/light-bomber-v.png");
+    background-size: 100% 100%;
 }
 #light-bomber-img-h {
     width: 125px;
     height: 55px;
     top: -8px;
     left: -2px;
+    background-image: url("images/icons/light-bomber-h.png");
+    background-size: 100% 100%;
 }
 #light-fighter-img-v {
     height: 104px;
     width: 50px;
     left: -6px;
     top: -2px;
+    background-image: url("images/icons/light-fighter-v.png");
+    background-size: 100% 100%;
 }
 #light-fighter-img-h {
     width: 104px;
     height: 50px;
     top: -8px;
     left: 3px;
+    background-image: url("images/icons/light-fighter-h.png");
+    background-size: 100% 100%;
 }
 #light-starfighter-img-v {
     height: 95px;
     width: 51px;
     left: -8px;
     top: -5px;
+    background-image: url("images/icons/light-starfighter-v.png");
+    background-size: 100% 100%;
 }
 #light-starfighter-img-h {
     width: 95px;
     height: 51px;
     left: -5px;
     top: -8px;
+    background-image: url("images/icons/light-starfighter-h.png");
+    background-size: 100% 100%;
 }

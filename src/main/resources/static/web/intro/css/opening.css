@@ -30,8 +30,8 @@
 }
 .starwars .logo {
   opacity: 0;
-  -webkit-animation: logo 12s ease-out 9s;
-          animation: logo 12s ease-out 9s;
+  -webkit-animation: logo 22s ease-out 8.8s;
+          animation: logo 22s ease-out 8.8s;
 }
 .starwars .opening-logo {
   width: inherit;
@@ -45,7 +45,7 @@
 
 .starwars .titles {
   width: 14.65em;
-  margin: 0 0 0 -7.325em;
+  margin: 20em 0 0 -7.325em;
   top: auto;
   bottom: 0;
   height: 50em;
@@ -60,8 +60,8 @@
 .starwars .titles > div {
   position: absolute;
   top: 100%;
-  -webkit-animation: titles 84s linear 11s;
-          animation: titles 84s linear 11s;
+  -webkit-animation: titles 74s linear 20s;
+          animation: titles 74s linear 20s;
 }
 .starwars .titles > div > p {
   margin: 1.35em 0 1.85em 0;
@@ -150,7 +150,7 @@
     opacity: 1;
   }
   100% {
-    top: 20%;
+    top: 10%;
     opacity: 0;
   }
 }
@@ -163,7 +163,7 @@
     opacity: 1;
   }
   100% {
-    top: 20%;
+    top: 10%;
     opacity: 0;
   }
 }
