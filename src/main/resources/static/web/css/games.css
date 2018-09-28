@@ -287,6 +287,11 @@ li>ol {
   .table-list-container {
       min-width: 20em;
   }
+  .end-game-letter {
+      width: 80%;
+      padding-right:8%;
+      position: fixed;
+  }
 }
 @media screen and (max-width: 500px) {
   .main-logo {
@@ -475,10 +480,13 @@ li>ol {
     animation: endLight 2.5s linear 1s forwards;
 }
 .end-game-letter {
+    width: 100%;
     font-size: 2em;
     padding-top: 3em;
+    text-align: center;
     animation: endText 0.2s linear 0s forwards;
 }
+
 
 #end-game-back-btn {
     position: absolute;
@@ -548,7 +556,7 @@ li>ol {
     }
     100% {
         z-index: 95;
-        font-size: 7em;
+        font-size: 5em;
     }
 }
 
