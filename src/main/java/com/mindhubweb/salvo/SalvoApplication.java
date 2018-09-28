@@ -70,18 +70,6 @@ public class SalvoApplication {
 			shipSet2.add(new Ship (bomber, new ArrayList<>(Arrays.asList("G5", "H5", "I5"))));
 			shipSet2.add(new Ship (destroyer, new ArrayList<>(Arrays.asList("F1", "F2", "F3", "F4"))));
 
-			Set<Ship> shipSet3 = new HashSet<>();
-			shipSet3.add(new Ship (cruiser, new ArrayList<>(Arrays.asList("C4", "C5", "C6", "C7", "C8"))));
-			shipSet3.add(new Ship (bomber, new ArrayList<>(Arrays.asList("F5", "G5", "H5"))));
-
-			Set<Ship> shipSet4 = new HashSet<>();
-			shipSet4.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("D2", "D3"))));
-			shipSet4.add(new Ship (bomber, new ArrayList<>(Arrays.asList("B5", "C5", "D5"))));
-
-			Set<Ship> shipSet5 = new HashSet<>();
-			shipSet5.add(new Ship (starFighter, new ArrayList<>(Arrays.asList("D2", "D3"))));
-			shipSet5.add(new Ship (fighter, new ArrayList<>(Arrays.asList("A1", "A2", "A3"))));
-
 
 			//---------------------------save some salvoes-----------------------------------
 
@@ -95,42 +83,12 @@ public class SalvoApplication {
 			salvoes2.add(new Salvo (2, new ArrayList<>(Arrays.asList("A10", "H2", "I2", "D1", "D3"))));
 			salvoes2.add(new Salvo (3, new ArrayList<>(Arrays.asList("F10", "F2", "A1", "A2", "A3"))));
 
-			Set<Salvo> salvoes3 = new HashSet<>();
-			salvoes3.add(new Salvo (1, new ArrayList<>(Arrays.asList("C4", "C5", "C3", "C7", "C8"))));
-			salvoes3.add(new Salvo (2, new ArrayList<>(Arrays.asList("F10", "G5", "J5"))));
-
-			Set<Salvo> salvoes4 = new HashSet<>();
-			salvoes4.add(new Salvo (1, new ArrayList<>(Arrays.asList("I2", "I3"))));
-			salvoes4.add(new Salvo (2, new ArrayList<>(Arrays.asList("A5", "C5", "D5"))));
-
-			Set<Salvo> salvoes5 = new HashSet<>();
-			salvoes5.add(new Salvo (1, new ArrayList<>(Arrays.asList("D2", "D3"))));
-			salvoes5.add(new Salvo (2, new ArrayList<>(Arrays.asList("A10", "B10", "A5"))));
-
 
 			//---------------------------save some game-players-----------------------------------
 
 			gamePlayerRepository.save(new GamePlayer(g1, p1, LocalDateTime.now(), shipSet1, salvoes1));
 			gamePlayerRepository.save(new GamePlayer(g1, p2, LocalDateTime.now(), shipSet2, salvoes2));
-			gamePlayerRepository.save(new GamePlayer(g2, p3, LocalDateTime.now(), shipSet3, salvoes3));
-			gamePlayerRepository.save(new GamePlayer(g2, p4, LocalDateTime.now(), shipSet4, salvoes4));
-			gamePlayerRepository.save(new GamePlayer(g3, p2, LocalDateTime.now(), shipSet5, salvoes5));
-			gamePlayerRepository.save(new GamePlayer(g3, p4, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g4, p2, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g4, p1, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g5, p4, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
-			gamePlayerRepository.save(new GamePlayer(g5, p1, LocalDateTime.now(), new HashSet<>(), new HashSet<>()));
 
-
-			//---------------------------save some scores-----------------------------------
-			scoreRepository.save(new Score(g2, p3, 1, LocalDateTime.now()));
-			scoreRepository.save(new Score(g2, p4, 1, LocalDateTime.now()));
-			scoreRepository.save(new Score(g3, p2, 3, LocalDateTime.now()));
-			scoreRepository.save(new Score(g3, p4, 0, LocalDateTime.now()));
-			scoreRepository.save(new Score(g4, p2, 1, LocalDateTime.now()));
-			scoreRepository.save(new Score(g4, p1, 1, LocalDateTime.now()));
-			scoreRepository.save(new Score(g5, p4, 0, LocalDateTime.now()));
-			scoreRepository.save(new Score(g5, p1, 3, LocalDateTime.now()));
 
 		};
 	}
