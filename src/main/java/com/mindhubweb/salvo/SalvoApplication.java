@@ -28,24 +28,12 @@ public class SalvoApplication {
 			playerRepository.save(p1);
 			Player p2 = new Player("C_obrian", "c.obrian@ctu.gov","42", Side.LIGHT);
 			playerRepository.save(p2);
-			Player p3 = new Player("K_bauer", "kim_bauer@gmail.com", "kb", Side.DARK);
-			playerRepository.save(p3);
-			Player p4 = new Player("T_almeida", "t.almeida@ctu.gov", "mole", Side.LIGHT);
-			playerRepository.save(p4);
 
 
 			//---------------------------save some games-----------------------------------
 
 			Game g1 = new Game(LocalDateTime.now());
 			gameRepository.save(g1);
-			Game g2 = new Game(LocalDateTime.now().plusSeconds(3600));
-			gameRepository.save(g2);
-			Game g3 = new Game(LocalDateTime.now().plusSeconds(7200));
-			gameRepository.save(g3);
-			Game g4 = new Game(LocalDateTime.now().plusSeconds(7200));
-			gameRepository.save(g4);
-			Game g5 = new Game(LocalDateTime.now().plusSeconds(7200));
-			gameRepository.save(g5);
 
 
 			//---------------------------save some ships-----------------------------------
