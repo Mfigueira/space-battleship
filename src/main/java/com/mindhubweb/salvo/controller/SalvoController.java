@@ -1,11 +1,11 @@
-package com.mindhubweb.salvo.Controller;
+package com.mindhubweb.salvo.controller;
 
-import com.mindhubweb.salvo.Model.AppMessages;
-import com.mindhubweb.salvo.Model.*;
-import com.mindhubweb.salvo.Repositories.GamePlayerRepository;
-import com.mindhubweb.salvo.Repositories.GameRepository;
-import com.mindhubweb.salvo.Repositories.PlayerRepository;
-import com.mindhubweb.salvo.Repositories.ScoreRepository;
+import com.mindhubweb.salvo.model.AppMessages;
+import com.mindhubweb.salvo.model.*;
+import com.mindhubweb.salvo.repositories.GamePlayerRepository;
+import com.mindhubweb.salvo.repositories.GameRepository;
+import com.mindhubweb.salvo.repositories.PlayerRepository;
+import com.mindhubweb.salvo.repositories.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

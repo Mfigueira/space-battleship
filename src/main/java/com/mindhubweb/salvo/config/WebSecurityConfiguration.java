@@ -1,7 +1,7 @@
-package com.mindhubweb.salvo.Config;
+package com.mindhubweb.salvo.config;
 
-import com.mindhubweb.salvo.Model.Player;
-import com.mindhubweb.salvo.Repositories.PlayerRepository;
+import com.mindhubweb.salvo.model.Player;
+import com.mindhubweb.salvo.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

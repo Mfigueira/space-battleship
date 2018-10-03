@@ -1,4 +1,4 @@
-package com.mindhubweb.salvo.Model;
+package com.mindhubweb.salvo.model;
 
 public enum Side {
     DARK, LIGHT

@@ -1,16 +1,13 @@
 package com.mindhubweb.salvo;
 
-import com.mindhubweb.salvo.Model.*;
-import com.mindhubweb.salvo.Repositories.GamePlayerRepository;
-import com.mindhubweb.salvo.Repositories.GameRepository;
-import com.mindhubweb.salvo.Repositories.PlayerRepository;
-import com.mindhubweb.salvo.Repositories.ScoreRepository;
+import com.mindhubweb.salvo.repositories.GamePlayerRepository;
+import com.mindhubweb.salvo.repositories.GameRepository;
+import com.mindhubweb.salvo.repositories.PlayerRepository;
+import com.mindhubweb.salvo.repositories.ScoreRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import java.time.LocalDateTime;
-import java.util.*;
 
 @SpringBootApplication
 public class SalvoApplication {
@@ -22,6 +19,8 @@ public class SalvoApplication {
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ScoreRepository scoreRepository) {
 		return args -> {
+
+		/*	INITIAL DATA FOR TESTING
 			//---------------------------save some players-----------------------------------
 
 			Player p1 = new Player ("J_bauer", "j.bauer@ctu.gov", "24", Side.DARK);
@@ -78,6 +77,7 @@ public class SalvoApplication {
 			gamePlayerRepository.save(new GamePlayer(g1, p2, LocalDateTime.now(), shipSet2, salvoes2));
 
 
+		*/
 		};
 	}
 }
