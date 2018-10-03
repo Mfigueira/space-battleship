@@ -23,7 +23,7 @@ public class SalvoApplication {
 	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository, GamePlayerRepository gamePlayerRepository, ScoreRepository scoreRepository) {
 		return args -> {
 
-			/*
+
 			//---------------------------save some players-----------------------------------
 
 			Player p1 = new Player ("J_bauer", "j.bauer@ctu.gov", "24", Side.DARK);
@@ -79,7 +79,7 @@ public class SalvoApplication {
 			gamePlayerRepository.save(new GamePlayer(g1, p1, LocalDateTime.now(), shipSet1, salvoes1));
 			gamePlayerRepository.save(new GamePlayer(g1, p2, LocalDateTime.now(), shipSet2, salvoes2));
 
-			*/
+
 		};
 	}
 }
