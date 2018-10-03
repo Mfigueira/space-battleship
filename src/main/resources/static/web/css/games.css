@@ -52,8 +52,8 @@ table {
     background-color: black;
 }
 .container-fluid {
-    min-width: 425px;
-    min-height: 821px;
+    min-width: 320px;
+    min-height: 600px;
     max-width: 100vw;
     max-height: 100vh;
     overflow: auto;
@@ -295,7 +295,8 @@ li>ol {
 }
 @media screen and (max-width: 500px) {
   .main-logo {
-      height: 125px;
+      height: 116px;
+      padding: 10px 0;
   }
   #close-btn {
       right: 8px;
@@ -309,6 +310,9 @@ li>ol {
   }
   .table-list-container {
       min-width: 10em;
+  }
+  #profile-name {
+      margin-bottom: 15px;
   }
 }
 
