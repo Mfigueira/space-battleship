@@ -52,7 +52,7 @@ table {
     background-color: black;
 }
 .container-fluid {
-    min-width: 320px;
+    min-width: 430px;
     min-height: 600px;
     max-width: 100vw;
     max-height: 100vh;
@@ -295,7 +295,6 @@ li>ol {
 }
 @media screen and (max-width: 500px) {
   .main-logo {
-      height: 116px;
       padding: 10px 0;
   }
   #close-btn {
