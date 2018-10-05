@@ -830,6 +830,14 @@ li>ol {
   }
 }
 @media screen and (max-width: 500px) {
+
+    .shd-light {
+        box-shadow: 0 0 25px 5px #28c545 inset;
+    }
+    .shd-dark {
+        box-shadow: 0 0 25px 5px #dc3545 inset;
+    }
+
   .main-logo {
       height: 110px;
       padding: 10px 0;
