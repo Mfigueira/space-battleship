@@ -296,10 +296,10 @@ li>ol {
 }
 
 .shd-light {
-    box-shadow:0 0 50px 5px rgba(40, 197, 69) inset;
+    box-shadow: 0 0 50px 5px #28c545 inset;
 }
 .shd-dark {
-    box-shadow:0 0 50px 5px rgba(220, 53, 69) inset;
+    box-shadow: 0 0 50px 5px #dc3545 inset;
 }
 
 

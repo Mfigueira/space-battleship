@@ -39,10 +39,7 @@ var maxWidth500 = window.matchMedia("(max-width: 500px)");
 maxWidth500.addListener(doMediaQuery); // Attach listener function on state changes
 
 $(function() {
-
-doMediaQuery(maxWidth500); // Call listener function at run time
-
-
+    doMediaQuery(maxWidth500); // Call listener function at run time
 });
 
 //-------------------------------------------------------------------REFRESH DATA WHEN WAITING OPPONENT MOVE---------------------------------------------------------
