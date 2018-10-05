@@ -424,9 +424,30 @@ li>ol {
     left: 0.5%;
     top: 1%;
     width: 99%;
-    animation: appear 45s linear forwards;
+    -webkit-animation: appear 45s linear forwards;
+    -moz-animation:    appear 45s linear forwards;
+    -o-animation:      appear 45s linear forwards;
+    animation:         appear 45s linear forwards;
 }
 
+@-webkit-keyframes appear {
+    0% {opacity: 0;}
+    5% {opacity: 1;}
+    95% {opacity: 1;}
+    100% {opacity: 0;}
+}
+@-moz-keyframes appear {
+    0% {opacity: 0;}
+    5% {opacity: 1;}
+    95% {opacity: 1;}
+    100% {opacity: 0;}
+}
+@-o-keyframes appear {
+    0% {opacity: 0;}
+    5% {opacity: 1;}
+    95% {opacity: 1;}
+    100% {opacity: 0;}
+}
 @keyframes appear {
     0% {opacity: 0;}
     5% {opacity: 1;}
@@ -436,25 +457,33 @@ li>ol {
 
 #win-card, #lose-card, #draw-card {
     font-size: 5em;
-    //animation: end 4s linear 1s forwards;
 }
 
 #end-game.end-dark {
     text-align: center;
     border-radius: 1.75%;
-    animation: endDark 2.5s linear 1s forwards;
+    -webkit-animation: endDark 2.5s linear 1s forwards;
+    -moz-animation:    endDark 2.5s linear 1s forwards;
+    -o-animation:      endDark 2.5s linear 1s forwards;
+    animation:         endDark 2.5s linear 1s forwards;
 }
 #end-game.end-light {
     text-align: center;
     border-radius: 1.75%;
-    animation: endLight 2.5s linear 1s forwards;
+    -webkit-animation: endLight 2.5s linear 1s forwards;
+    -moz-animation:    endLight 2.5s linear 1s forwards;
+    -o-animation:      endLight 2.5s linear 1s forwards;
+    animation:         endLight 2.5s linear 1s forwards;
 }
 .end-game-letter {
     width: 100%;
     font-size: 2em;
     padding-top: 3em;
     text-align: center;
-    animation: endText 0.2s linear 0s forwards;
+    -webkit-animation: endText 0.2s linear 0s forwards;
+    -moz-animation:    endText 0.2s linear 0s forwards;
+    -o-animation:      endText 0.2s linear 0s forwards;
+    animation:         endText 0.2s linear 0s forwards;
 }
 
 
@@ -465,6 +494,85 @@ li>ol {
     z-index: 99;
 }
 
+
+@-webkit-keyframes endDark {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
+@-moz-keyframes endDark {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
+@-o-keyframes endDark {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em red, 0 0 0.2em red;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
 @keyframes endDark {
     0% {
         z-index: 90;
@@ -492,6 +600,86 @@ li>ol {
     }
 }
 
+
+
+@-webkit-keyframes endLight {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
+@-moz-keyframes endLight {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
+@-o-keyframes endLight {
+    0% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 0.1;
+    }
+    100% {
+        z-index: 90;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        color: white;
+        text-shadow: 1px 1px 2px black, 0 0 1em blue, 0 0 0.2em blue;
+        background-image: url("images/opening-bkg.png");
+        opacity: 1;
+    }
+}
 @keyframes endLight {
     0% {
         z-index: 90;
@@ -519,6 +707,39 @@ li>ol {
     }
 }
 
+
+
+
+@-webkit-keyframes endText {
+    0% {
+        z-index: 95;
+        font-size: 2em;
+    }
+    100% {
+        z-index: 95;
+        font-size: 5em;
+    }
+}
+@-moz-keyframes endText {
+    0% {
+        z-index: 95;
+        font-size: 2em;
+    }
+    100% {
+        z-index: 95;
+        font-size: 5em;
+    }
+}
+@-o-keyframes endText {
+    0% {
+        z-index: 95;
+        font-size: 2em;
+    }
+    100% {
+        z-index: 95;
+        font-size: 5em;
+    }
+}
 @keyframes endText {
     0% {
         z-index: 95;
@@ -820,14 +1041,14 @@ li>ol {
 
 /*-------------------------------------------------------------MEDIA QUERYS-------------------------------------------------------*/
 @media screen and (max-width: 700px) {
-  .table-list-container {
-      min-width: 20em;
-  }
-  .end-game-letter {
-      width: 80%;
-      padding-right:8%;
-      position: fixed;
-  }
+    .table-list-container {
+        min-width: 20em;
+    }
+    .end-game-letter {
+        width: 95%;
+        padding-left:2.5%;
+        position: fixed;
+    }
 }
 @media screen and (max-width: 500px) {
 
