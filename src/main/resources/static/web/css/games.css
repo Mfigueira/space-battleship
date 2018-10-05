@@ -850,10 +850,16 @@ li>ol {
   #profile-name {
       margin-bottom: 15px;
   }
-
+  #battlelog {
+      width: 275px;
+  }
+  #my-ships-standing {
+      padding: 0px;
+      margin-left: 8px;
+  }
   .para {
-    min-width: 200px;
-    max-width: 260px;
+      min-width: 200px;
+      max-width: 275px;
   }
 
 
