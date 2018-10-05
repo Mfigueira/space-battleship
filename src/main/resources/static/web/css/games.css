@@ -52,7 +52,7 @@ table {
     background-color: black;
 }
 .container-fluid {
-    min-width: 430px;
+    min-width: 320px;
     min-height: 600px;
     max-width: 100vw;
     max-height: 100vh;
@@ -280,39 +280,6 @@ li>ol {
     } to {
         transform: rotate(360deg);
     }
-}
-
-/*--------------------------------------MEDIA QUERYS-----------------------------------*/
-@media screen and (max-width: 700px) {
-  .table-list-container {
-      min-width: 20em;
-  }
-  .end-game-letter {
-      width: 80%;
-      padding-right:8%;
-      position: fixed;
-  }
-}
-@media screen and (max-width: 500px) {
-  .main-logo {
-      padding: 10px 0;
-  }
-  #close-btn {
-      right: 8px;
-      left: auto;
-  }
-  #games-accordion {
-      width: 100%;
-  }
-  #app.games-home {
-      min-height: 500px;
-  }
-  .table-list-container {
-      min-width: 10em;
-  }
-  #profile-name {
-      margin-bottom: 15px;
-  }
 }
 
 /*----------------------------------DARK-LIGHT-SIDE-EFFECTS-----------------------------------*/
@@ -670,7 +637,7 @@ li>ol {
 
 /*----------------------------------------------GRIDSTACK SHIPS----------------------------------------------*/
 
-.grid-ships {
+#grid-ships {
     background-image: url("images/grid-bg.png"), url("images/space.gif");
     background-size: cover;
     height: 385px;
@@ -843,4 +810,184 @@ li>ol {
     top: -8px;
     background-image: url("images/icons/light-starfighter-h.png");
     background-size: 100% 100%;
+}
+
+
+
+
+
+
+
+/*-------------------------------------------------------------MEDIA QUERYS-------------------------------------------------------*/
+@media screen and (max-width: 700px) {
+  .table-list-container {
+      min-width: 20em;
+  }
+  .end-game-letter {
+      width: 80%;
+      padding-right:8%;
+      position: fixed;
+  }
+}
+@media screen and (max-width: 500px) {
+  .main-logo {
+      height: 110px;
+      padding: 10px 0;
+  }
+  #close-btn {
+      right: 8px;
+      left: auto;
+  }
+  #games-accordion {
+      width: 100%;
+  }
+  #app.games-home {
+      min-height: 500px;
+  }
+  .table-list-container {
+      min-width: 10em;
+  }
+  #profile-name {
+      margin-bottom: 15px;
+  }
+
+  .para {
+    min-width: 200px;
+    max-width: 260px;
+  }
+
+
+
+  #grid-ships {
+      height: 275px;
+      width: 275px;
+      padding-top: 25px;
+      padding-left: 25px;
+  }
+  .fleet-h1 {
+      width: 210px;
+  }
+  .spark {
+      height: 25px;
+      width: 25px;
+  }
+  .cross {
+      height: 25px;
+      width: 25px;
+  }
+  /*-----------------dark ships----------------*/
+  #dark-cruiser-img-v {
+      height: 132px;
+      width: 44px;
+  }
+  #dark-cruiser-img-h {
+      height: 44px;
+      width: 132px;
+  }
+  #dark-destroyer-img-v {
+      height: 104px;
+      width: 28px;
+      left: -2px;
+      top: -2px;
+  }
+  #dark-destroyer-img-h {
+      width: 105px;
+      height: 28px;
+      top: -2px;
+      left: -1px;
+  }
+  #dark-bomber-img-v {
+      height: 72px;
+      width: 46px;
+      left: -11px;
+      top: 2px;
+  }
+  #dark-bomber-img-h {
+      width: 72px;
+      height: 46px;
+      top: -10px;
+      left: 2px;
+  }
+  #dark-fighter-img-v {
+      height: 82px;
+      width: 31px;
+      left: -3px;
+  }
+  #dark-fighter-img-h {
+      width: 82px;
+      height: 30px;
+      top: -2px;
+  }
+  #dark-starfighter-img-v {
+      height: 50px;
+      width: 38px;
+      left: -2px;
+  }
+  #dark-starfighter-img-h {
+      width: 52px;
+      height: 38px;
+      top: -2px;
+  }
+
+  /*-----------------light ships----------------*/
+  #light-cruiser-img-v {
+      height: 150px;
+      width: 35px;
+      left: -5px;
+      top: -10px;
+  }
+  #light-cruiser-img-h {
+      height: 34px;
+      width: 150px;
+      top: -4px;
+      left: -10px;
+  }
+  #light-destroyer-img-v {
+      height: 100px;
+      width: 32px;
+      left: -4px;
+      top: 4px;
+  }
+  #light-destroyer-img-h {
+      width: 101px;
+      height: 33px;
+      top: -4px;
+      left: 4px;
+  }
+  #light-bomber-img-v {
+      height: 95px;
+      width: 35px;
+      left: -6px;
+      top: -5px;
+  }
+  #light-bomber-img-h {
+      width: 95px;
+      height: 35px;
+      top: -4px;
+      left: -5px;
+  }
+  #light-fighter-img-v {
+      height: 82px;
+      width: 32px;
+      left: -4px;
+      top: -4px;
+  }
+  #light-fighter-img-h {
+      width: 82px;
+      height: 32px;
+      top: -4px;
+      left: -3px;
+  }
+  #light-starfighter-img-v {
+      height: 68px;
+      width: 31px;
+      left: -3px;
+      top: -5px;
+  }
+  #light-starfighter-img-h {
+      width: 68px;
+      height: 31px;
+      left: -5px;
+      top: -3px;
+  }
 }

@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="css/images/deathstar.ico">
     <title>Star Wars Space Battleship</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-    <link rel="stylesheet" href="dist/normalize.css" />
-    <link rel="stylesheet" href="dist/gridstack.css" />
-    <link rel="stylesheet" href="dist/gridstack-extra.css" />
+    <link rel="stylesheet" href="dist/normalize.css">
+    <link rel="stylesheet" href="dist/gridstack.css">
+    <link rel="stylesheet" href="dist/gridstack-extra.css">
     <link rel="stylesheet" href="css/games.css">
 </head>
 <body>
@@ -185,14 +185,14 @@
                     <div class="col-auto">
                         <h1 v-if="gameViewerSide === 'DARK'" class="text-center pr-3">
                             <img class="side-logo-in-game" src="css/images/empire.png">
-                            <img class="mb-1" src="css/images/empire-h1.png">
+                            <img class="mb-1 fleet-h1" src="css/images/empire-h1.png">
                         </h1>
                         <h1 v-else-if="gameViewerSide === 'LIGHT'" class="text-center pr-3">
                             <img class="side-logo-in-game" src="css/images/rebellion.png">
-                            <img class="mb-1" src="css/images/alliance-h1.png">
+                            <img class="mb-1 fleet-h1" src="css/images/alliance-h1.png">
                         </h1>
                         <!-- ------------------GRIDSTACK FRAMEWORK------------------ -->
-                        <div class="grid-ships mx-auto mb-4">
+                        <div id="grid-ships" class="mx-auto mb-4">
                             <div id="grid" class="grid-stack grid-stack-10"></div>
                         </div>
                     </div>

@@ -24,16 +24,32 @@ var app = new Vue({
 
 
 //-------------------------------------------------------------WHEN DOM READY, CALL LOAD DATA---------------------------------------------------------
+function doMediaQuery(maxWidth500) {
+    if (maxWidth500.matches) { // If media query matches
+        stopRefreshing();
+        refreshData(25);
+        loadData(25);
+    } else {
+        stopRefreshing();
+        refreshData(35);
+        loadData(35);
+    }
+}
+var maxWidth500 = window.matchMedia("(max-width: 500px)");
+maxWidth500.addListener(doMediaQuery); // Attach listener function on state changes
+
 $(function() {
-    refreshData();
-    loadData();
+
+doMediaQuery(maxWidth500); // Call listener function at run time
+
+
 });
 
 //-------------------------------------------------------------------REFRESH DATA WHEN WAITING OPPONENT MOVE---------------------------------------------------------
 var timerId;
 
-function refreshData() {
-    timerId = setInterval(function() { loadData(); }, 5000);
+function refreshData(gridStackCellNumber) {
+    timerId = setInterval(function() { loadData(gridStackCellNumber); }, 5000);
 }
 
 function stopRefreshing() {
@@ -42,7 +58,7 @@ function stopRefreshing() {
 
 
 //-------------------------------------------------------MAIN FUNCTION WHEN PAGE LOADS - AJAX GET DATA---------------------------------------------------------
-function loadData() {
+function loadData(gridStackCellNumber) {
     var gamePlayerId = getQueryVariable("gp");
     $.get("/api/game_view/"+gamePlayerId).done(function(gameDTO) {
 
@@ -71,18 +87,23 @@ function loadData() {
             stopRefreshing();
             $("#p1-div").addClass("para-turn");
             $("#p2-div").removeClass("para-turn");
+            var grid = $('#grid').data('gridstack');
+                if ( typeof grid != 'undefined' ) {
+                    grid.removeAll();
+                    grid.destroy(false);
+                }
             if ( $("#grid").children().length != 5 ) {
-                placeNewShips();
+                placeNewShips(gridStackCellNumber);
             }
         } else if (app.viewerGameState === "WAIT_OPPONENT_SHIPS") {
             waitingOpponentShips();
-            getShipCol(gameDTO);
+            getShipCol(gameDTO, gridStackCellNumber);
 
         } else if (app.viewerGameState === "ENTER_SALVO" || app.viewerGameState === "WAIT_OPPONENT_SALVO") {
             $("#waiting-opponent-ships-card").hide();
-            getShipCol(gameDTO);
+            getShipCol(gameDTO, gridStackCellNumber);
             displaySalvoTurn(app.viewerGameState);
-            displaySalvoes(gamePlayerId, gameDTO);
+            displaySalvoes(gamePlayerId, gameDTO, gridStackCellNumber);
 
         } else if (app.viewerGameState === "WIN" || app.viewerGameState === "LOSE" || app.viewerGameState === "DRAW" || app.viewerGameState === "EPIC_WIN") {
             stopRefreshing();
@@ -92,8 +113,8 @@ function loadData() {
             if (app.gameViewerSide === "LIGHT") {
                 stopLightTheme();
             }
-            getShipCol(gameDTO);
-            displaySalvoes(gamePlayerId, gameDTO);
+            getShipCol(gameDTO, gridStackCellNumber);
+            displaySalvoes(gamePlayerId, gameDTO, gridStackCellNumber);
             displayWinLoseDraw(app.viewerGameState);
         }
         $("#loading-page-div").hide();
@@ -104,7 +125,7 @@ function loadData() {
 }
 
 //----------------------------------------------------GET SHIP COL---------------------------------------------------------
-function getShipCol(gameDTO) {
+function getShipCol(gameDTO, gridStackCellNumber) {
             var grid = $('#grid').data('gridstack');
             if ( typeof grid != 'undefined' ) {
                 grid.removeAll();
@@ -112,7 +133,7 @@ function getShipCol(gameDTO) {
             }
             app.gameViewerShips = gameDTO.ships;
             getAllShipLocations(app.gameViewerShips);
-            placeShipsFromBackEnd();
+            placeShipsFromBackEnd(gridStackCellNumber);
             displayMyShips();
 }
 
@@ -225,9 +246,8 @@ function postShips(shipTypeAndCells) {
     })
     .done(function (response) {
       playEngineSound();
-      loadData();
+      doMediaQuery(maxWidth500);
       console.log( "Ships added: " + response );
-      refreshData();
     })
     .fail(function () {
       console.log("Failed to add ships... ");
@@ -383,7 +403,8 @@ function setListener(grid) {
 }
 
 //-------------------------------------------------------PLACE NEW SHIPS WITH GRIDSTACK FRAMEWORK---------------------------------------------------------
-function placeNewShips() {
+function placeNewShips(number) {
+
     $("#waiting-opponent-card").hide();
     $("#place-ships-card").show();
 
@@ -395,7 +416,7 @@ function placeNewShips() {
         //separacion entre elementos (les llaman widgets)
         verticalMargin: 0,
         //altura de las celdas
-        cellHeight: 35,
+        cellHeight: number,
         //desabilitando el resize de los widgets
         disableResize: true,
         //widgets flotantes
@@ -440,20 +461,22 @@ function placeNewShips() {
 }
 
 //-------------------------------------------------------LOAD SHIPS FROM BACKEND WITH GRIDSTACK FRAMEWORK---------------------------------------------------------
-function placeShipsFromBackEnd() {
+function placeShipsFromBackEnd(number) {
     $("#place-ships-card").hide();
 
     var options = {
         width: 10,
         height: 10,
         verticalMargin: 0,
-        cellHeight: 35,
+        cellHeight: number,
         disableResize: true,
         float: true,
         disableOneColumnMode: true,
         staticGrid: true,
         animate: true
     }
+
+
     $('.grid-stack').gridstack(options);
     var grid = $('#grid').data('gridstack');
 
@@ -673,9 +696,8 @@ function postSalvos(salvoJSON) {
         if ($("#turn-state").hasClass("game-play-alert")) {
             $("#turn-state").removeClass("game-play-alert");
         }
-        loadData();
+        doMediaQuery(maxWidth500);
         console.log( "Salvo added: " + response );
-        refreshData();
     })
     .fail(function () {
         console.log("Failed to add salvo... ");
@@ -725,7 +747,7 @@ $("#salvo-body > tr > td").click(function () {
 
 
 //-------------------------------------------------------DISPLAY SALVOS FUNCTION---------------------------------------------------------
-function displaySalvoes(gamePlayerId, gameDTO) {
+function displaySalvoes(gamePlayerId, gameDTO, cellHeight) {
 
     $("#salvo-col").show();
     $(".hitsAndMissesAbsoluteDiv").remove();
@@ -825,9 +847,9 @@ function displaySalvoes(gamePlayerId, gameDTO) {
                         }
 
                         if ( app.allShipPositions.indexOf(salvo.locations[h]) != -1 ) {
-                           $('#grid').append('<div class="hitsAndMissesAbsoluteDiv" style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><div class="spark"></div></div>');
+                           $('#grid').append('<div class="hitsAndMissesAbsoluteDiv" style="position:absolute; top:'+letter*cellHeight+'px; left:'+number*cellHeight+'px;"><div class="spark"></div></div>');
                         } else {
-                           $('#grid').append('<div class="hitsAndMissesAbsoluteDiv" style="position:absolute; top:'+letter*35+'px; left:'+number*35+'px;"><div class="cross"></div></div>');
+                           $('#grid').append('<div class="hitsAndMissesAbsoluteDiv" style="position:absolute; top:'+letter*cellHeight+'px; left:'+number*cellHeight+'px;"><div class="cross"></div></div>');
                         }
                     }
                     // --------------------------------------------------- MY SINKS ----------------------------------------------------

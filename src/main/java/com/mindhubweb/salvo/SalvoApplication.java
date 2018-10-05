@@ -26,9 +26,9 @@ public class SalvoApplication {
 
 			//---------------------------save some players-----------------------------------
 
-			Player p1 = new Player ("J_bauer", "j.bauer@ctu.gov", "24", Side.DARK);
+			Player p1 = new Player ("Vader", "vader@galactic.gov", "24", Side.DARK);
 			playerRepository.save(p1);
-			Player p2 = new Player("C_obrian", "c.obrian@ctu.gov","42", Side.LIGHT);
+			Player p2 = new Player("Luke", "luke@galactic.gov","42", Side.LIGHT);
 			playerRepository.save(p2);
 
 
