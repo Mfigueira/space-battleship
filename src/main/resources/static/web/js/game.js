@@ -286,7 +286,10 @@ $("#placed-ships-btn").click(function(){
 
 //-------------------------------------------------------ROTATE SHIPS EVENT---------------------------------------------------------
 function setListener(grid) {
-    $(".grid-stack-item").click(function() {
+
+    var classname = document.getElementsByClassName("grid-stack-item");
+
+    function listener() {
         var h = parseInt($(this).attr("data-gs-height"));
         var w = parseInt($(this).attr("data-gs-width"));
         var posX = parseInt($(this).attr("data-gs-x"));
@@ -396,7 +399,11 @@ function setListener(grid) {
             default:
                 break;
         }
-    })
+    }
+    
+    Array.from(classname).forEach(function(element) {
+        element.addEventListener("click", listener);
+    });
 }
 
 //-------------------------------------------------------PLACE NEW SHIPS WITH GRIDSTACK FRAMEWORK---------------------------------------------------------
