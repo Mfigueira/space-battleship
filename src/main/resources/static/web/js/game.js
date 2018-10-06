@@ -400,7 +400,7 @@ function setListener(grid) {
                 break;
         }
     }
-    
+
     Array.from(classname).forEach(function(element) {
         element.addEventListener("click", listener);
     });
