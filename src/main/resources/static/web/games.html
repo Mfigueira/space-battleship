@@ -2,79 +2,173 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SW Space Battleship Games</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="css/images/deathstar.ico">
+    <title>Star Wars Space Battleship</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <link rel="stylesheet" href="css/games.css">
+    <link rel="stylesheet" href="intro/css/opening.css">
 </head>
 <body>
-<div class="container-fluid">
+<div class="container-fluid bkg-home">
+    <!-- Modal -->
+    <div class="modal fade" id="intro-modal" tabindex="-1" role="dialog" aria-labelledby="intro-modal" aria-hidden="true">
+        <div id="modal-main" class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div id="intro-body" class="modal-body">
+                    <!-- ----------------------------INTRO OPENING----------------------------- -->
+                    <article class="starwars">
+                        <!-- --------------------------- OPENING AUDIO ----------------------------- -->
+                        <audio id="opening-audio" preload="auto">
+                            <source src="https://s.cdpn.io/1202/Star_Wars_original_opening_crawl_1977.mp3" type="audio/mpeg" />
+                        </audio>
+                        <!-- ---------------------------- OPENING MAIN----------------------------- -->
+                        <div id="opening-animation" class="animation">
+                            <section class="intro">
+                                A long time ago in a galaxy far,<br> far away....
+                            </section>
+                            <section class="logo">
+                                <img class="opening-logo" src="intro/css/opening-logo.png" alt="star-wars-opening-logo">
+                            </section>
+                            <section class="titles">
+                                <div contenteditable="true" spellcheck="false">
+                                    <p>
+                                    <div class="opening-title">SPACE BATTLESHIP</div>
+                                        It's game time!
+                                        Rebel Alliance against
+                                        the evil Galactic Empire.
+                                        Create or join a 1v1 Game,
+                                        set your fleet on a Grid,
+                                        and blast away your enemy!
+                                    </p>
+                                    <p>
+                                        Both Players fight with 5 Ships.
+                                        On your turn, fire at as many cells
+                                        as ships you have standing at the beginning of the Turn.
+                                        Check always the Battlelog to follow game action.
+                                        Win by destroying your opponent's fleet first.
+                                        If both players end with all ships depleted on the same turn,
+                                        the game ends in a draw.
+                                    </p>
+                                    <p>
+                                        Score the most points to scale up the Space Leaderboard!
+                                        Win: 3 points, Draw: 1 point, Lose: 0. Have Fun!
+                                    </p>
+                                </div>
+                            </section>
+                        </div>
+                    </article>
+                    <button id="close-modal-btn" type="button" class="btn btn-secondary">Skip Intro</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ---------------------------- HEADER ----------------------------- -->
     <header class="row">
         <div class="col-12">
             <img class="main-logo mx-auto d-block" src="css/images/star.png" alt="star-wars-space-battleship-main-logo">
         </div>
     </header>
+    <!-- ----------------------------  MAIN SECTION----------------------------- -->
     <section class="row justify-content-center">
-        <div id="app" class="col-12 col-sm-11 col-lg-auto mb-4">
+        <div id="app" class="games-home col-12 col-sm-11 col-lg-auto mb-4">
             <div class="row">
                 <div class="col-12">
                     <h1 id="profile-title"></h1>
                     <div class="card my-3">
                         <div class="card-body">
-
+                            <!-- -------------------------------------LOG IN FORM------------------------------------- -->
                             <form id="login-form">
                                 <div class="mb-2">
                                     <span id="login-alert" style="color: red;"></span>
                                 </div>
+
                                 <label class="sr-only" for="inputUserName">Username</label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
-                                        <div class="input-group-text"> &#128100;</div>
+                                        <div class="input-group-text"><img class="login-icon" src="css/images/stormtrooper.png"></div>
                                     </div>
-                                    <input type="email" class="form-control form-control-sm" id="inputUserName" placeholder="Email" name="username">
+                                    <input type="text" class="form-control form-control-sm" id="inputUserName" placeholder="Username" name="username">
                                 </div>
+
                                 <label class="sr-only" for="inputPassword">Password</label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
-                                        <div class="input-group-text"> &#128274;</div>
+                                        <div class="input-group-text"><img class="login-icon" src="css/images/r2d2.png"></div>
                                     </div>
                                     <input type="password" class="form-control form-control-sm" id="inputPassword" placeholder="Password" name="password">
                                 </div>
+
                                 <button id="login-btn" type="button" class="btn btn-dark">Login</button>
                                 <span class="align-middle ml-2">New Player?</span>
                                 <button id="go-to-sign-up-btn" type="button" class="btn btn-link px-0">Sign Up!</button>
                             </form>
+                            <!-- -------------------------------------SIGN UP FORM------------------------------------- -->
                             <form id="signUp-form" style="display: none;">
                                 <div class="mb-2">
                                     <span id="signUp-alert" style="color: red;"></span>
                                 </div>
-                                <label class="mb-2" for="inputEmail">Enter email:</label>
+                                <label class="mb-2" for="inputUser"><b>Enter Username:</b></label>
                                 <div class="input-group mb-2">
-                                    <input type="email" class="form-control form-control-sm" id="inputEmail" placeholder="Email" name="email">
+                                    <input type="text" class="form-control form-control-sm" id="inputUser" placeholder="Your username (max. 14 characters)" name="username">
                                 </div>
-                                <label class="mb-2" for="signPassword">Enter password:</label>
+                                <label class="mb-2" for="inputEmail"><b>Enter Email:</b></label>
                                 <div class="input-group mb-2">
-                                    <input type="password" class="form-control form-control-sm" id="signPassword" placeholder="Password" name="pass">
+                                    <input type="email" class="form-control form-control-sm" id="inputEmail" placeholder="Your email" name="email">
                                 </div>
-                                <div class="form-check form-check-inline mb-2">
-                                    <span class="mr-3">Choose your Side:</span>
-                                    <input type="radio" class="form-check-input" name="side" id="light-side" value="LIGHT">
-                                    <label class="form-check-label text-LIGHT" for="light-side">Light Side</label>
+                                <label class="mb-2" for="signPassword"><b>Enter Password:</b></label>
+                                <div class="input-group mb-2">
+                                    <input type="password" class="form-control form-control-sm" id="signPassword" placeholder="Your password" name="pass">
                                 </div>
-                                <div class="form-check form-check-inline mb-4">
-                                    <input type="radio" class="form-check-input" name="side" id="dark-side" value="DARK">
-                                    <label class="form-check-label text-DARK" for="dark-side">Dark Side</label>
+                                <div class="form-check form-check-inline">
+                                    <span class="mr-3"><b>Choose your Allegiance:</b></span>
+                                    <input type="radio" class="form-check-input" name="side" id="light-side-radio" value="LIGHT">
+                                    <label class="form-check-label text-LIGHT p-2" for="light-side-radio">
+                                        <img class="side-logo" src="css/images/rebellion.png">
+                                        Light Side
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="radio" class="form-check-input" name="side" id="dark-side-radio" value="DARK">
+                                    <label class="form-check-label text-DARK p-2" for="dark-side-radio">
+                                        <img class="side-logo" src="css/images/empire.png">
+                                        Dark Side
+                                    </label>
+                                </div>
+                                <div class="display-none clearfix" id="light-side-description">
+                                    <img src="css/images/luke2.png" class="side-description-img float-left mx-4">
+                                    <div class="card description-card mt-3">
+                                        <p class="float-left card-body">You are a <b>Jedi</b> from the <b>Rebel Alliance</b>. Help <b>Luke Skywalker</b> to Restore the Republic and bring balance to the Force. Destroy the Empire Battleships!</p>
+                                    </div>
+                                </div>
+                                <div class="display-none clearfix" id="dark-side-description">
+                                    <img src="css/images/darth-vader.png" class="side-description-img float-left">
+                                    <div class="card description-card mt-3">
+                                        <p class="float-left card-body">You become a <b>Sith</b>, commander of the <b>Galactic Empire</b> fleet. <b>Darth Vader</b> has chosen you to conquer the Galaxy, laying waste to the Rebel Forces!</p>
+                                    </div>
                                 </div>
                                 <div>
-                                    <button id="sign-up-btn" type="button" class="btn btn-dark">Start playing!</button>
+                                    <button id="sign-up-btn" type="button" class="btn btn-dark px-3">Begin to Battle!</button>
                                     <button id="back-to-login-btn" type="button" class="btn btn-link">Back to Login</button>
                                 </div>
                             </form>
 
+                            <!-- -------------------------------------LOG OUT FORM - MY PROFILE------------------------------------- -->
                             <form id="logout-form">
-                                <span id="logged-in-name" class="align-middle mx-3"></span>
-                                <button id="logout-btn" type="button" class="btn btn-dark">Logout</button>
+                                <div id="profile-name" class="float-left">
+                                    <img v-if="current_player.side === 'DARK'" class="side-logo" src="css/images/empire.png">
+                                    <img v-else-if="current_player.side === 'LIGHT'" class="side-logo" src="css/images/rebellion.png">
+                                    <span id="logged-in-name" class="align-middle mx-2"></span>
+                                </div>
+                                <div class="float-right">
+                                    <div id="display-points" class="card align-bottom text-center h5 score-popover" data-container="body" data-toggle="popover" data-placement="top" data-content="My Score" data-trigger="hover">
+                                        <img id="trophy" src="css/images/trophy.png">
+                                        {{current_player.totalScore}}
+                                    </div>
+                                    <button id="logout-btn" type="button" class="btn btn-dark">Logout</button>
+                                </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -82,87 +176,173 @@
 
             <div class="row justify-content-center">
 
+                <!-- -------------------------------------GAME LIST------------------------------------- -->
                 <div class="col-12 col-md-auto mb-5">
-                    <h1>Games</h1>
-                    <ol>
-                        <li v-for="game in games" class="gameList"><strong>Game {{game.id}}, created: {{game.created}}</strong>
-                            <h3 class="ml-2 my-1">Players:</h3>
-                            <ol class="ml-5">
-                                <li v-for="gamePlayer in game.gamePlayers">{{gamePlayer.player.email}}</li>
-                            </ol>
-                        </li>
-                    </ol>
+                    <h1>
+                        <img class="mb-1" src="css/images/games-h1.png">
+                        <button id="refresh-btn">
+                            <img id="refresh-img" class="score-popover" src="css/images/refresh.png" data-container="body" data-toggle="popover" data-placement="right" data-content="Refresh Data" data-trigger="hover">
+                        </button>
+                        <span id="refresh-alert"></span>
+                    </h1>
+                    <div id="creation-game" class="mb-2">
+                        <button v-if="current_player !== 'guest'" type="button" id="new-game-btn" :class="[current_player.side == 'DARK' ? 'btn btn-danger btn-lg btn-block' : 'btn btn-success btn-lg btn-block']"><b>New Game</b></button>
+                        <span id="fail-creation-game-alert"></span>
+                    </div>
+
+                    <div id="games-accordion" class="mx-auto">
+                        <div class="card">
+                            <!-- -------------------------------------OPEN GAMES------------------------------------- -->
+                            <button class="btn btn-dark" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Open Games
+                            </button>
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#games-accordion">
+                                <div class="card-body game-list-container p-4">
+                                    <ol>
+                                        <li v-for="game in liveGames" class="mb-4">
+                                            <strong>Game {{game.id}}, created: {{game.created}}</strong>
+                                            <h3 class="ml-2 my-1">Players:</h3>
+                                            <ol class="ml-3">
+                                                <li v-for="gamePlayer in game.gamePlayers">
+                                                    <img class="game-list-avatar" :src="[gamePlayer.player.side == 'DARK' ? 'css/images/empire.png' : 'css/images/rebellion.png']">
+                                                    <span :class="[gamePlayer.player.side == 'DARK' ? 'text-DARK' : 'text-LIGHT']">
+                                                        {{gamePlayer.player.userName}}</span>
+                                                    <a v-if="current_player.id === gamePlayer.player.id" :href="'/web/game.html?gp='+gamePlayer.id">
+                                                        - <span>Re-enter</span>
+                                                    </a>
+                                                </li>
+                                            </ol>
+                                            <div v-for="gamePlayer in game.gamePlayers" v-if="current_player.id !== gamePlayer.player.id && current_player !== 'guest' && game.gamePlayers.length < 2">
+                                                <button :data-game="game.id" type="button" class="join-game-btn btn btn-dark btn-sm mt-2">Join Game</button>
+                                                <span :data-game="game.id" class="fail-joining-game-alert text-red"></span>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- -------------------------------------ENDED GAMES------------------------------------- -->
+                        <div class="card">
+                            <button class="btn btn-dark collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Ended Games
+                            </button>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#games-accordion">
+                                <div class="card-body game-list-container p-4">
+                                    <ol>
+                                        <li v-for="game in endedGames" class="mb-4">
+                                            <strong>Game {{game.id}}, ended: {{game.ended}}</strong>
+                                            <h3 class="ml-2 my-1">Players:</h3>
+                                            <ol class="ml-3">
+                                                <li v-for="gamePlayer in game.gamePlayers">
+                                                    <img class="game-list-avatar" :src="[gamePlayer.player.side == 'DARK' ? 'css/images/empire.png' : 'css/images/rebellion.png']">
+                                                    <span :class="[gamePlayer.player.side == 'DARK' ? 'text-DARK' : 'text-LIGHT']">
+                                                        {{gamePlayer.player.userName}}</span> <b>- {{gamePlayer.gameState}}</b>
+                                                    <a v-if="current_player.id === gamePlayer.player.id" :href="'/web/game.html?gp='+gamePlayer.id">
+                                                        - <span>Review</span>
+                                                    </a>
+                                                </li>
+                                            </ol>
+                                            <div v-for="gamePlayer in game.gamePlayers" v-if="current_player.id !== gamePlayer.player.id && current_player !== 'guest' && game.gamePlayers.length < 2">
+                                                <button :data-game="game.id" type="button" class="join-game-btn btn btn-dark btn-sm mt-2">Join Game</button>
+                                                <span :data-game="game.id" class="fail-joining-game-alert text-red"></span>
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-12 col-md-auto">
-                    <h1>Space Leaders</h1>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-borderless border border-dark">
-                            <thead class="border-bottom border-dark">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Total</th>
-                                    <th>Won</th>
-                                    <th>Lost</th>
-                                    <th>Tied</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="player in playersLeaderBoard" :class="[player.side == 'DARK' ? 'text-DARK' : 'text-LIGHT']">
-                                    <td>{{player.pEmail}}</td>
-                                    <td>{{player.totalScore}}</td>
-                                    <td>{{player.wins}}</td>
-                                    <td>{{player.losses}}</td>
-                                    <td>{{player.ties}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <h2>Light Side</h2>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-borderless border border-dark">
-                            <thead class="border-bottom border-dark">
-                            <tr>
-                                <th>Name</th>
-                                <th>Total</th>
-                                <th>Won</th>
-                                <th>Lost</th>
-                                <th>Tied</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="player in lightLeaders" class="text-LIGHT">
-                                <td>{{player.pEmail}}</td>
-                                <td>{{player.totalScore}}</td>
-                                <td>{{player.wins}}</td>
-                                <td>{{player.losses}}</td>
-                                <td>{{player.ties}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <h2>Dark Side</h2>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-borderless border border-dark">
-                            <thead class="border-bottom border-dark">
-                            <tr>
-                                <th>Name</th>
-                                <th>Total</th>
-                                <th>Won</th>
-                                <th>Lost</th>
-                                <th>Tied</th>
-                            </tr>
-                            </thead>
-                            <tbody class="text-DARK">
-                            <tr v-for="player in darkLeaders">
-                                <td>{{player.pEmail}}</td>
-                                <td>{{player.totalScore}}</td>
-                                <td>{{player.wins}}</td>
-                                <td>{{player.losses}}</td>
-                                <td>{{player.ties}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <!-- -------------------------------------LEADER BOARD------------------------------------- -->
+                <div id="leaderBoardDiv" class="col-12 col-md-auto">
+                    <h1>
+                        <img class="mb-1" src="css/images/space-leaders-h1.png">
+                    </h1>
+                    <div class="card">
+                        <div class="card-body table-list-container p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-borderless border border-dark table-sm">
+                                    <thead class="border-bottom border-dark">
+                                        <tr>
+                                            <th class="py-2 px-2">Top Players</th>
+                                            <th class="py-2 px-2 text-center">Score</th>
+                                            <th class="py-2 px-2 text-center">Won</th>
+                                            <th class="py-2 px-2 text-center">Tied</th>
+                                            <th class="py-2 px-2 text-center">Lost</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="player in playersLeaderBoard" :class="[player.side == 'DARK' ? 'text-DARK' : 'text-LIGHT']">
+                                            <td><img class="avatar" :src="[player.side == 'DARK' ? 'css/images/darth.gif' : 'css/images/luke.gif']">{{player.pUserName}}</td>
+                                            <td class="text-center">{{player.totalScore}}</td>
+                                            <td class="text-center">{{player.wins}}</td>
+                                            <td class="text-center">{{player.ties}}</td>
+                                            <td class="text-center">{{player.losses}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div v-if="current_player !== 'guest'">
+                                <div class="mb-3">
+                                    <button id="toggle-leaders-btn" :class="[current_player.side == 'DARK' ? 'btn btn-danger' : 'btn btn-success']">
+                                        <img class="side-logo" :src="[current_player.side == 'DARK' ? 'css/images/empire.png' : 'css/images/rebellion.png']">
+                                    </button>
+                                </div>
+
+                                <div id="lightLeaders" :class="[current_player.side == 'LIGHT' ? 'display-block' : 'display-none']">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-borderless border border-dark table-sm">
+                                            <thead class="border-bottom border-dark">
+                                            <tr>
+                                                <th class="py-2 px-2">Rebel Alliance</th>
+                                                <th class="py-2 px-2 text-center">Score</th>
+                                                <th class="py-2 px-2 text-center">Won</th>
+                                                <th class="py-2 px-2 text-center">Tied</th>
+                                                <th class="py-2 px-2 text-center">Lost</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="player in lightLeaders" class="text-LIGHT">
+                                                <td><img class="avatar" src="css/images/luke.gif">{{player.pUserName}}</td>
+                                                <td class="text-center">{{player.totalScore}}</td>
+                                                <td class="text-center">{{player.wins}}</td>
+                                                <td class="text-center">{{player.ties}}</td>
+                                                <td class="text-center">{{player.losses}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div id="darkLeaders" :class="[current_player.side == 'DARK' ? 'display-block' : 'display-none']">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-borderless border border-dark table-sm">
+                                            <thead class="border-bottom border-dark">
+                                            <tr>
+                                                <th class="py-2 px-2">Galactic Empire</th>
+                                                <th class="py-2 px-2 text-center">Score</th>
+                                                <th class="py-2 px-2 text-center">Won</th>
+                                                <th class="py-2 px-2 text-center">Tied</th>
+                                                <th class="py-2 px-2 text-center">Lost</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="text-DARK">
+                                            <tr v-for="player in darkLeaders">
+                                                <td><img class="avatar" src="css/images/darth.gif">{{player.pUserName}}</td>
+                                                <td class="text-center">{{player.totalScore}}</td>
+                                                <td class="text-center">{{player.wins}}</td>
+                                                <td class="text-center">{{player.ties}}</td>
+                                                <td class="text-center">{{player.losses}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
